@@ -820,7 +820,7 @@ document.addEventListener("DOMContentLoaded", () => {
         merchant: "Google Play Indonesia",
         items: [{ desc: "PMBYRN GOOGLE PLAY", qty: 1, price: 100000 }],
         notes: ["LAYANAN KONSUMEN SMS 0811 1500 280", "CALL 1500 280 - KONTAK@INDOMARET.CO.ID"],
-        logo: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Indomaret_logo.svg"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Logo_Indomaret.png"
       },
       alfamart: {
         name: "ALFAMART SUPRATMAN",
@@ -829,7 +829,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ponta: "0123456789",
         items: [{ desc: "SAMPOERNA MRH16", qty: 1, price: 33900 }, { desc: "ALFA AMP P90 10", qty: 1, price: 5200 }],
         notes: ["KRITIK&SARAN:1500959", "SMS/WA: 031110640888"],
-        logo: "https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Alfamart_logo.svg/1024px-Alfamart_logo.svg.png"
       }
     };
 
@@ -915,6 +915,28 @@ document.addEventListener("DOMContentLoaded", () => {
     window.removeCIT = (i) => { customItems.splice(i,1); renderCustomItems(); updateCustomDisplay(); };
     window.addCustomItem = () => { customItems.push({ desc: "", qty: 1, price: 0 }); renderCustomItems(); updateCustomDisplay(); };
 
+    const renderCustomCosts = () => {
+      const c = document.getElementById("custom-costs-container");
+      if (!c) return;
+      c.innerHTML = "";
+      customCosts.forEach((cost, i) => {
+        const row = document.createElement("div");
+        row.classList.add("item-row");
+        row.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+            <b>Biaya ${i + 1}</b>
+            <button onclick="removeCC(${i})" style="color:#ff6b6b;border:none;background:none;cursor:pointer;font-size:10px;">Hapus</button>
+          </div>
+          <input type="text" oninput="editCC(${i},'name',this.value)" placeholder="Nama Biaya (misal: Ongkir)" value="${cost.name}">
+          <input type="number" oninput="editCC(${i},'amount',this.value)" placeholder="Jumlah (negatif untuk diskon)" value="${cost.amount}">
+        `;
+        c.appendChild(row);
+      });
+    };
+    window.editCC = (i, k, v) => { customCosts[i][k] = (k==="amount") ? parseFloat(v)||0 : v; updateCustomDisplay(); };
+    window.removeCC = (i) => { customCosts.splice(i,1); renderCustomCosts(); updateCustomDisplay(); };
+    window.addCustomCost = () => { customCosts.push({ name: "", amount: 0 }); renderCustomCosts(); updateCustomDisplay(); };
+
     const renderCustomNotes = () => {
       const c = document.getElementById("custom-notes-container");
       c.innerHTML = "";
@@ -987,8 +1009,17 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("disp-custom-items-body").innerHTML = itemsHtml;
       document.getElementById("disp-custom-subtotal").textContent = formatNum(subtotal);
       
-      const total = subtotal; // Simplified for now
-      document.getElementById("disp-custom-total").textContent = formatNum(total);
+      let costsHtml = ""; let totalCosts = 0;
+      customCosts.forEach(cost => {
+        if (cost.name) {
+          totalCosts += cost.amount;
+          costsHtml += `<tr><td>${cost.name} :</td><td class="text-right">${cost.amount < 0 ? "-" + formatNum(Math.abs(cost.amount)) : formatNum(cost.amount)}</td></tr>`;
+        }
+      });
+      document.getElementById("disp-custom-costs-body").innerHTML = costsHtml;
+
+      const grandTotal = subtotal + totalCosts;
+      document.getElementById("disp-custom-total").textContent = formatNum(grandTotal);
 
       // Thermal Update
       document.getElementById("th-store-name").textContent = name;
@@ -1035,10 +1066,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       document.getElementById("th-items").innerHTML = thItemsHtml;
 
-      document.getElementById("th-totals").innerHTML = `
-        <div class="thermal-total-row"><span>SUBTOTAL</span><span>${formatNum(subtotal)}</span></div>
-        <div class="thermal-total-row grand-total"><span>TOTAL</span><span>${formatNum(total)}</span></div>
-      `;
+      let thTotalsHtml = `<div class="thermal-total-row"><span>SUBTOTAL</span><span>${formatNum(subtotal)}</span></div>`;
+      customCosts.forEach(cost => {
+        if (cost.name) {
+          thTotalsHtml += `<div class="thermal-total-row"><span>${cost.name.toUpperCase()}</span><span>${formatNum(cost.amount)}</span></div>`;
+        }
+      });
+      thTotalsHtml += `<div class="thermal-total-row grand-total"><span>TOTAL</span><span>${formatNum(grandTotal)}</span></div>`;
+      document.getElementById("th-totals").innerHTML = thTotalsHtml;
 
       document.getElementById("th-payment-method").textContent = "Metode: " + paymentMethod.value.toUpperCase();
       document.getElementById("th-status").textContent = paymentStatus.value;
@@ -1062,6 +1097,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const el = document.getElementById(id); if (el) el.addEventListener("input", updateCustomDisplay);
     });
 
-    renderCustomItems(); renderCustomNotes(); updateCustomDisplay();
+    renderCustomItems(); renderCustomCosts(); renderCustomNotes(); updateCustomDisplay();
   }
 });
