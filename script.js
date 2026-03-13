@@ -794,19 +794,69 @@ document.addEventListener("DOMContentLoaded", () => {
   // CUSTOM NOTA LOGIC
   // ==========================================
   if (document.getElementById("nota-custom")) {
-    // Set today's date
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById("custom-date").value = today;
+    const today = new Date();
+    const localDateTime = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    document.getElementById("custom-date-time").value = localDateTime;
 
-    let customItems = [
-      { desc: "Contoh Produk / Jasa", qty: 1, price: 50000 }
-    ];
+    let customItems = [{ desc: "Contoh Produk / Jasa", qty: 1, price: 50000 }];
     let customCosts = [];
-    let customNotes = ["Nota harap dibawa saat pengambilan pesanan"];
+    let customNotes = ["Terima Kasih Atas Kunjungan Anda"];
 
-    const formatNum = (num) => new Intl.NumberFormat("en-US").format(num);
+    const formatNum = (num) => new Intl.NumberFormat("id-ID").format(num);
 
-    // --- Payment method toggle ---
+    const presetSelect = document.getElementById("custom-preset");
+    const docFormat = document.getElementById("custom-print-format");
+
+    const grpMerchant = document.getElementById("grp-merchant");
+    const grpNoTagihan = document.getElementById("grp-notagihan");
+    const grpPonta = document.getElementById("grp-ponta");
+
+    // --- Preset Data ---
+    const presets = {
+      indomaret: {
+        name: "INDOMARET",
+        addr: "MARCO FRISMATAMA / MENARA INDOMARET\nJL. TERATAI PUTIH RAYA NO. 11 RT.06/13",
+        phone: "01.337.994.6-092.000",
+        merchant: "Google Play Indonesia",
+        items: [{ desc: "PMBYRN GOOGLE PLAY", qty: 1, price: 100000 }],
+        notes: ["LAYANAN KONSUMEN SMS 0811 1500 280", "CALL 1500 280 - KONTAK@INDOMARET.CO.ID"],
+        logo: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Indomaret_logo.svg"
+      },
+      alfamart: {
+        name: "ALFAMART SUPRATMAN",
+        addr: "PT.SUMBER ALFARIA TRIJAYA,TBK\nJL. SUPRATMAN NO 104 RT 01/12",
+        phone: "081294657901",
+        ponta: "0123456789",
+        items: [{ desc: "SAMPOERNA MRH16", qty: 1, price: 33900 }, { desc: "ALFA AMP P90 10", qty: 1, price: 5200 }],
+        notes: ["KRITIK&SARAN:1500959", "SMS/WA: 031110640888"],
+        logo: "https://upload.wikimedia.org/wikipedia/commons/8/86/Alfamart_logo.svg"
+      }
+    };
+
+    presetSelect.addEventListener("change", () => {
+      const v = presetSelect.value;
+      
+      // Toggle field visibility
+      grpMerchant.style.display = (v === "indomaret") ? "block" : "none";
+      grpNoTagihan.style.display = (v === "indomaret") ? "block" : "none";
+      grpPonta.style.display = (v === "alfamart") ? "block" : "none";
+
+      if (presets[v]) {
+        const p = presets[v];
+        document.getElementById("custom-business-name").value = p.name;
+        document.getElementById("custom-business-address").value = p.addr;
+        document.getElementById("custom-business-phone").value = p.phone;
+        if (p.merchant) document.getElementById("custom-merchant").value = p.merchant;
+        if (p.ponta) document.getElementById("custom-ponta").value = p.ponta;
+        customItems = [...p.items];
+        customNotes = [...p.notes];
+        renderCustomItems();
+        renderCustomNotes();
+      }
+      updateCustomDisplay();
+    });
+
+    // --- Payment UI Toggles ---
     const paymentMethod = document.getElementById("custom-payment-method");
     const bankGroup = document.getElementById("custom-bank-group");
     const accountGroup = document.getElementById("custom-account-group");
@@ -822,17 +872,27 @@ document.addEventListener("DOMContentLoaded", () => {
       updateCustomDisplay();
     });
 
-    // --- Payment status toggle ---
     const paymentStatus = document.getElementById("custom-payment-status");
     const dpGroup = document.getElementById("custom-dp-group");
-
     paymentStatus.addEventListener("change", () => {
-      const v = paymentStatus.value;
-      dpGroup.style.display = (v === "DP" || v === "CICILAN") ? "block" : "none";
+      dpGroup.style.display = (paymentStatus.value === "DP" || paymentStatus.value === "CICILAN") ? "block" : "none";
       updateCustomDisplay();
     });
 
-    // --- Items ---
+    // --- Format Toggle ---
+    docFormat.addEventListener("change", () => {
+      const isThermal = docFormat.value.startsWith("thermal");
+      document.getElementById("nota-custom").style.display = isThermal ? "none" : "block";
+      const th = document.getElementById("nota-thermal");
+      th.style.display = isThermal ? "block" : "none";
+      if (isThermal) {
+        th.classList.remove("thermal-58", "thermal-80");
+        th.classList.add(docFormat.value);
+      }
+      updateCustomDisplay();
+    });
+
+    // --- Rendering Items/Notes ---
     const renderCustomItems = () => {
       const c = document.getElementById("custom-items-container");
       c.innerHTML = "";
@@ -840,197 +900,168 @@ document.addEventListener("DOMContentLoaded", () => {
         const row = document.createElement("div");
         row.classList.add("item-row");
         row.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-            <span style="font-weight: bold; font-size: 12px;">Item ${i + 1}</span>
-            <button type="button" class="btn-remove-custom-item" data-index="${i}" style="background: rgba(255,77,77,0.2); color: #ff6b6b; border: none; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 10px;">Hapus</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+            <b>Item ${i + 1}</b>
+            <button onclick="removeCIT(${i})" style="color:#ff6b6b;border:none;background:none;cursor:pointer;font-size:10px;">Hapus</button>
           </div>
-          <input type="text" class="ci-desc" data-index="${i}" placeholder="Deskripsi item" value="${item.desc}">
-          <input type="number" class="ci-qty" data-index="${i}" placeholder="Qty" value="${item.qty}">
-          <input type="number" class="ci-price" data-index="${i}" placeholder="Harga satuan" value="${item.price}">
+          <input type="text" oninput="editCIT(${i},'desc',this.value)" placeholder="Deskripsi" value="${item.desc}">
+          <input type="number" oninput="editCIT(${i},'qty',this.value)" placeholder="Qty" value="${item.qty}">
+          <input type="number" oninput="editCIT(${i},'price',this.value)" placeholder="Harga" value="${item.price}">
         `;
         c.appendChild(row);
       });
-      c.querySelectorAll(".ci-desc").forEach(el => el.addEventListener("input", e => { customItems[e.target.dataset.index].desc = e.target.value; updateCustomDisplay(); }));
-      c.querySelectorAll(".ci-qty").forEach(el => el.addEventListener("input", e => { customItems[e.target.dataset.index].qty = parseFloat(e.target.value) || 0; updateCustomDisplay(); }));
-      c.querySelectorAll(".ci-price").forEach(el => el.addEventListener("input", e => { customItems[e.target.dataset.index].price = parseFloat(e.target.value) || 0; updateCustomDisplay(); }));
-      c.querySelectorAll(".btn-remove-custom-item").forEach(el => el.addEventListener("click", e => { customItems.splice(parseInt(e.target.dataset.index), 1); renderCustomItems(); updateCustomDisplay(); }));
     };
-
+    window.editCIT = (i, k, v) => { customItems[i][k] = (k==="qty"||k==="price") ? parseFloat(v)||0 : v; updateCustomDisplay(); };
+    window.removeCIT = (i) => { customItems.splice(i,1); renderCustomItems(); updateCustomDisplay(); };
     window.addCustomItem = () => { customItems.push({ desc: "", qty: 1, price: 0 }); renderCustomItems(); updateCustomDisplay(); };
 
-    // --- Extra Costs ---
-    const renderCustomCosts = () => {
-      const c = document.getElementById("custom-costs-container");
-      c.innerHTML = "";
-      customCosts.forEach((cost, i) => {
-        const row = document.createElement("div");
-        row.classList.add("item-row");
-        row.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-            <span style="font-weight: bold; font-size: 12px;">Biaya ${i + 1}</span>
-            <button type="button" class="btn-remove-custom-cost" data-index="${i}" style="background: rgba(255,77,77,0.2); color: #ff6b6b; border: none; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 10px;">Hapus</button>
-          </div>
-          <input type="text" class="cc-name" data-index="${i}" placeholder="Nama biaya (Ongkir, Pajak, dll)" value="${cost.name}">
-          <input type="number" class="cc-amount" data-index="${i}" placeholder="Jumlah (negatif = diskon)" value="${cost.amount}">
-        `;
-        c.appendChild(row);
-      });
-      c.querySelectorAll(".cc-name").forEach(el => el.addEventListener("input", e => { customCosts[e.target.dataset.index].name = e.target.value; updateCustomDisplay(); }));
-      c.querySelectorAll(".cc-amount").forEach(el => el.addEventListener("input", e => { customCosts[e.target.dataset.index].amount = parseFloat(e.target.value) || 0; updateCustomDisplay(); }));
-      c.querySelectorAll(".btn-remove-custom-cost").forEach(el => el.addEventListener("click", e => { customCosts.splice(parseInt(e.target.dataset.index), 1); renderCustomCosts(); updateCustomDisplay(); }));
-    };
-
-    window.addCustomCost = () => { customCosts.push({ name: "", amount: 0 }); renderCustomCosts(); updateCustomDisplay(); };
-
-    // --- Notes ---
     const renderCustomNotes = () => {
       const c = document.getElementById("custom-notes-container");
       c.innerHTML = "";
       customNotes.forEach((note, i) => {
         const row = document.createElement("div");
         row.classList.add("item-row");
-        row.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-            <span style="font-weight: bold; font-size: 12px;">Catatan ${i + 1}</span>
-            <button type="button" class="btn-remove-custom-note" data-index="${i}" style="background: rgba(255,77,77,0.2); color: #ff6b6b; border: none; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 10px;">Hapus</button>
-          </div>
-          <input type="text" class="cn-text" data-index="${i}" placeholder="Isi catatan..." value="${note}">
-        `;
+        row.innerHTML = `<input type="text" oninput="editCN(${i},this.value)" value="${note}">`;
         c.appendChild(row);
       });
-      c.querySelectorAll(".cn-text").forEach(el => el.addEventListener("input", e => { customNotes[e.target.dataset.index] = e.target.value; updateCustomDisplay(); }));
-      c.querySelectorAll(".btn-remove-custom-note").forEach(el => el.addEventListener("click", e => { customNotes.splice(parseInt(e.target.dataset.index), 1); renderCustomNotes(); updateCustomDisplay(); }));
     };
-
+    window.editCN = (i, v) => { customNotes[i] = v; updateCustomDisplay(); };
     window.addCustomNote = () => { customNotes.push(""); renderCustomNotes(); updateCustomDisplay(); };
 
-    // --- Main display update ---
+    // --- Logo Upload ---
+    const logoUpload = document.getElementById("custom-logo-upload");
+    const a4LogoContainer = document.getElementById("a4-logo-container");
+    const a4LogoImg = document.getElementById("a4-logo-img");
+    const thLogoContainer = document.getElementById("th-logo-container");
+    const thLogoImg = document.getElementById("th-logo-img");
+
+    logoUpload.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const src = event.target.result;
+          a4LogoImg.src = src;
+          a4LogoContainer.style.display = "block";
+          thLogoImg.src = src;
+          thLogoContainer.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // --- Main Display Update ---
     const updateCustomDisplay = () => {
-      // Header
-      document.getElementById("disp-custom-business-name").textContent = document.getElementById("custom-business-name").value;
-      document.getElementById("disp-custom-business-address").textContent = document.getElementById("custom-business-address").value;
-      document.getElementById("disp-custom-business-phone").textContent = document.getElementById("custom-business-phone").value;
+      const preset = presetSelect.value;
+      const name = document.getElementById("custom-business-name").value;
+      const addr = document.getElementById("custom-business-address").value;
+      const phone = document.getElementById("custom-business-phone").value;
+      const docNum = document.getElementById("custom-doc-number").value;
+      const dtVal = document.getElementById("custom-date-time").value;
+      const kasir = document.getElementById("custom-kasir").value;
 
-      // Doc info
-      document.getElementById("disp-custom-doc-type").textContent = document.getElementById("custom-doc-type").value;
-      document.getElementById("disp-custom-doc-number").textContent = document.getElementById("custom-doc-number").value;
-      const dateVal = document.getElementById("custom-date").value;
-      document.getElementById("disp-custom-date").textContent = dateVal ? new Date(dateVal).toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" }) : "-";
+      // Update preset logos if no custom logo is uploaded
+      if (presets[preset] && !logoUpload.files[0]) {
+        const pLogo = presets[preset].logo;
+        a4LogoImg.src = pLogo;
+        a4LogoContainer.style.display = "block";
+        thLogoImg.src = pLogo;
+        thLogoContainer.style.display = "block";
+      } else if (!presets[preset] && !logoUpload.files[0]) {
+        a4LogoContainer.style.display = "none";
+        thLogoContainer.style.display = "none";
+      }
 
-      // Customer
-      const custName = document.getElementById("custom-customer-name").value;
-      const custAddr = document.getElementById("custom-customer-address").value;
-      const custPhone = document.getElementById("custom-customer-phone").value;
-      document.getElementById("disp-custom-customer-name").textContent = custName || "-";
-      document.getElementById("disp-custom-customer-address").textContent = custAddr || "-";
-      document.getElementById("disp-custom-customer-phone").textContent = custPhone || "-";
-      document.getElementById("row-custom-customer-address").style.display = custAddr ? "" : "none";
-      document.getElementById("row-custom-customer-phone").style.display = custPhone ? "" : "none";
-
-      // Items
-      let itemsHtml = "";
-      let subtotal = 0;
-      customItems.forEach((item, i) => {
-        const rowTotal = item.qty * item.price;
-        subtotal += rowTotal;
-        itemsHtml += `<tr>
-          <td>${i + 1}</td>
-          <td>${item.desc}</td>
-          <td>${item.qty}</td>
-          <td class="text-right">${formatNum(item.price)}</td>
-          <td class="text-right">${formatNum(rowTotal)}</td>
-        </tr>`;
+      // A4 Update
+      document.getElementById("disp-custom-business-name").textContent = name;
+      document.getElementById("disp-custom-business-address").textContent = addr;
+      document.getElementById("disp-custom-business-phone").textContent = phone;
+      document.getElementById("disp-custom-doc-number").textContent = docNum;
+      document.getElementById("disp-custom-date").textContent = dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-";
+      
+      let itemsHtml = ""; let subtotal = 0;
+      customItems.forEach((it, i) => {
+        const t = it.qty * it.price; subtotal += t;
+        itemsHtml += `<tr><td>${i+1}</td><td>${it.desc}</td><td>${it.qty}</td><td class="text-right">${formatNum(it.price)}</td><td class="text-right">${formatNum(t)}</td></tr>`;
       });
       document.getElementById("disp-custom-items-body").innerHTML = itemsHtml;
       document.getElementById("disp-custom-subtotal").textContent = formatNum(subtotal);
+      
+      const total = subtotal; // Simplified for now
+      document.getElementById("disp-custom-total").textContent = formatNum(total);
 
-      // Extra costs
-      let costsHtml = "";
-      let totalCosts = 0;
-      customCosts.forEach(cost => {
-        if (cost.name) {
-          totalCosts += cost.amount;
-          costsHtml += `<tr>
-            <td>${cost.name} :</td>
-            <td class="text-right">${cost.amount < 0 ? "-" + formatNum(Math.abs(cost.amount)) : formatNum(cost.amount)}</td>
-          </tr>`;
-        }
-      });
-      document.getElementById("disp-custom-costs-body").innerHTML = costsHtml;
+      // Thermal Update
+      document.getElementById("th-store-name").textContent = name;
+      document.getElementById("th-store-addr").textContent = addr;
+      document.getElementById("th-store-phone").textContent = phone;
 
-      const grandTotal = subtotal + totalCosts;
-      document.getElementById("disp-custom-total").textContent = formatNum(grandTotal);
+      const thMeta = document.getElementById("th-meta-custom");
+      thMeta.innerHTML = `
+        <div><span class="th-label">No</span>: ${docNum}</div>
+        <div><span class="th-label">Tgl</span>: ${dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-"}</div>
+        <div><span class="th-label">Kasir</span>: ${kasir}</div>
+      `;
 
-      // Payment method display
-      const pm = paymentMethod.value;
-      const pmLabels = { cash: "Cash / Tunai", transfer: "Transfer Bank", ewallet: "E-Wallet", qris: "QRIS", cod: "COD", credit: "Kartu Kredit", custom: document.getElementById("custom-payment-custom-name").value || "Custom" };
-      document.getElementById("disp-custom-payment-method").textContent = pmLabels[pm] || pm;
-
-      // Bank info
-      const bankInfo = document.getElementById("disp-custom-bank-info");
-      if (pm === "transfer" || pm === "ewallet" || pm === "qris") {
-        const bankName = document.getElementById("custom-bank-name").value;
-        const accNum = document.getElementById("custom-account-number").value;
-        const accHolder = document.getElementById("custom-account-holder").value;
-        let detail = "";
-        if (bankName) detail += bankName;
-        if (accNum) detail += " — " + accNum;
-        if (accHolder) detail += " (a.n. " + accHolder + ")";
-        document.getElementById("disp-custom-bank-detail").textContent = detail;
-        bankInfo.style.display = detail ? "block" : "none";
+      if (preset === "indomaret") {
+        const merchant = document.getElementById("custom-merchant").value;
+        const noTagihan = document.getElementById("custom-notagihan").value;
+        thMeta.innerHTML += `
+          <div><hr style="border:none; border-top:1px dashed #000; margin:2px 0;"></div>
+          <div>Merchant: ${merchant}</div>
+          <div>No. Tagihan: ${noTagihan}</div>
+        `;
+        document.getElementById("th-barcode-area").style.display = "block";
+        document.getElementById("th-barcode-area").querySelector("div:last-child").textContent = noTagihan;
       } else {
-        bankInfo.style.display = "none";
+        document.getElementById("th-barcode-area").style.display = "none";
       }
 
-      // Payment status
-      const ps = paymentStatus.value;
-      const badge = document.getElementById("disp-custom-status-badge");
-      badge.textContent = ps;
-      badge.className = "custom-status-badge";
-      if (ps === "LUNAS") badge.classList.add("status-lunas");
-      else if (ps === "BELUM LUNAS") badge.classList.add("status-belum");
-      else badge.classList.add("status-dp");
-
-      // DP
-      const rowDp = document.getElementById("row-custom-dp");
-      const rowSisa = document.getElementById("row-custom-sisa");
-      if (ps === "DP" || ps === "CICILAN") {
-        const dpAmount = parseFloat(document.getElementById("custom-dp-amount").value) || 0;
-        document.getElementById("disp-custom-dp").textContent = formatNum(dpAmount);
-        document.getElementById("disp-custom-sisa").textContent = formatNum(grandTotal - dpAmount);
-        rowDp.style.display = "";
-        rowSisa.style.display = "";
-      } else {
-        rowDp.style.display = "none";
-        rowSisa.style.display = "none";
+      if (preset === "alfamart") {
+        const ponta = document.getElementById("custom-ponta").value;
+        if (ponta) thMeta.innerHTML += `<div>No. Ponta: ${ponta}</div>`;
       }
 
-      // Notes
-      const notesSection = document.getElementById("disp-custom-notes-section");
-      let notesHtml = "<hr />";
-      customNotes.forEach(note => {
-        if (note) notesHtml += `<p>* ${note}</p>`;
+      let thItemsHtml = "";
+      customItems.forEach(it => {
+        thItemsHtml += `
+          <div class="thermal-item">
+            <div class="thermal-item-name">${it.desc}</div>
+            <div class="thermal-item-detail">
+              <span>${it.qty} x ${formatNum(it.price)}</span>
+              <span>${formatNum(it.qty * it.price)}</span>
+            </div>
+          </div>
+        `;
       });
-      notesSection.innerHTML = notesHtml;
+      document.getElementById("th-items").innerHTML = thItemsHtml;
+
+      document.getElementById("th-totals").innerHTML = `
+        <div class="thermal-total-row"><span>SUBTOTAL</span><span>${formatNum(subtotal)}</span></div>
+        <div class="thermal-total-row grand-total"><span>TOTAL</span><span>${formatNum(total)}</span></div>
+      `;
+
+      document.getElementById("th-payment-method").textContent = "Metode: " + paymentMethod.value.toUpperCase();
+      document.getElementById("th-status").textContent = paymentStatus.value;
+
+      // Logo handling
+      const logoContainer = document.getElementById("th-logo-container");
+      const logoImg = document.getElementById("th-logo-img");
+      if (presets[preset] && presets[preset].logo) {
+        logoImg.src = presets[preset].logo;
+        logoContainer.style.display = "block";
+      } else {
+        logoContainer.style.display = "none";
+      }
+
+      let thFooter = "";
+      customNotes.forEach(n => thFooter += `<p>${n}</p>`);
+      document.getElementById("th-footer").innerHTML = thFooter;
     };
 
-    // Attach listeners to all static inputs
-    const staticInputIds = [
-      "custom-business-name", "custom-business-address", "custom-business-phone",
-      "custom-doc-type", "custom-doc-number", "custom-date",
-      "custom-customer-name", "custom-customer-address", "custom-customer-phone",
-      "custom-payment-method", "custom-payment-custom-name",
-      "custom-bank-name", "custom-account-number", "custom-account-holder",
-      "custom-payment-status", "custom-dp-amount"
-    ];
-    staticInputIds.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener("input", updateCustomDisplay);
+    [ "custom-business-name", "custom-business-address", "custom-business-phone", "custom-doc-number", "custom-date-time", "custom-kasir", "custom-merchant", "custom-notagihan", "custom-ponta", "custom-payment-method", "custom-payment-status" ].forEach(id => {
+      const el = document.getElementById(id); if (el) el.addEventListener("input", updateCustomDisplay);
     });
 
-    renderCustomItems();
-    renderCustomCosts();
-    renderCustomNotes();
-    updateCustomDisplay();
+    renderCustomItems(); renderCustomNotes(); updateCustomDisplay();
   }
 });
