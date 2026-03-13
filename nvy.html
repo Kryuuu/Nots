@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Nvy Store</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="app-body">
+    <!-- Left Side: Control Panel -->
+    <div class="control-panel no-print">
+        <a href="index.html" class="btn-back-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Kembali ke Dashboard
+        </a>
+        <h1>Nota Nvy Store</h1>
+
+        <!-- NVY STORE INPUTS -->
+        <div id="nvy-inputs" class="template-inputs">
+            <div class="form-group">
+                <label>No. Nota</label>
+                <input type="text" id="input-no-nota" value="45324-SPK-02-2026" />
+            </div>
+            <div class="form-group">
+                <label>Tanggal</label>
+                <input type="text" id="input-tanggal" value="11-02-2026" />
+            </div>
+            <div class="form-group">
+                <label>Tgl/Jam Selesai</label>
+                <input type="text" id="input-selesai" value="11-02-2026" />
+            </div>
+            <div class="form-group">
+                <label>Kepada</label>
+                <input type="text" id="input-kepada" value="yoga" />
+            </div>
+            <div class="form-group">
+                <label>Perusahaan</label>
+                <input type="text" id="input-perusahaan" value="" />
+            </div>
+            <div class="form-group">
+                <label>Telp</label>
+                <input type="text" id="input-telp" value="+62 858-4595-6261" />
+            </div>
+            <div class="form-group">
+                <label>Alamat</label>
+                <input type="text" id="input-alamat" value="" />
+            </div>
+            <div class="form-group">
+                <label>CS</label>
+                <input type="text" id="input-cs" value="Hani" />
+            </div>
+
+            <h3>Item Barang</h3>
+            <div id="items-container">
+            </div>
+            <button onclick="addNvyItem()" class="btn-add">+ Tambah Item</button>
+
+            <div class="form-group">
+                <label>Discount</label>
+                <input type="number" id="input-discount" value="0" />
+            </div>
+            <div class="form-group">
+                <label>DP</label>
+                <input type="number" id="input-dp" value="0" />
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select id="input-status">
+                    <option value="LUNAS">LUNAS</option>
+                    <option value="BELUM LUNAS">BELUM LUNAS</option>
+                </select>
+            </div>
+        </div>
+
+        <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+    </div>
+
+    <!-- Right Side: Nota Wrapper -->
+    <div id="nota-wrapper">
+        <!-- NVY STORE TEMPLATE -->
+        <div id="nota-nvy" class="nota-container">
+            <div class="header">
+                <div class="company-info">
+                    <h1>NVY STORE</h1>
+                    <p>Jl Brigjend H Hasan Basri No. 5, Sungai Miai, Kec. Banjarmasin utara. Kota Banjarmasin</p>
+                    <p>+62 851-6350-5812</p>
+                    <table class="meta-table">
+                        <tr>
+                            <td width="100">No. Nota</td>
+                            <td width="10">:</td>
+                            <td id="disp-no-nota">45324-SPK-02-2026</td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal</td>
+                            <td>:</td>
+                            <td id="disp-tanggal">11-02-2026</td>
+                        </tr>
+                        <tr>
+                            <td>Tgl/Jam Selesai</td>
+                            <td>:</td>
+                            <td id="disp-selesai">11-02-2026</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="customer-info">
+                    <table class="meta-table">
+                        <tr>
+                            <td width="80">Kepada</td>
+                            <td width="10">:</td>
+                            <td id="disp-kepada" style="font-weight: bold">yoga</td>
+                        </tr>
+                        <tr>
+                            <td>Perusahaan</td>
+                            <td>:</td>
+                            <td id="disp-perusahaan"></td>
+                        </tr>
+                        <tr>
+                            <td>Telp</td>
+                            <td>:</td>
+                            <td id="disp-telp">+62 858-4595-6261</td>
+                        </tr>
+                        <tr>
+                            <td>Alamat</td>
+                            <td>:</td>
+                            <td id="disp-alamat"></td>
+                        </tr>
+                        <tr>
+                            <td>CS</td>
+                            <td>:</td>
+                            <td id="disp-cs">Hani</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="items-table-container">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th class="col-judul">Judul</th>
+                            <th class="col-ket">Ket</th>
+                            <th class="col-ukuran">Ukuran</th>
+                            <th class="col-jml">Jml</th>
+                            <th class="col-biaya">Biaya</th>
+                        </tr>
+                    </thead>
+                    <tbody id="disp-items-body">
+                        <!-- Items will be injected here via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer-totals">
+                <div class="left-section">
+                    <p style="margin-top: 10px; font-weight: bold">
+                        Jumlah Barang : <span id="disp-total-qty">1</span>
+                    </p>
+
+                    <div class="signature-section">
+                        <div class="sig-box">
+                            <p>Hormat Kami,</p>
+                            <br /><br /><br />
+                            <p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p>
+                        </div>
+                        <div class="sig-box">
+                            <p>Diterima,</p>
+                            <br /><br /><br />
+                            <p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-section">
+                    <table class="totals-table">
+                        <tr>
+                            <td>Sub Total :</td>
+                            <td class="text-right" id="disp-subtotal">300,000</td>
+                        </tr>
+                        <tr>
+                            <td>Discount :</td>
+                            <td class="text-right" id="disp-discount">0</td>
+                        </tr>
+                        <tr class="final-total-row">
+                            <td>Total Akhir :</td>
+                            <td class="text-right" id="disp-total-akhir">300,000</td>
+                        </tr>
+                        <tr>
+                            <td>DP :</td>
+                            <td class="text-right" id="disp-dp">0</td>
+                        </tr>
+                        <tr>
+                            <td>Pelunasan :</td>
+                            <td class="text-right" id="disp-pelunasan">300,000</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="status-lunas" id="disp-status">LUNAS</div>
+
+            <div class="footer-notes">
+                <hr />
+                <p>* Nota harap dibawa saat pengambilan pesanan</p>
+                <p>* Komplain maksimal 1 (satu) hari setelah pesanan diterima, setelah itu diluar tanggung jawab kami</p>
+                <p>* Barang yang tidak diambil lebih dari 2 (dua) minggu dinyatakan hilang dan bukan tanggung jawab kami</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

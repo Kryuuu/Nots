@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PNG to PDF Converter</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-container" style="max-width: 900px;">
+        <div class="header-nav" style="margin-bottom: 20px;">
+            <a href="index.html" class="btn-back-dashboard">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Kembali ke Dashboard
+            </a>
+        </div>
+        
+        <header class="dashboard-header">
+            <h1>PNG to PDF Converter</h1>
+            <p>Pilih file PNG atau gambar lain untuk digabungkan menjadi satu dokumen PDF.</p>
+        </header>
+
+        <div id="png-to-pdf-app" class="png-pdf-container">
+            <div class="upload-zone" id="upload-zone">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9c27b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <h3>Klik atau Drag & Drop Gambar di Sini</h3>
+                <p>Mendukung PNG, JPG, JPEG</p>
+                <input type="file" id="file-input" multiple accept="image/png, image/jpeg, image/jpg" style="display: none;" />
+            </div>
+
+            <div class="image-preview-list" id="image-preview-list">
+                <!-- Javascript will populate this with selected images -->
+            </div>
+
+            <div class="pdf-options" style="display: none;" id="pdf-options">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="font-weight: 600; font-size: 14px;">Nama File PDF</label>
+                    <input type="text" id="pdf-filename" placeholder="Masukkan nama file PDF..." value="converted" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box;" />
+                </div>
+            </div>
+
+            <div class="action-bar" style="display: none;" id="action-bar">
+                <button id="btn-clear-all" class="btn-remove">Hapus Semua</button>
+                <button id="btn-generate-pdf" class="btn-print" style="margin-top: 0;">Buat PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

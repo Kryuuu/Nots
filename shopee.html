@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Shopee</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="app-body">
+    <!-- Left Side: Control Panel -->
+    <div class="control-panel no-print">
+        <a href="index.html" class="btn-back-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Kembali ke Dashboard
+        </a>
+        <h1>Nota Shopee</h1>
+
+        <!-- SHOPEE INPUTS -->
+        <div id="shopee-inputs" class="template-inputs">
+            <div class="form-group">
+                <label>Nama Pembeli</label>
+                <input type="text" id="shopee-nama-pembeli" value="MOHAMMAD HANI" />
+            </div>
+            <div class="form-group">
+                <label>Nama Penjual</label>
+                <input type="text" id="shopee-nama-penjual" value="Toko Makmur Jaya" />
+            </div>
+            <div class="form-group">
+                <label>Alamat Pembeli</label>
+                <textarea id="shopee-alamat-pembeli" rows="4" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px; font-family:inherit; box-sizing:border-box;">ASRAMA POLSEK KPL, KOTA BANJARMASIN, KALIMANTAN SELATAN, ID 70119</textarea>
+            </div>
+            <div class="form-group">
+                <label>No. Handphone Pembeli</label>
+                <input type="text" id="shopee-nohp-pembeli" value="******56" />
+            </div>
+
+            <hr class="panel-divider" />
+            <div class="form-group">
+                <label>No. Pesanan</label>
+                <input type="text" id="shopee-no-pesanan" value="2304033C0K4SFA" />
+            </div>
+            <div class="form-group">
+                <label>Waktu Pembayaran</label>
+                <input type="text" id="shopee-waktu-pembayaran" value="03-04-2023 15:10" />
+            </div>
+            <div class="form-group">
+                <label>Metode Pembayaran</label>
+                <input type="text" id="shopee-metode-pembayaran" value="ShopeePay" />
+            </div>
+            <div class="form-group">
+                <label>Jasa Kirim</label>
+                <input type="text" id="shopee-jasa-kirim" value="J&T Express" />
+            </div>
+
+            <hr class="panel-divider" />
+            <h3>Item Pesanan Shopee</h3>
+            <div id="shopee-items-container">
+            </div>
+            <button onclick="addShopeeItem()" class="btn-add" style="background: #ee4d2d;">+ Tambah Item Shopee</button>
+
+            <hr class="panel-divider" />
+            <h3>Rincian Biaya Shopee</h3>
+            <div class="form-group">
+                <label>Subtotal Pengiriman</label>
+                <input type="number" id="shopee-subtotal-pengiriman" value="51000" />
+            </div>
+            <div class="form-group">
+                <label>Biaya Layanan</label>
+                <input type="number" id="shopee-biaya-layanan" value="1000" />
+            </div>
+            <div class="form-group">
+                <label>Total Diskon Pengiriman</label>
+                <input type="number" id="shopee-diskon-pengiriman" value="-30000" />
+            </div>
+            <div class="form-group">
+                <label>Biaya Penanganan</label>
+                <input type="number" id="shopee-biaya-penanganan" value="0" />
+            </div>
+            <div class="form-group">
+                <label>Total Proteksi Produk</label>
+                <input type="number" id="shopee-proteksi-produk" value="0" />
+            </div>
+            <div class="form-group">
+                <label>Diskon Voucher Toko</label>
+                <input type="number" id="shopee-diskon-toko" value="0" />
+            </div>
+            <div class="form-group">
+                <label>Diskon Voucher Shopee</label>
+                <input type="number" id="shopee-diskon-shopee" value="-5516" />
+            </div>
+        </div>
+
+        <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+    </div>
+
+    <!-- Right Side: Nota Wrapper -->
+    <div id="nota-wrapper">
+        <!-- SHOPEE TEMPLATE -->
+        <div id="nota-shopee" class="nota-container-shopee">
+            <div class="shopee-header-logo">
+                <img src="shopee-logo.svg" alt="Shopee Logo" style="height: 50px;" />
+            </div>
+
+            <div class="shopee-title">Rincian Pesanan</div>
+
+            <div class="shopee-user-info-wrapper">
+                <div class="shopee-user-grid">
+                    <div class="user-label">Nama Pembeli:</div>
+                    <div class="user-value" id="disp-shopee-nama-pembeli"></div>
+                </div>
+                <div class="shopee-user-grid">
+                    <div class="user-label">Nama Penjual:</div>
+                    <div class="user-value" id="disp-shopee-nama-penjual"></div>
+                </div>
+                <div class="shopee-user-grid">
+                    <div class="user-label">Alamat Pembeli:</div>
+                    <div class="user-value" id="disp-shopee-alamat-pembeli"></div>
+                </div>
+                <div class="shopee-user-grid">
+                    <div class="user-label">No. Handphone Pembeli:</div>
+                    <div class="user-value" id="disp-shopee-nohp-pembeli"></div>
+                </div>
+            </div>
+
+            <div class="shopee-order-meta">
+                <div class="meta-col">
+                    <div class="meta-label">No. Pesanan</div>
+                    <div id="disp-shopee-no-pesanan"></div>
+                </div>
+                <div class="meta-col">
+                    <div class="meta-label">Waktu Pembayaran</div>
+                    <div id="disp-shopee-waktu-pembayaran"></div>
+                </div>
+                <div class="meta-col">
+                    <div class="meta-label">Metode Pembayaran</div>
+                    <div id="disp-shopee-metode-pembayaran"></div>
+                </div>
+                <div class="meta-col">
+                    <div class="meta-label">Jasa Kirim</div>
+                    <div id="disp-shopee-jasa-kirim"></div>
+                </div>
+            </div>
+
+            <div class="shopee-subtitle">Rincian Produk</div>
+            <table class="shopee-items-table">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="45%">Produk</th>
+                        <th width="15%">Variasi</th>
+                        <th width="15%" class="text-center">Harga Produk</th>
+                        <th width="10%" class="text-center">Kuantitas</th>
+                        <th width="10%" class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="disp-shopee-items-body">
+                    <!-- Javascript will populate -->
+                </tbody>
+            </table>
+
+            <div class="shopee-subtotal-pesanan">
+                Subtotal Pesanan (<span id="disp-shopee-total-qty"></span> Produk): 
+                <strong style="font-size: 16px;" id="disp-shopee-subtotal"></strong>
+            </div>
+
+            <div class="shopee-totals-wrapper">
+                <table class="shopee-totals-table">
+                    <tr>
+                        <td>Subtotal Pesanan</td>
+                        <td class="text-right" id="disp-shopee-totals-subtotal"></td>
+                    </tr>
+                    <tr id="row-shopee-subtotal-pengiriman">
+                        <td>Subtotal Pengiriman</td>
+                        <td class="text-right" id="disp-shopee-subtotal-pengiriman"></td>
+                    </tr>
+                    <tr id="row-shopee-biaya-layanan">
+                        <td>Biaya Layanan</td>
+                        <td class="text-right" id="disp-shopee-biaya-layanan"></td>
+                    </tr>
+                    <tr id="row-shopee-diskon-pengiriman">
+                        <td>Total Diskon Pengiriman</td>
+                        <td class="text-right" id="disp-shopee-diskon-pengiriman"></td>
+                    </tr>
+                    <tr id="row-shopee-biaya-penanganan">
+                        <td>Biaya Penanganan</td>
+                        <td class="text-right" id="disp-shopee-biaya-penanganan"></td>
+                    </tr>
+                    <tr id="row-shopee-proteksi-produk">
+                        <td>Total Proteksi Produk</td>
+                        <td class="text-right" id="disp-shopee-proteksi-produk"></td>
+                    </tr>
+                    <tr id="row-shopee-diskon-toko">
+                        <td>Diskon Voucher Toko</td>
+                        <td class="text-right" id="disp-shopee-diskon-toko"></td>
+                    </tr>
+                    <tr id="row-shopee-diskon-shopee">
+                        <td>Diskon Voucher Shopee</td>
+                        <td class="text-right" id="disp-shopee-diskon-shopee"></td>
+                    </tr>
+                    <tr class="shopee-total-pembayaran">
+                        <td>Total Pembayaran</td>
+                        <td class="text-right" id="disp-shopee-total-pembayaran" style="color: var(--shopee-orange);"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="shopee-footer-page">
+                1 of 1<br>
+                Continue to next page
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

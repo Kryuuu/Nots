@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Custom</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="app-body">
+    <!-- Left Side: Control Panel -->
+    <div class="control-panel no-print">
+        <a href="index.html" class="btn-back-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Kembali ke Dashboard
+        </a>
+        <h1>Nota Custom</h1>
+
+        <div id="custom-inputs" class="template-inputs">
+            <!-- HEADER INFO -->
+            <h3>Informasi Bisnis</h3>
+            <div class="form-group">
+                <label>Nama Bisnis / Toko</label>
+                <input type="text" id="custom-business-name" value="TOKO SAYA" />
+            </div>
+            <div class="form-group">
+                <label>Alamat Bisnis</label>
+                <input type="text" id="custom-business-address" value="Jl. Contoh No. 123, Kota" />
+            </div>
+            <div class="form-group">
+                <label>Telepon Bisnis</label>
+                <input type="text" id="custom-business-phone" value="+62 812-3456-7890" />
+            </div>
+
+            <hr class="panel-divider" />
+
+            <!-- NOTA META -->
+            <h3>Detail Nota</h3>
+            <div class="form-group">
+                <label>Jenis Dokumen</label>
+                <select id="custom-doc-type">
+                    <option value="NOTA">Nota</option>
+                    <option value="INVOICE">Invoice</option>
+                    <option value="STRUK">Struk Pembayaran</option>
+                    <option value="KWITANSI">Kwitansi</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>No. Dokumen</label>
+                <input type="text" id="custom-doc-number" value="INV-001" />
+            </div>
+            <div class="form-group">
+                <label>Tanggal</label>
+                <input type="date" id="custom-date" />
+            </div>
+
+            <hr class="panel-divider" />
+
+            <!-- CUSTOMER INFO -->
+            <h3>Info Pelanggan</h3>
+            <div class="form-group">
+                <label>Nama Pelanggan</label>
+                <input type="text" id="custom-customer-name" value="" placeholder="Nama pelanggan..." />
+            </div>
+            <div class="form-group">
+                <label>Alamat Pelanggan</label>
+                <input type="text" id="custom-customer-address" value="" placeholder="Alamat pelanggan..." />
+            </div>
+            <div class="form-group">
+                <label>Telepon Pelanggan</label>
+                <input type="text" id="custom-customer-phone" value="" placeholder="No. telepon..." />
+            </div>
+
+            <hr class="panel-divider" />
+
+            <!-- ITEMS -->
+            <h3>Daftar Item</h3>
+            <div id="custom-items-container"></div>
+            <button onclick="addCustomItem()" class="btn-add">+ Tambah Item</button>
+
+            <hr class="panel-divider" />
+
+            <!-- COST DETAILS -->
+            <h3>Rincian Biaya</h3>
+            <div id="custom-costs-container"></div>
+            <button onclick="addCustomCost()" class="btn-add" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border-color: rgba(99, 102, 241, 0.2);">+ Tambah Biaya Tambahan</button>
+
+            <hr class="panel-divider" />
+
+            <!-- PAYMENT -->
+            <h3>Pembayaran</h3>
+            <div class="form-group">
+                <label>Metode Pembayaran</label>
+                <select id="custom-payment-method">
+                    <option value="cash">Cash / Tunai</option>
+                    <option value="transfer">Transfer Bank</option>
+                    <option value="ewallet">E-Wallet (GoPay, OVO, Dana, dll)</option>
+                    <option value="qris">QRIS</option>
+                    <option value="cod">COD (Cash on Delivery)</option>
+                    <option value="credit">Kartu Kredit</option>
+                    <option value="custom">Lainnya (Custom)</option>
+                </select>
+            </div>
+            <div class="form-group" id="custom-payment-custom-group" style="display: none;">
+                <label>Nama Metode Custom</label>
+                <input type="text" id="custom-payment-custom-name" value="" placeholder="Contoh: Cicilan 3 bulan" />
+            </div>
+            <div class="form-group" id="custom-bank-group" style="display: none;">
+                <label>Nama Bank / E-Wallet</label>
+                <input type="text" id="custom-bank-name" value="" placeholder="BCA / BRI / GoPay..." />
+            </div>
+            <div class="form-group" id="custom-account-group" style="display: none;">
+                <label>No. Rekening / ID</label>
+                <input type="text" id="custom-account-number" value="" placeholder="1234567890" />
+            </div>
+            <div class="form-group" id="custom-account-holder-group" style="display: none;">
+                <label>Atas Nama</label>
+                <input type="text" id="custom-account-holder" value="" placeholder="Nama pemilik rekening" />
+            </div>
+            <div class="form-group">
+                <label>Status Pembayaran</label>
+                <select id="custom-payment-status">
+                    <option value="LUNAS">LUNAS</option>
+                    <option value="BELUM LUNAS">BELUM LUNAS</option>
+                    <option value="DP">DP (Uang Muka)</option>
+                    <option value="CICILAN">CICILAN</option>
+                </select>
+            </div>
+            <div class="form-group" id="custom-dp-group" style="display: none;">
+                <label>Jumlah DP / Sudah Dibayar</label>
+                <input type="number" id="custom-dp-amount" value="0" />
+            </div>
+
+            <hr class="panel-divider" />
+
+            <!-- NOTES -->
+            <h3>Catatan</h3>
+            <div id="custom-notes-container"></div>
+            <button onclick="addCustomNote()" class="btn-add" style="background: rgba(251, 191, 36, 0.12); color: #fbbf24; border-color: rgba(251, 191, 36, 0.2);">+ Tambah Catatan</button>
+        </div>
+
+        <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+    </div>
+
+    <!-- Right Side: Nota Preview -->
+    <div id="nota-wrapper">
+        <div id="nota-custom" class="nota-container custom-nota">
+            <!-- Header -->
+            <div class="custom-header">
+                <div class="custom-business-info">
+                    <h1 id="disp-custom-business-name">TOKO SAYA</h1>
+                    <p id="disp-custom-business-address">Jl. Contoh No. 123, Kota</p>
+                    <p id="disp-custom-business-phone">+62 812-3456-7890</p>
+                </div>
+                <div class="custom-doc-info">
+                    <div class="custom-doc-type" id="disp-custom-doc-type">NOTA</div>
+                    <table class="meta-table">
+                        <tr>
+                            <td>No.</td>
+                            <td>:</td>
+                            <td id="disp-custom-doc-number">INV-001</td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal</td>
+                            <td>:</td>
+                            <td id="disp-custom-date">-</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Customer -->
+            <div class="custom-customer-section" id="custom-customer-section">
+                <table class="meta-table">
+                    <tr>
+                        <td width="60">Kepada</td>
+                        <td width="10">:</td>
+                        <td id="disp-custom-customer-name" style="font-weight: 600;">-</td>
+                    </tr>
+                    <tr id="row-custom-customer-address">
+                        <td>Alamat</td>
+                        <td>:</td>
+                        <td id="disp-custom-customer-address">-</td>
+                    </tr>
+                    <tr id="row-custom-customer-phone">
+                        <td>Telp</td>
+                        <td>:</td>
+                        <td id="disp-custom-customer-phone">-</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Items Table -->
+            <div class="items-table-container">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 40%;">Deskripsi</th>
+                            <th style="width: 15%;">Qty</th>
+                            <th style="width: 20%; text-align: right;">Harga</th>
+                            <th style="width: 20%; text-align: right;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="disp-custom-items-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Totals -->
+            <div class="custom-totals-section">
+                <div class="custom-totals-left">
+                    <!-- Payment Info -->
+                    <div class="custom-payment-info" id="disp-custom-payment-info">
+                        <p><strong>Pembayaran:</strong> <span id="disp-custom-payment-method">Cash / Tunai</span></p>
+                    </div>
+                    <div class="custom-bank-info" id="disp-custom-bank-info" style="display: none;">
+                        <p id="disp-custom-bank-detail"></p>
+                    </div>
+                </div>
+                <div class="custom-totals-right">
+                    <table class="totals-table">
+                        <tr>
+                            <td>Subtotal :</td>
+                            <td class="text-right" id="disp-custom-subtotal">0</td>
+                        </tr>
+                        <tbody id="disp-custom-costs-body">
+                        </tbody>
+                        <tr class="final-total-row">
+                            <td>Total :</td>
+                            <td class="text-right" id="disp-custom-total">0</td>
+                        </tr>
+                        <tr id="row-custom-dp" style="display: none;">
+                            <td>DP / Dibayar :</td>
+                            <td class="text-right" id="disp-custom-dp">0</td>
+                        </tr>
+                        <tr id="row-custom-sisa" style="display: none;">
+                            <td>Sisa :</td>
+                            <td class="text-right" id="disp-custom-sisa">0</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Status Badge -->
+            <div class="custom-status-badge" id="disp-custom-status-badge">LUNAS</div>
+
+            <!-- Notes -->
+            <div class="custom-notes-section" id="disp-custom-notes-section">
+                <hr />
+            </div>
+
+            <!-- Signature -->
+            <div class="footer-totals" style="margin-top: 20px;">
+                <div class="signature-section" style="width: 100%; display: flex; justify-content: space-between;">
+                    <div class="sig-box">
+                        <p>Hormat Kami,</p>
+                        <br /><br /><br />
+                        <p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p>
+                    </div>
+                    <div class="sig-box">
+                        <p>Diterima,</p>
+                        <br /><br /><br />
+                        <p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
