@@ -17,6 +17,30 @@
         <h1>Nota Custom</h1>
 
         <div id="custom-inputs" class="template-inputs">
+            <!-- FORMAT & PRESET -->
+            <h3>Format & Template</h3>
+            <div class="form-group">
+                <label>Format Cetak</label>
+                <select id="custom-print-format">
+                    <option value="a4">A4 (Standar)</option>
+                    <option value="thermal-80">Thermal 80mm</option>
+                    <option value="thermal-58">Thermal 58mm</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Template Preset</label>
+                <select id="custom-preset">
+                    <option value="custom">Custom (Kosong)</option>
+                    <option value="indomaret">Indomaret</option>
+                    <option value="alfamart">Alfamart</option>
+                    <option value="minimarket">Minimarket Umum</option>
+                    <option value="toko">Toko / Retail</option>
+                    <option value="cafe">Cafe / Restoran</option>
+                </select>
+            </div>
+
+            <hr class="panel-divider" />
+
             <!-- HEADER INFO -->
             <h3>Informasi Bisnis</h3>
             <div class="form-group">
@@ -144,8 +168,8 @@
 
     <!-- Right Side: Nota Preview -->
     <div id="nota-wrapper">
+        <!-- ===== A4 VIEW ===== -->
         <div id="nota-custom" class="nota-container custom-nota">
-            <!-- Header -->
             <div class="custom-header">
                 <div class="custom-business-info">
                     <h1 id="disp-custom-business-name">TOKO SAYA</h1>
@@ -155,115 +179,76 @@
                 <div class="custom-doc-info">
                     <div class="custom-doc-type" id="disp-custom-doc-type">NOTA</div>
                     <table class="meta-table">
-                        <tr>
-                            <td>No.</td>
-                            <td>:</td>
-                            <td id="disp-custom-doc-number">INV-001</td>
-                        </tr>
-                        <tr>
-                            <td>Tanggal</td>
-                            <td>:</td>
-                            <td id="disp-custom-date">-</td>
-                        </tr>
+                        <tr><td>No.</td><td>:</td><td id="disp-custom-doc-number">INV-001</td></tr>
+                        <tr><td>Tanggal</td><td>:</td><td id="disp-custom-date">-</td></tr>
                     </table>
                 </div>
             </div>
-
-            <!-- Customer -->
             <div class="custom-customer-section" id="custom-customer-section">
                 <table class="meta-table">
-                    <tr>
-                        <td width="60">Kepada</td>
-                        <td width="10">:</td>
-                        <td id="disp-custom-customer-name" style="font-weight: 600;">-</td>
-                    </tr>
-                    <tr id="row-custom-customer-address">
-                        <td>Alamat</td>
-                        <td>:</td>
-                        <td id="disp-custom-customer-address">-</td>
-                    </tr>
-                    <tr id="row-custom-customer-phone">
-                        <td>Telp</td>
-                        <td>:</td>
-                        <td id="disp-custom-customer-phone">-</td>
-                    </tr>
+                    <tr><td width="60">Kepada</td><td width="10">:</td><td id="disp-custom-customer-name" style="font-weight:600;">-</td></tr>
+                    <tr id="row-custom-customer-address"><td>Alamat</td><td>:</td><td id="disp-custom-customer-address">-</td></tr>
+                    <tr id="row-custom-customer-phone"><td>Telp</td><td>:</td><td id="disp-custom-customer-phone">-</td></tr>
                 </table>
             </div>
-
-            <!-- Items Table -->
             <div class="items-table-container">
                 <table class="items-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%;">#</th>
-                            <th style="width: 40%;">Deskripsi</th>
-                            <th style="width: 15%;">Qty</th>
-                            <th style="width: 20%; text-align: right;">Harga</th>
-                            <th style="width: 20%; text-align: right;">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="disp-custom-items-body">
-                    </tbody>
+                    <thead><tr><th style="width:5%;">#</th><th style="width:40%;">Deskripsi</th><th style="width:15%;">Qty</th><th style="width:20%;text-align:right;">Harga</th><th style="width:20%;text-align:right;">Total</th></tr></thead>
+                    <tbody id="disp-custom-items-body"></tbody>
                 </table>
             </div>
-
-            <!-- Totals -->
             <div class="custom-totals-section">
                 <div class="custom-totals-left">
-                    <!-- Payment Info -->
-                    <div class="custom-payment-info" id="disp-custom-payment-info">
-                        <p><strong>Pembayaran:</strong> <span id="disp-custom-payment-method">Cash / Tunai</span></p>
-                    </div>
-                    <div class="custom-bank-info" id="disp-custom-bank-info" style="display: none;">
-                        <p id="disp-custom-bank-detail"></p>
-                    </div>
+                    <div class="custom-payment-info" id="disp-custom-payment-info"><p><strong>Pembayaran:</strong> <span id="disp-custom-payment-method">Cash / Tunai</span></p></div>
+                    <div class="custom-bank-info" id="disp-custom-bank-info" style="display:none;"><p id="disp-custom-bank-detail"></p></div>
                 </div>
                 <div class="custom-totals-right">
                     <table class="totals-table">
-                        <tr>
-                            <td>Subtotal :</td>
-                            <td class="text-right" id="disp-custom-subtotal">0</td>
-                        </tr>
-                        <tbody id="disp-custom-costs-body">
-                        </tbody>
-                        <tr class="final-total-row">
-                            <td>Total :</td>
-                            <td class="text-right" id="disp-custom-total">0</td>
-                        </tr>
-                        <tr id="row-custom-dp" style="display: none;">
-                            <td>DP / Dibayar :</td>
-                            <td class="text-right" id="disp-custom-dp">0</td>
-                        </tr>
-                        <tr id="row-custom-sisa" style="display: none;">
-                            <td>Sisa :</td>
-                            <td class="text-right" id="disp-custom-sisa">0</td>
-                        </tr>
+                        <tr><td>Subtotal :</td><td class="text-right" id="disp-custom-subtotal">0</td></tr>
+                        <tbody id="disp-custom-costs-body"></tbody>
+                        <tr class="final-total-row"><td>Total :</td><td class="text-right" id="disp-custom-total">0</td></tr>
+                        <tr id="row-custom-dp" style="display:none;"><td>DP / Dibayar :</td><td class="text-right" id="disp-custom-dp">0</td></tr>
+                        <tr id="row-custom-sisa" style="display:none;"><td>Sisa :</td><td class="text-right" id="disp-custom-sisa">0</td></tr>
                     </table>
                 </div>
             </div>
-
-            <!-- Status Badge -->
             <div class="custom-status-badge" id="disp-custom-status-badge">LUNAS</div>
+            <div class="custom-notes-section" id="disp-custom-notes-section"><hr /></div>
+            <div class="footer-totals" style="margin-top:20px;"><div class="signature-section" style="width:100%;display:flex;justify-content:space-between;"><div class="sig-box"><p>Hormat Kami,</p><br/><br/><br/><p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p></div><div class="sig-box"><p>Diterima,</p><br/><br/><br/><p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p></div></div></div>
+        </div>
 
-            <!-- Notes -->
-            <div class="custom-notes-section" id="disp-custom-notes-section">
-                <hr />
+        <!-- ===== THERMAL RECEIPT VIEW ===== -->
+        <div id="nota-thermal" class="thermal-receipt" style="display: none;">
+            <div class="thermal-header">
+                <div class="thermal-store-name" id="th-store-name">TOKO SAYA</div>
+                <div class="thermal-store-addr" id="th-store-addr">Jl. Contoh No. 123, Kota</div>
+                <div class="thermal-store-phone" id="th-store-phone">+62 812-3456-7890</div>
             </div>
-
-            <!-- Signature -->
-            <div class="footer-totals" style="margin-top: 20px;">
-                <div class="signature-section" style="width: 100%; display: flex; justify-content: space-between;">
-                    <div class="sig-box">
-                        <p>Hormat Kami,</p>
-                        <br /><br /><br />
-                        <p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p>
-                    </div>
-                    <div class="sig-box">
-                        <p>Diterima,</p>
-                        <br /><br /><br />
-                        <p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p>
-                    </div>
-                </div>
+            <div class="thermal-divider">================================</div>
+            <div class="thermal-meta">
+                <div><span class="th-label">No</span>: <span id="th-doc-number">INV-001</span></div>
+                <div><span class="th-label">Tgl</span>: <span id="th-date">-</span></div>
+                <div><span class="th-label">Kasir</span>: <span id="th-kasir">-</span></div>
+            </div>
+            <div class="thermal-divider">--------------------------------</div>
+            <div class="thermal-items" id="th-items">
+                <!-- JS will populate -->
+            </div>
+            <div class="thermal-divider">--------------------------------</div>
+            <div class="thermal-totals" id="th-totals">
+                <!-- JS will populate -->
+            </div>
+            <div class="thermal-divider">================================</div>
+            <div class="thermal-payment">
+                <div id="th-payment-method">Pembayaran: TUNAI</div>
+                <div id="th-payment-detail"></div>
+            </div>
+            <div class="thermal-status" id="th-status">LUNAS</div>
+            <div class="thermal-divider">--------------------------------</div>
+            <div class="thermal-footer" id="th-footer">
+                <p>Terima Kasih</p>
+                <p>Barang yg sudah dibeli</p>
+                <p>tidak dapat ditukar/dikembalikan</p>
             </div>
         </div>
     </div>
