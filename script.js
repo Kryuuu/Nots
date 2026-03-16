@@ -800,22 +800,51 @@ document.addEventListener("DOMContentLoaded", () => {
   // CUSTOM NOTA LOGIC
   // ==========================================
   if (document.getElementById("nota-custom")) {
+    console.log("Custom Nota Module Initializing...");
     const today = new Date();
     const localDateTime = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-    document.getElementById("custom-date-time").value = localDateTime;
+    const dateInput = document.getElementById("custom-date-time");
+    if (dateInput) dateInput.value = localDateTime;
 
     let customItems = [{ desc: "Contoh Produk / Jasa", qty: 1, price: 50000 }];
     let customCosts = [];
     let customNotes = ["Terima Kasih Atas Kunjungan Anda"];
 
-    const formatNum = (num) => new Intl.NumberFormat("id-ID").format(num);
+    // --- Core Functions (Hoisted) ---
+    function formatNum(num) { 
+      return new Intl.NumberFormat("id-ID").format(num || 0); 
+    }
+
+    // --- Export Functions to Window Immediately ---
+    window.updateCustomDisplay = updateCustomDisplay;
+    window.addCustomItem = () => { customItems.push({ desc: "", qty: 1, price: 0 }); renderCustomItems(); updateCustomDisplay(); };
+    window.addCustomCost = () => { customCosts.push({ name: "", amount: 0 }); renderCustomCosts(); updateCustomDisplay(); };
+    window.addCustomNote = () => { customNotes.push(""); renderCustomNotes(); updateCustomDisplay(); };
+    window.editCIT = (i, k, v) => { if(customItems[i]) { customItems[i][k] = (k==="qty"||k==="price") ? parseFloat(v)||0 : v; updateCustomDisplay(); } };
+    window.removeCIT = (i) => { customItems.splice(i,1); renderCustomItems(); updateCustomDisplay(); };
+    window.editCC = (i, k, v) => { if(customCosts[i]) { customCosts[i][k] = (k==="amount") ? parseFloat(v)||0 : v; updateCustomDisplay(); } };
+    window.removeCC = (i) => { customCosts.splice(i,1); renderCustomCosts(); updateCustomDisplay(); };
+    window.editCN = (i, v) => { if(customNotes[i] !== undefined) { customNotes[i] = v; updateCustomDisplay(); } };
 
     const presetSelect = document.getElementById("custom-preset");
     const docFormat = document.getElementById("custom-print-format");
-
     const grpMerchant = document.getElementById("grp-merchant");
     const grpNoTagihan = document.getElementById("grp-notagihan");
     const grpPonta = document.getElementById("grp-ponta");
+    const paymentMethod = document.getElementById("custom-payment-method");
+    const paymentStatus = document.getElementById("custom-payment-status");
+    const orientationSelect = document.getElementById("custom-orientation");
+    const grpOrientation = document.getElementById("grp-orientation");
+    const grpCustomSize = document.getElementById("grp-custom-size");
+    const customPaperWidth = document.getElementById("custom-paper-width");
+    const customPaperHeight = document.getElementById("custom-paper-height");
+    const bankGroup = document.getElementById("custom-bank-group");
+    const accountGroup = document.getElementById("custom-account-group");
+    const accountHolderGroup = document.getElementById("custom-account-holder-group");
+    const customPaymentGroup = document.getElementById("custom-payment-custom-group");
+    const dpGroup = document.getElementById("custom-dp-group");
+
+
 
     // --- Preset Data ---
     const presets = {
@@ -904,11 +933,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- Payment UI Toggles ---
-    const paymentMethod = document.getElementById("custom-payment-method");
-    const bankGroup = document.getElementById("custom-bank-group");
-    const accountGroup = document.getElementById("custom-account-group");
-    const accountHolderGroup = document.getElementById("custom-account-holder-group");
-    const customPaymentGroup = document.getElementById("custom-payment-custom-group");
+    // (Variables already declared at top)
+
 
     paymentMethod.addEventListener("change", () => {
       const v = paymentMethod.value;
@@ -919,26 +945,25 @@ document.addEventListener("DOMContentLoaded", () => {
       updateCustomDisplay();
     });
 
-    const paymentStatus = document.getElementById("custom-payment-status");
-    const dpGroup = document.getElementById("custom-dp-group");
-    paymentStatus.addEventListener("change", () => {
-      dpGroup.style.display = (paymentStatus.value === "DP" || paymentStatus.value === "CICILAN") ? "block" : "none";
-      updateCustomDisplay();
-    });
+    // --- Payment Status ---
+    // (Variables already declared at top)
+    if (paymentStatus) {
+      paymentStatus.addEventListener("change", () => {
+        if (dpGroup) dpGroup.style.display = (paymentStatus.value === "DP" || paymentStatus.value === "CICILAN") ? "block" : "none";
+        updateCustomDisplay();
+      });
+    }
 
     // --- Format Toggle ---
-    const orientationSelect = document.getElementById("custom-orientation");
-    const grpOrientation = document.getElementById("grp-orientation");
-    const grpCustomSize = document.getElementById("grp-custom-size");
-    const customPaperWidth = document.getElementById("custom-paper-width");
-    const customPaperHeight = document.getElementById("custom-paper-height");
+    // (Variables already declared at top)
+
 
     // Dynamic print style for @page
     const printStyleEl = document.createElement("style");
     printStyleEl.id = "dynamic-print-style";
     document.head.appendChild(printStyleEl);
 
-    const applyPaperSize = () => {
+    function applyPaperSize() {
       const format = docFormat.value;
       const notaA4 = document.getElementById("nota-custom");
       const notaThermal = document.getElementById("nota-thermal");
@@ -988,7 +1013,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       updateCustomDisplay();
-    };
+    }
 
     docFormat.addEventListener("change", applyPaperSize);
     orientationSelect.addEventListener("change", applyPaperSize);
@@ -997,9 +1022,11 @@ document.addEventListener("DOMContentLoaded", () => {
     applyPaperSize();
 
     // --- Rendering Items/Notes ---
-    const renderCustomItems = () => {
+    function renderCustomItems() {
       const c = document.getElementById("custom-items-container");
+      if (!c) return;
       c.innerHTML = "";
+
       customItems.forEach((item, i) => {
         const row = document.createElement("div");
         row.classList.add("item-row");
@@ -1014,12 +1041,10 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         c.appendChild(row);
       });
-    };
-    window.editCIT = (i, k, v) => { customItems[i][k] = (k==="qty"||k==="price") ? parseFloat(v)||0 : v; updateCustomDisplay(); };
-    window.removeCIT = (i) => { customItems.splice(i,1); renderCustomItems(); updateCustomDisplay(); };
-    window.addCustomItem = () => { customItems.push({ desc: "", qty: 1, price: 0 }); renderCustomItems(); updateCustomDisplay(); };
+    }
+    // --- Functions assigned later globally ---
 
-    const renderCustomCosts = () => {
+    function renderCustomCosts() {
       const c = document.getElementById("custom-costs-container");
       if (!c) return;
       c.innerHTML = "";
@@ -1036,13 +1061,10 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         c.appendChild(row);
       });
-    };
-    window.editCC = (i, k, v) => { customCosts[i][k] = (k==="amount") ? parseFloat(v)||0 : v; updateCustomDisplay(); };
-    window.removeCC = (i) => { customCosts.splice(i,1); renderCustomCosts(); updateCustomDisplay(); };
-    window.addCustomCost = () => { customCosts.push({ name: "", amount: 0 }); renderCustomCosts(); updateCustomDisplay(); };
-
-    const renderCustomNotes = () => {
+    }
+    function renderCustomNotes() {
       const c = document.getElementById("custom-notes-container");
+      if (!c) return;
       c.innerHTML = "";
       customNotes.forEach((note, i) => {
         const row = document.createElement("div");
@@ -1050,9 +1072,7 @@ document.addEventListener("DOMContentLoaded", () => {
         row.innerHTML = `<input type="text" oninput="editCN(${i},this.value)" value="${note}">`;
         c.appendChild(row);
       });
-    };
-    window.editCN = (i, v) => { customNotes[i] = v; updateCustomDisplay(); };
-    window.addCustomNote = () => { customNotes.push(""); renderCustomNotes(); updateCustomDisplay(); };
+    }
 
     // --- Logo Upload ---
     const logoUpload = document.getElementById("custom-logo-upload");
@@ -1077,38 +1097,42 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- Main Display Update ---
-    const updateCustomDisplay = () => {
-      const preset = presetSelect.value;
-      const name = document.getElementById("custom-business-name").value;
-      const addr = document.getElementById("custom-business-address").value;
-      const phone = document.getElementById("custom-business-phone").value;
-      const docNum = document.getElementById("custom-doc-number").value;
-      const dtVal = document.getElementById("custom-date-time").value;
-      const kasir = document.getElementById("custom-kasir").value;
+    function updateCustomDisplay() {
+      try {
+        if (!document.getElementById("nota-custom")) return;
+
+      const preset = presetSelect ? presetSelect.value : "custom";
+      const name = document.getElementById("custom-business-name")?.value || "";
+      const addr = document.getElementById("custom-business-address")?.value || "";
+      const phone = document.getElementById("custom-business-phone")?.value || "";
+      const docNum = document.getElementById("custom-doc-number")?.value || "";
+      const dtVal = document.getElementById("custom-date-time")?.value || "";
+      const kasir = document.getElementById("custom-kasir")?.value || "";
 
       // Update preset logos if no custom logo is uploaded
-      if (presets[preset] && !logoUpload.files[0]) {
+      const upLogo = document.getElementById("custom-logo-upload");
+      if (presets[preset] && (!upLogo || !upLogo.files[0])) {
         const pLogo = presets[preset].logo;
-        a4LogoImg.src = pLogo;
-        a4LogoContainer.style.display = "block";
-        thLogoImg.src = pLogo;
-        thLogoContainer.style.display = "block";
-      } else if (!presets[preset] && !logoUpload.files[0]) {
-        a4LogoContainer.style.display = "none";
-        thLogoContainer.style.display = "none";
+        if (a4LogoImg) a4LogoImg.src = pLogo;
+        if (a4LogoContainer) a4LogoContainer.style.display = pLogo ? "block" : "none";
+        if (thLogoImg) thLogoImg.src = pLogo;
+        if (thLogoContainer) thLogoContainer.style.display = pLogo ? "block" : "none";
+      } else if (!presets[preset] && (!upLogo || !upLogo.files[0])) {
+        if (a4LogoContainer) a4LogoContainer.style.display = "none";
+        if (thLogoContainer) thLogoContainer.style.display = "none";
       }
 
       // A4 Update
-      document.getElementById("disp-custom-business-name").textContent = name;
-      document.getElementById("disp-custom-business-address").textContent = addr;
-      document.getElementById("disp-custom-business-phone").textContent = phone;
-      document.getElementById("disp-custom-doc-number").textContent = docNum;
-      document.getElementById("disp-custom-date").textContent = dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-";
+      const dName = document.getElementById("disp-custom-business-name"); if (dName) dName.textContent = name;
+      const dAddr = document.getElementById("disp-custom-business-address"); if (dAddr) dAddr.textContent = addr;
+      const dPhone = document.getElementById("disp-custom-business-phone"); if (dPhone) dPhone.textContent = phone;
+      const dDocNum = document.getElementById("disp-custom-doc-number"); if (dDocNum) dDocNum.textContent = docNum;
+      const dDate = document.getElementById("disp-custom-date"); if (dDate) dDate.textContent = dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-";
 
       // Customer Info
-      const custName = document.getElementById("custom-customer-name").value;
-      const custAddr = document.getElementById("custom-customer-address").value;
-      const custPhone = document.getElementById("custom-customer-phone").value;
+      const custName = document.getElementById("custom-customer-name")?.value || "";
+      const custAddr = document.getElementById("custom-customer-address")?.value || "";
+      const custPhone = document.getElementById("custom-customer-phone")?.value || "";
       
       const dispCustName = document.getElementById("disp-custom-customer-name");
       const dispCustAddr = document.getElementById("disp-custom-customer-address");
@@ -1123,48 +1147,51 @@ document.addEventListener("DOMContentLoaded", () => {
       if (rowCustPhone) rowCustPhone.style.display = custPhone ? "" : "none";
 
       // Update editable labels on A4
-      const lblDocType = document.getElementById("custom-label-doctype").value;
-      const lblNo = document.getElementById("custom-label-no").value;
-      const lblTanggal = document.getElementById("custom-label-tanggal").value;
-      const lblKepada = document.getElementById("custom-label-kepada").value;
-      const lblAlamat = document.getElementById("custom-label-alamat").value;
-      const lblTelp = document.getElementById("custom-label-telp").value;
-      const lblDeskripsi = document.getElementById("custom-label-deskripsi").value;
-      const lblQty = document.getElementById("custom-label-qty").value;
-      const lblHarga = document.getElementById("custom-label-harga").value;
-      const lblTotalCol = document.getElementById("custom-label-total-col").value;
-      const lblSubtotal = document.getElementById("custom-label-subtotal").value;
-      const lblTotal = document.getElementById("custom-label-total").value;
-      const lblPembayaran = document.getElementById("custom-label-pembayaran").value;
-      const lblSigLeft = document.getElementById("custom-label-sig-left").value;
-      const lblSigRight = document.getElementById("custom-label-sig-right").value;
-      const lblThNo = document.getElementById("custom-label-th-no").value;
-      const lblThTgl = document.getElementById("custom-label-th-tgl").value;
-      const lblThKasir = document.getElementById("custom-label-th-kasir").value;
+      const lblDocType = document.getElementById("custom-label-doctype")?.value || "NOTA";
+      const lblNo = document.getElementById("custom-label-no")?.value || "No.";
+      const lblTanggal = document.getElementById("custom-label-tanggal")?.value || "Tanggal";
+      const lblKepada = document.getElementById("custom-label-kepada")?.value || "Kepada";
+      const lblAlamat = document.getElementById("custom-label-alamat")?.value || "Alamat";
+      const lblTelp = document.getElementById("custom-label-telp")?.value || "Telp";
+      const lblDeskripsi = document.getElementById("custom-label-deskripsi")?.value || "Deskripsi";
+      const lblQty = document.getElementById("custom-label-qty")?.value || "Qty";
+      const lblHarga = document.getElementById("custom-label-harga")?.value || "Harga";
+      const lblTotalCol = document.getElementById("custom-label-total-col")?.value || "Total";
+      const lblSubtotal = document.getElementById("custom-label-subtotal")?.value || "Subtotal";
+      const lblTotal = document.getElementById("custom-label-total")?.value || "Total";
+      const lblPembayaran = document.getElementById("custom-label-pembayaran")?.value || "Pembayaran";
+      const lblSigLeft = document.getElementById("custom-label-sig-left")?.value || "";
+      const lblSigRight = document.getElementById("custom-label-sig-right")?.value || "";
+      const lblThNo = document.getElementById("custom-label-th-no")?.value || "No";
+      const lblThTgl = document.getElementById("custom-label-th-tgl")?.value || "Tgl";
+      const lblThKasir = document.getElementById("custom-label-th-kasir")?.value || "Kasir";
 
-      document.getElementById("disp-custom-doc-type").textContent = lblDocType;
-      document.getElementById("disp-custom-label-no").textContent = lblNo;
-      document.getElementById("disp-custom-label-tanggal").textContent = lblTanggal;
-      document.getElementById("disp-custom-label-kepada").textContent = lblKepada;
-      document.getElementById("disp-custom-label-alamat").textContent = lblAlamat;
-      document.getElementById("disp-custom-label-telp").textContent = lblTelp;
-      document.getElementById("disp-custom-label-deskripsi").textContent = lblDeskripsi;
-      document.getElementById("disp-custom-label-qty").textContent = lblQty;
-      document.getElementById("disp-custom-label-harga").textContent = lblHarga;
-      document.getElementById("disp-custom-label-total-col").textContent = lblTotalCol;
-      document.getElementById("disp-custom-label-subtotal").textContent = lblSubtotal;
-      document.getElementById("disp-custom-label-total").textContent = lblTotal;
-      document.getElementById("disp-custom-label-pembayaran").textContent = lblPembayaran;
-      document.getElementById("disp-custom-sig-left").textContent = lblSigLeft;
-      document.getElementById("disp-custom-sig-right").textContent = lblSigRight;
+      const dDocType = document.getElementById("disp-custom-doc-type"); if (dDocType) dDocType.textContent = lblDocType;
+      const dLNo = document.getElementById("disp-custom-label-no"); if (dLNo) dLNo.textContent = lblNo;
+      const dLTgl = document.getElementById("disp-custom-label-tanggal"); if (dLTgl) dLTgl.textContent = lblTanggal;
+      const dLKepada = document.getElementById("disp-custom-label-kepada"); if (dLKepada) dLKepada.textContent = lblKepada;
+      const dLAlamat = document.getElementById("disp-custom-label-alamat"); if (dLAlamat) dLAlamat.textContent = lblAlamat;
+      const dLTelp = document.getElementById("disp-custom-label-telp"); if (dLTelp) dLTelp.textContent = lblTelp;
+      const dLDesc = document.getElementById("disp-custom-label-deskripsi"); if (dLDesc) dLDesc.textContent = lblDeskripsi;
+      const dLQty = document.getElementById("disp-custom-label-qty"); if (dLQty) dLQty.textContent = lblQty;
+      const dLHarga = document.getElementById("disp-custom-label-harga"); if (dLHarga) dLHarga.textContent = lblHarga;
+      const dLTotCol = document.getElementById("disp-custom-label-total-col"); if (dLTotCol) dLTotCol.textContent = lblTotalCol;
+      const dLSub = document.getElementById("disp-custom-label-subtotal"); if (dLSub) dLSub.textContent = lblSubtotal;
+      const dLTot = document.getElementById("disp-custom-label-total"); if (dLTot) dLTot.textContent = lblTotal;
+      const dLPay = document.getElementById("disp-custom-label-pembayaran"); if (dLPay) dLPay.textContent = lblPembayaran;
+      const dLSigL = document.getElementById("disp-custom-sig-left"); if (dLSigL) dLSigL.textContent = lblSigLeft;
+      const dLSigR = document.getElementById("disp-custom-sig-right"); if (dLSigR) dLSigR.textContent = lblSigRight;
       
       let itemsHtml = ""; let subtotal = 0;
       customItems.forEach((it, i) => {
         const t = it.qty * it.price; subtotal += t;
         itemsHtml += `<tr><td>${i+1}</td><td>${it.desc}</td><td>${it.qty}</td><td class="text-right">${formatNum(it.price)}</td><td class="text-right">${formatNum(t)}</td></tr>`;
       });
-      document.getElementById("disp-custom-items-body").innerHTML = itemsHtml;
-      document.getElementById("disp-custom-subtotal").textContent = formatNum(subtotal);
+      const dItemsBody = document.getElementById("disp-custom-items-body");
+      if (dItemsBody) dItemsBody.innerHTML = itemsHtml;
+      
+      const dSubtotal = document.getElementById("disp-custom-subtotal");
+      if (dSubtotal) dSubtotal.textContent = formatNum(subtotal);
       
       let costsHtml = ""; let totalCosts = 0;
       customCosts.forEach(cost => {
@@ -1173,14 +1200,16 @@ document.addEventListener("DOMContentLoaded", () => {
           costsHtml += `<tr><td>${cost.name} :</td><td class="text-right">${cost.amount < 0 ? "-" + formatNum(Math.abs(cost.amount)) : formatNum(cost.amount)}</td></tr>`;
         }
       });
-      document.getElementById("disp-custom-costs-body").innerHTML = costsHtml;
+      const dCostsBody = document.getElementById("disp-custom-costs-body");
+      if (dCostsBody) dCostsBody.innerHTML = costsHtml;
 
       const grandTotal = subtotal + totalCosts;
-      document.getElementById("disp-custom-total").textContent = formatNum(grandTotal);
+      const dTotal = document.getElementById("disp-custom-total");
+      if (dTotal) dTotal.textContent = formatNum(grandTotal);
 
       // Status Badge Styling
       const statusBadge = document.getElementById("disp-custom-status-badge");
-      if (statusBadge) {
+      if (statusBadge && paymentStatus) {
           const status = paymentStatus.value;
           statusBadge.textContent = status;
           statusBadge.className = "custom-status-badge"; // reset
@@ -1191,21 +1220,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Payment Method Display Update
       const dispPayMethod = document.getElementById("disp-custom-payment-method");
-      if (dispPayMethod) {
+      if (dispPayMethod && paymentMethod) {
           let payVal = paymentMethod.value.toUpperCase();
-          if (payVal === "CUSTOM") payVal = document.getElementById("custom-payment-custom-name").value.toUpperCase() || "CUSTOM";
+          if (payVal === "CUSTOM") payVal = document.getElementById("custom-payment-custom-name")?.value.toUpperCase() || "CUSTOM";
           dispPayMethod.textContent = payVal;
       }
 
       const bankInfo = document.getElementById("disp-custom-bank-info");
       const bankDetail = document.getElementById("disp-custom-bank-detail");
-      if (bankInfo && bankDetail) {
+      if (bankInfo && bankDetail && paymentMethod) {
           const v = paymentMethod.value;
           if (v === "transfer" || v === "ewallet" || v === "qris") {
               bankInfo.style.display = "block";
-              const bankName = document.getElementById("custom-bank-name").value;
-              const accNum = document.getElementById("custom-account-number").value;
-              const accHolder = document.getElementById("custom-account-holder").value;
+              const bankName = document.getElementById("custom-bank-name")?.value || "";
+              const accNum = document.getElementById("custom-account-number")?.value || "";
+              const accHolder = document.getElementById("custom-account-holder")?.value || "";
               
               let text = bankName;
               if (accNum) text += " - " + accNum;
@@ -1221,49 +1250,64 @@ document.addEventListener("DOMContentLoaded", () => {
       const dispDP = document.getElementById("disp-custom-dp");
       const dispSisa = document.getElementById("disp-custom-sisa");
       
-      if (rowDP && rowSisa) {
+      if (rowDP && rowSisa && paymentStatus) {
           const status = paymentStatus.value;
           if (status === "DP" || status === "CICILAN") {
-              const dpAmount = parseFloat(document.getElementById("custom-dp-amount").value) || 0;
+              const dpAmount = parseFloat(document.getElementById("custom-dp-amount")?.value) || 0;
               rowDP.style.display = "";
               rowSisa.style.display = "";
-              dispDP.textContent = formatNum(dpAmount);
-              dispSisa.textContent = formatNum(grandTotal - dpAmount);
+              if (dispDP) dispDP.textContent = formatNum(dpAmount);
+              if (dispSisa) dispSisa.textContent = formatNum(grandTotal - dpAmount);
           } else {
               rowDP.style.display = "none";
               rowSisa.style.display = "none";
           }
       }
 
-      // Thermal Update
-      document.getElementById("th-store-name").textContent = name;
-      document.getElementById("th-store-addr").textContent = addr;
-      document.getElementById("th-store-phone").textContent = phone;
-
-      const thMeta = document.getElementById("th-meta-custom");
-      thMeta.innerHTML = `
-        <div><span class="th-label">${lblThNo}</span>: ${docNum}</div>
-        <div><span class="th-label">${lblThTgl}</span>: ${dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-"}</div>
-        <div><span class="th-label">${lblThKasir}</span>: ${kasir}</div>
-      `;
-
-      if (preset === "indomaret") {
-        const merchant = document.getElementById("custom-merchant").value;
-        const noTagihan = document.getElementById("custom-notagihan").value;
-        thMeta.innerHTML += `
-          <div><hr style="border:none; border-top:1px dashed #000; margin:2px 0;"></div>
-          <div>Merchant: ${merchant}</div>
-          <div>No. Tagihan: ${noTagihan}</div>
-        `;
-        document.getElementById("th-barcode-area").style.display = "block";
-        document.getElementById("th-barcode-area").querySelector("div:last-child").textContent = noTagihan;
-      } else {
-        document.getElementById("th-barcode-area").style.display = "none";
+      // Notes section for A4
+      const dispA4Notes = document.getElementById("disp-custom-notes-section");
+      if (dispA4Notes) {
+        let notesHtml = "<hr />";
+        customNotes.forEach(n => { if(n) notesHtml += `<p>* ${n}</p>`; });
+        dispA4Notes.innerHTML = notesHtml;
       }
 
-      if (preset === "alfamart") {
-        const ponta = document.getElementById("custom-ponta").value;
-        if (ponta) thMeta.innerHTML += `<div>No. Ponta: ${ponta}</div>`;
+      // Thermal Update
+      const thStoreName = document.getElementById("th-store-name"); if (thStoreName) thStoreName.textContent = name;
+      const thStoreAddr = document.getElementById("th-store-addr"); if (thStoreAddr) thStoreAddr.textContent = addr;
+      const thStorePhone = document.getElementById("th-store-phone"); if (thStorePhone) thStorePhone.textContent = phone;
+
+      const thMeta = document.getElementById("th-meta-custom");
+      if (thMeta) {
+        thMeta.innerHTML = `
+          <div><span class="th-label">${lblThNo}</span>: ${docNum}</div>
+          <div><span class="th-label">${lblThTgl}</span>: ${dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-"}</div>
+          <div><span class="th-label">${lblThKasir}</span>: ${kasir}</div>
+        `;
+
+        if (preset === "indomaret") {
+          const merchant = document.getElementById("custom-merchant")?.value || "";
+          const noTagihan = document.getElementById("custom-notagihan")?.value || "";
+          thMeta.innerHTML += `
+            <div><hr style="border:none; border-top:1px dashed #000; margin:2px 0;"></div>
+            <div>Merchant: ${merchant}</div>
+            <div>No. Tagihan: ${noTagihan}</div>
+          `;
+          const thBarcode = document.getElementById("th-barcode-area");
+          if (thBarcode) {
+            thBarcode.style.display = "block";
+            const dLast = thBarcode.querySelector("div:last-child");
+            if (dLast) dLast.textContent = noTagihan;
+          }
+        } else {
+          const thBarcode = document.getElementById("th-barcode-area");
+          if (thBarcode) thBarcode.style.display = "none";
+        }
+
+        if (preset === "alfamart") {
+          const ponta = document.getElementById("custom-ponta")?.value || "";
+          if (ponta) thMeta.innerHTML += `<div>No. Ponta: ${ponta}</div>`;
+        }
       }
 
       let thItemsHtml = "";
@@ -1278,7 +1322,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
       });
-      document.getElementById("th-items").innerHTML = thItemsHtml;
+      const thItems = document.getElementById("th-items"); if (thItems) thItems.innerHTML = thItemsHtml;
 
       let thTotalsHtml = `<div class="thermal-total-row"><span>${lblSubtotal.toUpperCase()}</span><span>${formatNum(subtotal)}</span></div>`;
       customCosts.forEach(cost => {
@@ -1287,30 +1331,52 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
       thTotalsHtml += `<div class="thermal-total-row grand-total"><span>${lblTotal.toUpperCase()}</span><span>${formatNum(grandTotal)}</span></div>`;
-      document.getElementById("th-totals").innerHTML = thTotalsHtml;
+      const thTotals = document.getElementById("th-totals"); if (thTotals) thTotals.innerHTML = thTotalsHtml;
 
-      document.getElementById("th-payment-method").textContent = lblPembayaran + ": " + paymentMethod.value.toUpperCase();
-      document.getElementById("th-status").textContent = paymentStatus.value;
-
-      // Logo handling
-      const logoContainer = document.getElementById("th-logo-container");
-      const logoImg = document.getElementById("th-logo-img");
-      if (presets[preset] && presets[preset].logo) {
-        logoImg.src = presets[preset].logo;
-        logoContainer.style.display = "block";
-      } else {
-        logoContainer.style.display = "none";
-      }
+      const thPayMeth = document.getElementById("th-payment-method"); if (thPayMeth && paymentMethod) thPayMeth.textContent = lblPembayaran + ": " + paymentMethod.value.toUpperCase();
+      const thStatus = document.getElementById("th-status"); if (thStatus && paymentStatus) thStatus.textContent = paymentStatus.value;
 
       let thFooter = "";
       customNotes.forEach(n => thFooter += `<p>${n}</p>`);
-      document.getElementById("th-footer").innerHTML = thFooter;
-    };
+      const dThFooter = document.getElementById("th-footer"); if (dThFooter) dThFooter.innerHTML = thFooter;
+    } catch (e) {
+      console.error("Critical error in updateCustomDisplay:", e);
+    }
+  }
 
-    [ "custom-business-name", "custom-business-address", "custom-business-phone", "custom-doc-number", "custom-date-time", "custom-kasir", "custom-merchant", "custom-notagihan", "custom-ponta", "custom-customer-name", "custom-customer-address", "custom-customer-phone", "custom-payment-method", "custom-payment-status", "custom-label-doctype", "custom-label-no", "custom-label-tanggal", "custom-label-kepada", "custom-label-alamat", "custom-label-telp", "custom-label-deskripsi", "custom-label-qty", "custom-label-harga", "custom-label-total-col", "custom-label-subtotal", "custom-label-total", "custom-label-pembayaran", "custom-label-sig-left", "custom-label-sig-right", "custom-label-th-no", "custom-label-th-tgl", "custom-label-th-kasir" ].forEach(id => {
-      const el = document.getElementById(id); if (el) el.addEventListener("input", updateCustomDisplay);
+    // Initial Render
+    try {
+      renderCustomItems(); 
+      renderCustomCosts(); 
+      renderCustomNotes(); 
+      updateCustomDisplay();
+    } catch(e) { console.warn("Initial custom render failed:", e); }
+
+    // Event Listeners
+
+    const eventIds = [ 
+      "custom-business-name", "custom-business-address", "custom-business-phone", 
+      "custom-doc-number", "custom-date-time", "custom-kasir", 
+      "custom-merchant", "custom-notagihan", "custom-ponta", 
+      "custom-customer-name", "custom-customer-address", "custom-customer-phone",
+      "custom-payment-method", "custom-payment-status", "custom-payment-custom-name",
+      "custom-bank-name", "custom-account-number", "custom-account-holder", "custom-dp-amount",
+      "custom-label-doctype", "custom-label-no", "custom-label-tanggal", "custom-label-kepada", 
+      "custom-label-alamat", "custom-label-telp", "custom-label-deskripsi", 
+      "custom-label-qty", "custom-label-harga", "custom-label-total-col", 
+      "custom-label-subtotal", "custom-label-total", "custom-label-pembayaran", 
+      "custom-label-sig-left", "custom-label-sig-right", "custom-label-th-no", 
+      "custom-label-th-tgl", "custom-label-th-kasir", "custom-print-format", "custom-preset", "custom-orientation"
+    ];
+    
+    eventIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("input", () => { console.log("Input on:", id); updateCustomDisplay(); });
+        el.addEventListener("change", () => { console.log("Change on:", id); updateCustomDisplay(); });
+      }
     });
 
-    renderCustomItems(); renderCustomCosts(); renderCustomNotes(); updateCustomDisplay();
+    console.log("Custom Nota Module Ready.");
   }
 });
