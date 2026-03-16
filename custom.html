@@ -25,7 +25,25 @@
                     <option value="a4">A4 (Standar)</option>
                     <option value="thermal-80">Thermal 80mm</option>
                     <option value="thermal-58">Thermal 58mm</option>
+                    <option value="custom-size">Custom (Ukuran Sendiri)</option>
                 </select>
+            </div>
+            <div class="form-group" id="grp-orientation">
+                <label>Orientasi (A4)</label>
+                <select id="custom-orientation">
+                    <option value="portrait">Portrait (Tegak)</option>
+                    <option value="landscape">Landscape (Mendatar)</option>
+                </select>
+            </div>
+            <div id="grp-custom-size" style="display: none;">
+                <div class="form-group">
+                    <label>Lebar (mm)</label>
+                    <input type="number" id="custom-paper-width" value="210" min="50" max="500" />
+                </div>
+                <div class="form-group">
+                    <label>Tinggi (mm)</label>
+                    <input type="number" id="custom-paper-height" value="297" min="50" max="800" />
+                </div>
             </div>
             <div class="form-group">
                 <label>Template Preset</label>

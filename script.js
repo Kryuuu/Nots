@@ -880,17 +880,74 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- Format Toggle ---
-    docFormat.addEventListener("change", () => {
-      const isThermal = docFormat.value.startsWith("thermal");
-      document.getElementById("nota-custom").style.display = isThermal ? "none" : "block";
-      const th = document.getElementById("nota-thermal");
-      th.style.display = isThermal ? "block" : "none";
+    const orientationSelect = document.getElementById("custom-orientation");
+    const grpOrientation = document.getElementById("grp-orientation");
+    const grpCustomSize = document.getElementById("grp-custom-size");
+    const customPaperWidth = document.getElementById("custom-paper-width");
+    const customPaperHeight = document.getElementById("custom-paper-height");
+
+    // Dynamic print style for @page
+    const printStyleEl = document.createElement("style");
+    printStyleEl.id = "dynamic-print-style";
+    document.head.appendChild(printStyleEl);
+
+    const applyPaperSize = () => {
+      const format = docFormat.value;
+      const notaA4 = document.getElementById("nota-custom");
+      const notaThermal = document.getElementById("nota-thermal");
+      const isThermal = format.startsWith("thermal");
+      const isCustomSize = format === "custom-size";
+
+      // Show/hide orientation and custom size groups
+      grpOrientation.style.display = (format === "a4") ? "block" : "none";
+      grpCustomSize.style.display = isCustomSize ? "block" : "none";
+
+      // Toggle A4 vs Thermal display
+      notaA4.style.display = isThermal ? "none" : "block";
+      notaThermal.style.display = isThermal ? "block" : "none";
+
       if (isThermal) {
-        th.classList.remove("thermal-58", "thermal-80");
-        th.classList.add(docFormat.value);
+        notaThermal.classList.remove("thermal-58", "thermal-80");
+        notaThermal.classList.add(format);
       }
+
+      // Apply paper dimensions
+      if (format === "a4") {
+        const orientation = orientationSelect.value;
+        if (orientation === "portrait") {
+          notaA4.style.width = "210mm";
+          notaA4.style.minHeight = "297mm";
+        } else {
+          notaA4.style.width = "297mm";
+          notaA4.style.minHeight = "210mm";
+        }
+      } else if (isCustomSize) {
+        const w = parseInt(customPaperWidth.value) || 210;
+        const h = parseInt(customPaperHeight.value) || 297;
+        notaA4.style.width = w + "mm";
+        notaA4.style.minHeight = h + "mm";
+      }
+
+      // Update dynamic print style
+      if (format === "a4") {
+        const ori = orientationSelect.value;
+        printStyleEl.textContent = `@media print { @page { size: A4 ${ori}; margin: 10mm; } }`;
+      } else if (isCustomSize) {
+        const w = parseInt(customPaperWidth.value) || 210;
+        const h = parseInt(customPaperHeight.value) || 297;
+        printStyleEl.textContent = `@media print { @page { size: ${w}mm ${h}mm; margin: 5mm; } }`;
+      } else {
+        printStyleEl.textContent = `@media print { @page { size: auto; margin: 0; } }`;
+      }
+
       updateCustomDisplay();
-    });
+    };
+
+    docFormat.addEventListener("change", applyPaperSize);
+    orientationSelect.addEventListener("change", applyPaperSize);
+    customPaperWidth.addEventListener("input", applyPaperSize);
+    customPaperHeight.addEventListener("input", applyPaperSize);
+    applyPaperSize();
 
     // --- Rendering Items/Notes ---
     const renderCustomItems = () => {
