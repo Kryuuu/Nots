@@ -1000,6 +1000,38 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("disp-custom-business-phone").textContent = phone;
       document.getElementById("disp-custom-doc-number").textContent = docNum;
       document.getElementById("disp-custom-date").textContent = dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-";
+
+      // Update editable labels on A4
+      const lblDocType = document.getElementById("custom-label-doctype").value;
+      const lblKepada = document.getElementById("custom-label-kepada").value;
+      const lblAlamat = document.getElementById("custom-label-alamat").value;
+      const lblTelp = document.getElementById("custom-label-telp").value;
+      const lblDeskripsi = document.getElementById("custom-label-deskripsi").value;
+      const lblQty = document.getElementById("custom-label-qty").value;
+      const lblHarga = document.getElementById("custom-label-harga").value;
+      const lblTotalCol = document.getElementById("custom-label-total-col").value;
+      const lblSubtotal = document.getElementById("custom-label-subtotal").value;
+      const lblTotal = document.getElementById("custom-label-total").value;
+      const lblPembayaran = document.getElementById("custom-label-pembayaran").value;
+      const lblSigLeft = document.getElementById("custom-label-sig-left").value;
+      const lblSigRight = document.getElementById("custom-label-sig-right").value;
+      const lblThNo = document.getElementById("custom-label-th-no").value;
+      const lblThTgl = document.getElementById("custom-label-th-tgl").value;
+      const lblThKasir = document.getElementById("custom-label-th-kasir").value;
+
+      document.getElementById("disp-custom-doc-type").textContent = lblDocType;
+      document.getElementById("disp-custom-label-kepada").textContent = lblKepada;
+      document.getElementById("disp-custom-label-alamat").textContent = lblAlamat;
+      document.getElementById("disp-custom-label-telp").textContent = lblTelp;
+      document.getElementById("disp-custom-label-deskripsi").textContent = lblDeskripsi;
+      document.getElementById("disp-custom-label-qty").textContent = lblQty;
+      document.getElementById("disp-custom-label-harga").textContent = lblHarga;
+      document.getElementById("disp-custom-label-total-col").textContent = lblTotalCol;
+      document.getElementById("disp-custom-label-subtotal").textContent = lblSubtotal;
+      document.getElementById("disp-custom-label-total").textContent = lblTotal;
+      document.getElementById("disp-custom-label-pembayaran").textContent = lblPembayaran;
+      document.getElementById("disp-custom-sig-left").textContent = lblSigLeft;
+      document.getElementById("disp-custom-sig-right").textContent = lblSigRight;
       
       let itemsHtml = ""; let subtotal = 0;
       customItems.forEach((it, i) => {
@@ -1028,9 +1060,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const thMeta = document.getElementById("th-meta-custom");
       thMeta.innerHTML = `
-        <div><span class="th-label">No</span>: ${docNum}</div>
-        <div><span class="th-label">Tgl</span>: ${dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-"}</div>
-        <div><span class="th-label">Kasir</span>: ${kasir}</div>
+        <div><span class="th-label">${lblThNo}</span>: ${docNum}</div>
+        <div><span class="th-label">${lblThTgl}</span>: ${dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-"}</div>
+        <div><span class="th-label">${lblThKasir}</span>: ${kasir}</div>
       `;
 
       if (preset === "indomaret") {
@@ -1066,16 +1098,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       document.getElementById("th-items").innerHTML = thItemsHtml;
 
-      let thTotalsHtml = `<div class="thermal-total-row"><span>SUBTOTAL</span><span>${formatNum(subtotal)}</span></div>`;
+      let thTotalsHtml = `<div class="thermal-total-row"><span>${lblSubtotal.toUpperCase()}</span><span>${formatNum(subtotal)}</span></div>`;
       customCosts.forEach(cost => {
         if (cost.name) {
           thTotalsHtml += `<div class="thermal-total-row"><span>${cost.name.toUpperCase()}</span><span>${formatNum(cost.amount)}</span></div>`;
         }
       });
-      thTotalsHtml += `<div class="thermal-total-row grand-total"><span>TOTAL</span><span>${formatNum(grandTotal)}</span></div>`;
+      thTotalsHtml += `<div class="thermal-total-row grand-total"><span>${lblTotal.toUpperCase()}</span><span>${formatNum(grandTotal)}</span></div>`;
       document.getElementById("th-totals").innerHTML = thTotalsHtml;
 
-      document.getElementById("th-payment-method").textContent = "Metode: " + paymentMethod.value.toUpperCase();
+      document.getElementById("th-payment-method").textContent = lblPembayaran + ": " + paymentMethod.value.toUpperCase();
       document.getElementById("th-status").textContent = paymentStatus.value;
 
       // Logo handling
@@ -1093,7 +1125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("th-footer").innerHTML = thFooter;
     };
 
-    [ "custom-business-name", "custom-business-address", "custom-business-phone", "custom-doc-number", "custom-date-time", "custom-kasir", "custom-merchant", "custom-notagihan", "custom-ponta", "custom-payment-method", "custom-payment-status" ].forEach(id => {
+    [ "custom-business-name", "custom-business-address", "custom-business-phone", "custom-doc-number", "custom-date-time", "custom-kasir", "custom-merchant", "custom-notagihan", "custom-ponta", "custom-payment-method", "custom-payment-status", "custom-label-doctype", "custom-label-kepada", "custom-label-alamat", "custom-label-telp", "custom-label-deskripsi", "custom-label-qty", "custom-label-harga", "custom-label-total-col", "custom-label-subtotal", "custom-label-total", "custom-label-pembayaran", "custom-label-sig-left", "custom-label-sig-right", "custom-label-th-no", "custom-label-th-tgl", "custom-label-th-kasir" ].forEach(id => {
       const el = document.getElementById(id); if (el) el.addEventListener("input", updateCustomDisplay);
     });
 

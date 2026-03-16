@@ -997,6 +997,8 @@ body.app-body {
   font-size: 12px;
   line-height: 1.4;
   width: 300px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .thermal-receipt.thermal-58 {
@@ -1058,6 +1060,8 @@ body.app-body {
 
 .thermal-item-name {
   font-size: 0.95em;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .thermal-item-detail {
