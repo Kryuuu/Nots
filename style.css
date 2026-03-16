@@ -27,6 +27,7 @@ body.dashboard-body {
   margin: 0 0 10px 0;
   background: linear-gradient(90deg, #111, #555);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -1px;
 }
@@ -405,11 +406,15 @@ body.app-body {
 
 /* Nota Wrapper */
 #nota-wrapper {
-  margin-left: 400px;
-  padding: 20px;
+  margin-left: 380px; /* Match control-panel width */
+  padding: 40px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  z-index: 10;
+  position: relative;
 }
 
 /* Nvy Store Nota Container */
@@ -642,9 +647,10 @@ body.app-body {
 
   #nota-wrapper {
     margin-left: 0 !important;
-    padding: 15px 10px;
+    padding: 20px 10px;
     width: 100%;
     box-sizing: border-box;
+    z-index: 10;
   }
 
   .nota-container,

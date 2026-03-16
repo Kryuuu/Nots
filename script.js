@@ -175,9 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
     dispNvy.totalQty.textContent = nvyItems.length;
   };
 
-    Object.values(inputsNvy).forEach((input) => {
-      input.addEventListener("input", updateNvyDisplay);
-    });
+    if (inputsNvy) {
+      Object.values(inputsNvy).forEach((input) => {
+        if (input) input.addEventListener("input", updateNvyDisplay);
+      });
+    }
 
     renderNvyInputRows();
     updateNvyDisplay();
@@ -341,9 +343,11 @@ document.addEventListener("DOMContentLoaded", () => {
     dispIstana.totalQty.textContent = istanaItems.length;
   };
 
-    Object.values(inputsIstana).forEach((input) => {
-      input.addEventListener("input", updateIstanaDisplay);
-    });
+    if (inputsIstana) {
+      Object.values(inputsIstana).forEach((input) => {
+        if (input) input.addEventListener("input", updateIstanaDisplay);
+      });
+    }
 
     renderIstanaInputRows();
     updateIstanaDisplay();
@@ -583,9 +587,11 @@ document.addEventListener("DOMContentLoaded", () => {
     dispShopee.totalPembayaran.textContent = formatCurrency(totalPembayaran);
   };
 
-    Object.values(inputsShopee).forEach((input) => {
-      input.addEventListener("input", updateShopeeDisplay);
-    });
+    if (inputsShopee) {
+      Object.values(inputsShopee).forEach((input) => {
+        if (input) input.addEventListener("input", updateShopeeDisplay);
+      });
+    }
 
     renderShopeeInputRows();
     updateShopeeDisplay();
@@ -830,6 +836,41 @@ document.addEventListener("DOMContentLoaded", () => {
         items: [{ desc: "SAMPOERNA MRH16", qty: 1, price: 33900 }, { desc: "ALFA AMP P90 10", qty: 1, price: 5200 }],
         notes: ["KRITIK&SARAN:1500959", "SMS/WA: 031110640888"],
         logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Alfamart_logo.svg/1024px-Alfamart_logo.svg.png"
+      },
+      minimarket: {
+        name: "MINIMARKET JAYA",
+        addr: "JL. MEKAR SARI NO. 45\nKOTA BANJARMASIN",
+        phone: "0511-3344556",
+        items: [
+          { desc: "MIE INSTAN GORENG", qty: 5, price: 3100 },
+          { desc: "MINYAK GORENG 2L", qty: 1, price: 34500 },
+          { desc: "SABUN MANDI LIQUID", qty: 2, price: 22000 }
+        ],
+        notes: ["Barang yang sudah dibeli", "tidak dapat ditukar/dikembalikan", "Terima Kasih"],
+        logo: ""
+      },
+      toko: {
+        name: "TOKO BERKAH",
+        addr: "PASAR SENTRA ANTASARI\nBLOK A NO. 12",
+        phone: "0812-5566-7788",
+        items: [
+          { desc: "BERAS CIANJUR 5KG", qty: 1, price: 75000 },
+          { desc: "TELUR AYAM 1KG", qty: 1, price: 28000 }
+        ],
+        notes: ["Layanan Pelanggan: 0812-XXXX-XXXX", "Buka Setiap Hari 08:00 - 21:00"],
+        logo: ""
+      },
+      cafe: {
+        name: "COFFEE TIME",
+        addr: "JL. RAYA PONDOK INDAH\nJAKARTA SELATAN",
+        phone: "021-7654321",
+        items: [
+          { desc: "CAFE LATTE", qty: 2, price: 35000 },
+          { desc: "CROISSANT PLAIN", qty: 1, price: 25000 },
+          { desc: "AVOCADO TOAST", qty: 1, price: 45000 }
+        ],
+        notes: ["Wifi Password: kopienakbanget", "Follow us @coffeetime.id", "Thank you for coming!"],
+        logo: "https://cdn.icon-icons.com/icons2/2108/PNG/512/coffee_icon_130396.png"
       }
     };
 
@@ -843,15 +884,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (presets[v]) {
         const p = presets[v];
-        document.getElementById("custom-business-name").value = p.name;
-        document.getElementById("custom-business-address").value = p.addr;
-        document.getElementById("custom-business-phone").value = p.phone;
-        if (p.merchant) document.getElementById("custom-merchant").value = p.merchant;
-        if (p.ponta) document.getElementById("custom-ponta").value = p.ponta;
-        customItems = [...p.items];
-        customNotes = [...p.notes];
+        if (document.getElementById("custom-business-name")) document.getElementById("custom-business-name").value = p.name || "";
+        if (document.getElementById("custom-business-address")) document.getElementById("custom-business-address").value = p.addr || "";
+        if (document.getElementById("custom-business-phone")) document.getElementById("custom-business-phone").value = p.phone || "";
+        if (p.merchant && document.getElementById("custom-merchant")) document.getElementById("custom-merchant").value = p.merchant;
+        if (p.ponta && document.getElementById("custom-ponta")) document.getElementById("custom-ponta").value = p.ponta;
+        customItems = p.items ? [...p.items] : [];
+        customNotes = p.notes ? [...p.notes] : [];
         renderCustomItems();
         renderCustomNotes();
+      } else if (v !== "custom") {
+        // Handle cases like minimarket, toko, cafe if they are added to HTML but not to presets yet
+        // For now, let's just clear or set to generic to avoid crash
+        document.getElementById("custom-business-name").value = v.toUpperCase();
+        customItems = [{ desc: "Item Baru", qty: 1, price: 0 }];
+        renderCustomItems();
       }
       updateCustomDisplay();
     });
@@ -1058,8 +1105,27 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("disp-custom-doc-number").textContent = docNum;
       document.getElementById("disp-custom-date").textContent = dtVal ? new Date(dtVal).toLocaleString("id-ID") : "-";
 
+      // Customer Info
+      const custName = document.getElementById("custom-customer-name").value;
+      const custAddr = document.getElementById("custom-customer-address").value;
+      const custPhone = document.getElementById("custom-customer-phone").value;
+      
+      const dispCustName = document.getElementById("disp-custom-customer-name");
+      const dispCustAddr = document.getElementById("disp-custom-customer-address");
+      const dispCustPhone = document.getElementById("disp-custom-customer-phone");
+      const rowCustAddr = document.getElementById("row-custom-customer-address");
+      const rowCustPhone = document.getElementById("row-custom-customer-phone");
+
+      if (dispCustName) dispCustName.textContent = custName || "-";
+      if (dispCustAddr) dispCustAddr.textContent = custAddr || "-";
+      if (dispCustPhone) dispCustPhone.textContent = custPhone || "-";
+      if (rowCustAddr) rowCustAddr.style.display = custAddr ? "" : "none";
+      if (rowCustPhone) rowCustPhone.style.display = custPhone ? "" : "none";
+
       // Update editable labels on A4
       const lblDocType = document.getElementById("custom-label-doctype").value;
+      const lblNo = document.getElementById("custom-label-no").value;
+      const lblTanggal = document.getElementById("custom-label-tanggal").value;
       const lblKepada = document.getElementById("custom-label-kepada").value;
       const lblAlamat = document.getElementById("custom-label-alamat").value;
       const lblTelp = document.getElementById("custom-label-telp").value;
@@ -1077,6 +1143,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const lblThKasir = document.getElementById("custom-label-th-kasir").value;
 
       document.getElementById("disp-custom-doc-type").textContent = lblDocType;
+      document.getElementById("disp-custom-label-no").textContent = lblNo;
+      document.getElementById("disp-custom-label-tanggal").textContent = lblTanggal;
       document.getElementById("disp-custom-label-kepada").textContent = lblKepada;
       document.getElementById("disp-custom-label-alamat").textContent = lblAlamat;
       document.getElementById("disp-custom-label-telp").textContent = lblTelp;
@@ -1109,6 +1177,63 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const grandTotal = subtotal + totalCosts;
       document.getElementById("disp-custom-total").textContent = formatNum(grandTotal);
+
+      // Status Badge Styling
+      const statusBadge = document.getElementById("disp-custom-status-badge");
+      if (statusBadge) {
+          const status = paymentStatus.value;
+          statusBadge.textContent = status;
+          statusBadge.className = "custom-status-badge"; // reset
+          if (status === "LUNAS") statusBadge.classList.add("status-lunas");
+          else if (status === "BELUM LUNAS") statusBadge.classList.add("status-belum");
+          else if (status === "DP" || status === "CICILAN") statusBadge.classList.add("status-dp");
+      }
+
+      // Payment Method Display Update
+      const dispPayMethod = document.getElementById("disp-custom-payment-method");
+      if (dispPayMethod) {
+          let payVal = paymentMethod.value.toUpperCase();
+          if (payVal === "CUSTOM") payVal = document.getElementById("custom-payment-custom-name").value.toUpperCase() || "CUSTOM";
+          dispPayMethod.textContent = payVal;
+      }
+
+      const bankInfo = document.getElementById("disp-custom-bank-info");
+      const bankDetail = document.getElementById("disp-custom-bank-detail");
+      if (bankInfo && bankDetail) {
+          const v = paymentMethod.value;
+          if (v === "transfer" || v === "ewallet" || v === "qris") {
+              bankInfo.style.display = "block";
+              const bankName = document.getElementById("custom-bank-name").value;
+              const accNum = document.getElementById("custom-account-number").value;
+              const accHolder = document.getElementById("custom-account-holder").value;
+              
+              let text = bankName;
+              if (accNum) text += " - " + accNum;
+              if (accHolder) text += " (A.N " + accHolder + ")";
+              bankDetail.textContent = text;
+          } else {
+              bankInfo.style.display = "none";
+          }
+      }
+
+      const rowDP = document.getElementById("row-custom-dp");
+      const rowSisa = document.getElementById("row-custom-sisa");
+      const dispDP = document.getElementById("disp-custom-dp");
+      const dispSisa = document.getElementById("disp-custom-sisa");
+      
+      if (rowDP && rowSisa) {
+          const status = paymentStatus.value;
+          if (status === "DP" || status === "CICILAN") {
+              const dpAmount = parseFloat(document.getElementById("custom-dp-amount").value) || 0;
+              rowDP.style.display = "";
+              rowSisa.style.display = "";
+              dispDP.textContent = formatNum(dpAmount);
+              dispSisa.textContent = formatNum(grandTotal - dpAmount);
+          } else {
+              rowDP.style.display = "none";
+              rowSisa.style.display = "none";
+          }
+      }
 
       // Thermal Update
       document.getElementById("th-store-name").textContent = name;
@@ -1182,7 +1307,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("th-footer").innerHTML = thFooter;
     };
 
-    [ "custom-business-name", "custom-business-address", "custom-business-phone", "custom-doc-number", "custom-date-time", "custom-kasir", "custom-merchant", "custom-notagihan", "custom-ponta", "custom-payment-method", "custom-payment-status", "custom-label-doctype", "custom-label-kepada", "custom-label-alamat", "custom-label-telp", "custom-label-deskripsi", "custom-label-qty", "custom-label-harga", "custom-label-total-col", "custom-label-subtotal", "custom-label-total", "custom-label-pembayaran", "custom-label-sig-left", "custom-label-sig-right", "custom-label-th-no", "custom-label-th-tgl", "custom-label-th-kasir" ].forEach(id => {
+    [ "custom-business-name", "custom-business-address", "custom-business-phone", "custom-doc-number", "custom-date-time", "custom-kasir", "custom-merchant", "custom-notagihan", "custom-ponta", "custom-customer-name", "custom-customer-address", "custom-customer-phone", "custom-payment-method", "custom-payment-status", "custom-label-doctype", "custom-label-no", "custom-label-tanggal", "custom-label-kepada", "custom-label-alamat", "custom-label-telp", "custom-label-deskripsi", "custom-label-qty", "custom-label-harga", "custom-label-total-col", "custom-label-subtotal", "custom-label-total", "custom-label-pembayaran", "custom-label-sig-left", "custom-label-sig-right", "custom-label-th-no", "custom-label-th-tgl", "custom-label-th-kasir" ].forEach(id => {
       const el = document.getElementById(id); if (el) el.addEventListener("input", updateCustomDisplay);
     });
 
