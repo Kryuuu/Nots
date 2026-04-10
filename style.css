@@ -743,6 +743,8 @@ body.app-body {
   #nota-wrapper {
     margin-left: 0;
     padding: 0;
+    min-height: unset;
+    display: block;
   }
 
   .nota-container, .nota-container-shopee, .custom-nota {
@@ -750,6 +752,12 @@ body.app-body {
     margin: 0;
     box-shadow: none;
     page-break-after: auto;
+  }
+
+  .thermal-receipt {
+    box-shadow: none;
+    border: none;
+    margin: 0 auto;
   }
 }
 
