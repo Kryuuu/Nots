@@ -178,7 +178,7 @@ body.app-body {
   font-family: "Outfit", "Inter", sans-serif;
   background-color: var(--bg-color);
   margin: 0;
-  display: flex;
+  padding: 0;
   min-height: 100vh;
 }
 
@@ -413,20 +413,21 @@ body.app-body {
   align-items: flex-start;
   min-height: 100vh;
   background-color: var(--bg-color);
-  z-index: 10;
-  position: relative;
+  box-sizing: border-box;
 }
 
 /* Nvy Store Nota Container */
 .nota-container {
   background: var(--paper-color);
-  width: 210mm; 
+  width: 210mm;
+  min-width: 400px;
   min-height: 148mm;
   padding: 10mm;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   position: relative;
   color: #000;
+  flex-shrink: 0;
 }
 
 .header { display: flex; justify-content: space-between; margin-bottom: 10px; }
@@ -629,7 +630,7 @@ body.app-body {
   }
 
   body.app-body {
-    flex-direction: column;
+    display: block;
   }
 
   .control-panel {
@@ -650,7 +651,6 @@ body.app-body {
     padding: 20px 10px;
     width: 100%;
     box-sizing: border-box;
-    z-index: 10;
   }
 
   .nota-container,
@@ -726,14 +726,11 @@ body.app-body {
 
 /* Print Styling */
 @media print {
-  @page {
-    size: A4;
-    margin: 10mm;
-  }
-
-  body.app-body {
-    background: #fff;
-    display: block;
+  body, body.app-body {
+    background: #fff !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .no-print {
@@ -741,10 +738,11 @@ body.app-body {
   }
 
   #nota-wrapper {
-    margin-left: 0;
-    padding: 0;
-    min-height: unset;
-    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: unset !important;
+    display: block !important;
+    width: 100% !important;
   }
 
   .nota-container, .nota-container-shopee, .custom-nota {
@@ -757,7 +755,8 @@ body.app-body {
   .thermal-receipt {
     box-shadow: none;
     border: none;
-    margin: 0 auto;
+    margin: 0;
+    overflow: hidden;
   }
 }
 
@@ -1003,6 +1002,7 @@ body.app-body {
 
 .thermal-receipt {
   font-family: "Courier New", "Consolas", monospace;
+  font-weight: 700;
   background: #fff;
   color: #000;
   padding: 15px;

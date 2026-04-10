@@ -1009,9 +1009,79 @@ document.addEventListener("DOMContentLoaded", () => {
         const h = parseInt(customPaperHeight.value) || 297;
         printStyleEl.textContent = `@media print { @page { size: ${w}mm ${h}mm; margin: 5mm; } }`;
       } else if (format === "thermal-58") {
-        printStyleEl.textContent = `@media print { @page { size: 58mm auto; margin: 0mm; } body.app-body { min-height: 0 !important; display: block !important; } #nota-wrapper { min-height: 0 !important; padding: 0 !important; margin: 0 !important; display: block !important; align-items: flex-start !important; } .thermal-receipt { width: 54mm !important; font-size: 9pt !important; box-shadow: none !important; border: none !important; padding: 1mm 2mm !important; margin: 0 !important; } }`;
+        printStyleEl.textContent = `
+          @media print {
+            @page {
+              size: 58mm auto;
+              margin: 0;
+            }
+            body, body.app-body {
+              margin: 0 !important;
+              padding: 0 !important;
+              background: #fff !important;
+              display: block !important;
+              min-height: 0 !important;
+            }
+            .no-print { display: none !important; }
+            #nota-wrapper {
+              margin: 0 !important;
+              padding: 0 !important;
+              min-height: 0 !important;
+              display: block !important;
+              width: 100% !important;
+              box-sizing: border-box !important;
+            }
+            .thermal-receipt {
+              width: 48mm !important;
+              max-width: 48mm !important;
+              padding: 2mm 0 !important;
+              margin: 0 auto !important;
+              box-shadow: none !important;
+              border: none !important;
+              font-size: 8pt !important;
+              font-weight: 900 !important;
+              box-sizing: border-box !important;
+              overflow: hidden !important;
+            }
+          }
+        `;
       } else if (format === "thermal-80") {
-        printStyleEl.textContent = `@media print { @page { size: 80mm auto; margin: 0mm; } body.app-body { min-height: 0 !important; display: block !important; } #nota-wrapper { min-height: 0 !important; padding: 0 !important; margin: 0 !important; display: block !important; align-items: flex-start !important; } .thermal-receipt { width: 76mm !important; font-size: 10pt !important; box-shadow: none !important; border: none !important; padding: 1mm 2mm !important; margin: 0 !important; } }`;
+        printStyleEl.textContent = `
+          @media print {
+            @page {
+              size: 80mm auto;
+              margin: 0;
+            }
+            body, body.app-body {
+              margin: 0 !important;
+              padding: 0 !important;
+              background: #fff !important;
+              display: block !important;
+              min-height: 0 !important;
+            }
+            .no-print { display: none !important; }
+            #nota-wrapper {
+              margin: 0 !important;
+              padding: 0 !important;
+              min-height: 0 !important;
+              display: block !important;
+              width: 100% !important;
+              box-sizing: border-box !important;
+            }
+            .thermal-receipt {
+              width: 72mm !important;
+              max-width: 72mm !important;
+              padding: 2mm 0 !important;
+              margin: 0 auto !important;
+              box-shadow: none !important;
+              border: none !important;
+              font-size: 10pt !important;
+              font-weight: 900 !important;
+              box-sizing: border-box !important;
+              overflow: hidden !important;
+            }
+          }
+        `;
       }
 
       updateCustomDisplay();
