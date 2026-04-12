@@ -801,14 +801,101 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   if (document.getElementById("nota-custom")) {
     console.log("Custom Nota Module Initializing...");
-    const today = new Date();
-    const localDateTime = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-    const dateInput = document.getElementById("custom-date-time");
-    if (dateInput) dateInput.value = localDateTime;
 
-    let customItems = [{ desc: "Contoh Produk / Jasa", qty: 1, price: 50000 }];
-    let customCosts = [];
-    let customNotes = ["Terima Kasih Atas Kunjungan Anda"];
+    // --- LocalStorage Keys ---
+    const STORAGE_KEY = "notaCustomData";
+
+    // --- Field IDs to persist ---
+    const persistFieldIds = [
+      "custom-print-format", "custom-orientation", "custom-preset",
+      "custom-business-name", "custom-business-address", "custom-business-phone",
+      "custom-doc-number", "custom-kasir", "custom-date-time",
+      "custom-merchant", "custom-notagihan", "custom-ponta",
+      "custom-customer-name", "custom-customer-address", "custom-customer-phone",
+      "custom-payment-method", "custom-payment-status", "custom-dp-amount",
+      "custom-payment-custom-name", "custom-bank-name", "custom-account-number", "custom-account-holder",
+      "custom-paper-width", "custom-paper-height",
+      "custom-label-doctype", "custom-label-no", "custom-label-tanggal", "custom-label-kepada",
+      "custom-label-alamat", "custom-label-telp", "custom-label-deskripsi",
+      "custom-label-qty", "custom-label-harga", "custom-label-total-col",
+      "custom-label-subtotal", "custom-label-total", "custom-label-pembayaran",
+      "custom-label-sig-left", "custom-label-sig-right",
+      "custom-label-th-no", "custom-label-th-tgl", "custom-label-th-kasir"
+    ];
+
+    // --- Default data ---
+    const defaultItems = [{ desc: "Contoh Produk / Jasa", qty: 1, price: 50000 }];
+    const defaultCosts = [];
+    const defaultNotes = ["Terima Kasih Atas Kunjungan Anda"];
+
+    // --- Initialize data from localStorage or defaults ---
+    let savedData = null;
+    try { savedData = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
+
+    let customItems = savedData && savedData.items ? savedData.items.map(it => ({...it})) : defaultItems.map(it => ({...it}));
+    let customCosts = savedData && savedData.costs ? savedData.costs.map(c => ({...c})) : defaultCosts.map(c => ({...c}));
+    let customNotes = savedData && savedData.notes ? [...savedData.notes] : [...defaultNotes];
+
+    // Restore field values from saved data
+    if (savedData && savedData.fields) {
+      persistFieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && savedData.fields[id] !== undefined) {
+          el.value = savedData.fields[id];
+        }
+      });
+    }
+
+    // Set date/time to current if not restored
+    const dateInput = document.getElementById("custom-date-time");
+    if (dateInput && !dateInput.value) {
+      const today = new Date();
+      const localDateTime = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      dateInput.value = localDateTime;
+    }
+
+    // --- Save to localStorage ---
+    let saveTimeout = null;
+    function saveCustomData() {
+      const data = { fields: {}, items: customItems, costs: customCosts, notes: customNotes };
+      persistFieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) data.fields[id] = el.value;
+      });
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+      showSaveIndicator();
+    }
+
+    function debouncedSave() {
+      if (saveTimeout) clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(saveCustomData, 300);
+    }
+
+    // --- Save Indicator ---
+    function showSaveIndicator() {
+      const indicator = document.getElementById("save-indicator");
+      if (!indicator) return;
+      indicator.classList.add("saved");
+      indicator.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+        <span>Tersimpan otomatis</span>
+      `;
+      clearTimeout(indicator._resetTimer);
+      indicator._resetTimer = setTimeout(() => {
+        indicator.classList.remove("saved");
+        indicator.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+          <span>Tersimpan</span>
+        `;
+      }, 2000);
+    }
+
+    // --- Reset data ---
+    window.resetCustomData = () => {
+      if (!confirm("Hapus semua data tersimpan dan kembalikan ke default?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    };
 
     // --- Core Functions (Hoisted) ---
     function formatNum(num) { 
@@ -817,14 +904,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Export Functions to Window Immediately ---
     window.updateCustomDisplay = updateCustomDisplay;
-    window.addCustomItem = () => { customItems.push({ desc: "", qty: 1, price: 0 }); renderCustomItems(); updateCustomDisplay(); };
-    window.addCustomCost = () => { customCosts.push({ name: "", amount: 0 }); renderCustomCosts(); updateCustomDisplay(); };
-    window.addCustomNote = () => { customNotes.push(""); renderCustomNotes(); updateCustomDisplay(); };
-    window.editCIT = (i, k, v) => { if(customItems[i]) { customItems[i][k] = (k==="qty"||k==="price") ? parseFloat(v)||0 : v; updateCustomDisplay(); } };
-    window.removeCIT = (i) => { customItems.splice(i,1); renderCustomItems(); updateCustomDisplay(); };
-    window.editCC = (i, k, v) => { if(customCosts[i]) { customCosts[i][k] = (k==="amount") ? parseFloat(v)||0 : v; updateCustomDisplay(); } };
-    window.removeCC = (i) => { customCosts.splice(i,1); renderCustomCosts(); updateCustomDisplay(); };
-    window.editCN = (i, v) => { if(customNotes[i] !== undefined) { customNotes[i] = v; updateCustomDisplay(); } };
+    window.addCustomItem = () => { customItems.push({ desc: "", qty: 1, price: 0 }); renderCustomItems(); updateCustomDisplay(); debouncedSave(); };
+    window.addCustomCost = () => { customCosts.push({ name: "", amount: 0 }); renderCustomCosts(); updateCustomDisplay(); debouncedSave(); };
+    window.addCustomNote = () => { customNotes.push(""); renderCustomNotes(); updateCustomDisplay(); debouncedSave(); };
+    window.editCIT = (i, k, v) => { if(customItems[i]) { customItems[i][k] = (k==="qty"||k==="price") ? parseFloat(v)||0 : v; updateCustomDisplay(); debouncedSave(); } };
+    window.removeCIT = (i) => { customItems.splice(i,1); renderCustomItems(); updateCustomDisplay(); debouncedSave(); };
+    window.editCC = (i, k, v) => { if(customCosts[i]) { customCosts[i][k] = (k==="amount") ? parseFloat(v)||0 : v; updateCustomDisplay(); debouncedSave(); } };
+    window.removeCC = (i) => { customCosts.splice(i,1); renderCustomCosts(); updateCustomDisplay(); debouncedSave(); };
+    window.editCN = (i, v) => { if(customNotes[i] !== undefined) { customNotes[i] = v; updateCustomDisplay(); debouncedSave(); } };
 
     const presetSelect = document.getElementById("custom-preset");
     const docFormat = document.getElementById("custom-print-format");
@@ -1438,14 +1525,15 @@ document.addEventListener("DOMContentLoaded", () => {
       "custom-label-qty", "custom-label-harga", "custom-label-total-col", 
       "custom-label-subtotal", "custom-label-total", "custom-label-pembayaran", 
       "custom-label-sig-left", "custom-label-sig-right", "custom-label-th-no", 
-      "custom-label-th-tgl", "custom-label-th-kasir", "custom-print-format", "custom-preset", "custom-orientation"
+      "custom-label-th-tgl", "custom-label-th-kasir", "custom-print-format", "custom-preset", "custom-orientation",
+      "custom-paper-width", "custom-paper-height"
     ];
     
     eventIds.forEach(id => {
       const el = document.getElementById(id);
       if (el) {
-        el.addEventListener("input", () => { console.log("Input on:", id); updateCustomDisplay(); });
-        el.addEventListener("change", () => { console.log("Change on:", id); updateCustomDisplay(); });
+        el.addEventListener("input", () => { updateCustomDisplay(); debouncedSave(); });
+        el.addEventListener("change", () => { updateCustomDisplay(); debouncedSave(); });
       }
     });
 

@@ -12,264 +12,293 @@
     <div class="control-panel no-print">
         <a href="index.html" class="btn-back-dashboard">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            Kembali ke Dashboard
+            Kembali
         </a>
         <h1>Nota Custom</h1>
+        <p class="panel-subtitle">Buat nota sesuai kebutuhan Anda</p>
 
         <div id="custom-inputs" class="template-inputs">
             <!-- FORMAT & PRESET -->
-            <h3>Format & Template</h3>
-            <div class="form-group">
-                <label>Format Cetak</label>
-                <select id="custom-print-format">
-                    <option value="a4">A4 (Standar)</option>
-                    <option value="thermal-80">Thermal 80mm</option>
-                    <option value="thermal-58">Thermal 58mm</option>
-                    <option value="custom-size">Custom (Ukuran Sendiri)</option>
-                </select>
-            </div>
-            <div class="form-group" id="grp-orientation">
-                <label>Orientasi (A4)</label>
-                <select id="custom-orientation">
-                    <option value="portrait">Portrait (Tegak)</option>
-                    <option value="landscape">Landscape (Mendatar)</option>
-                </select>
-            </div>
-            <div id="grp-custom-size" style="display: none;">
-                <div class="form-group">
-                    <label>Lebar (mm)</label>
-                    <input type="number" id="custom-paper-width" value="210" min="50" max="500" />
+            <details open>
+                <summary>Format & Template</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Format Cetak</label>
+                        <select id="custom-print-format">
+                            <option value="a4">A4 (Standar)</option>
+                            <option value="thermal-80">Thermal 80mm</option>
+                            <option value="thermal-58">Thermal 58mm</option>
+                            <option value="custom-size">Custom (Ukuran Sendiri)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="grp-orientation">
+                        <label>Orientasi (A4)</label>
+                        <select id="custom-orientation">
+                            <option value="portrait">Portrait (Tegak)</option>
+                            <option value="landscape">Landscape (Mendatar)</option>
+                        </select>
+                    </div>
+                    <div id="grp-custom-size" style="display: none;">
+                        <div class="form-group">
+                            <label>Lebar (mm)</label>
+                            <input type="number" id="custom-paper-width" value="210" min="50" max="500" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tinggi (mm)</label>
+                            <input type="number" id="custom-paper-height" value="297" min="50" max="800" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Template Preset</label>
+                        <select id="custom-preset">
+                            <option value="custom">Custom (Kosong)</option>
+                            <option value="indomaret">Indomaret</option>
+                            <option value="alfamart">Alfamart</option>
+                            <option value="minimarket">Minimarket Umum</option>
+                            <option value="toko">Toko / Retail</option>
+                            <option value="cafe">Cafe / Restoran</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Tinggi (mm)</label>
-                    <input type="number" id="custom-paper-height" value="297" min="50" max="800" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Template Preset</label>
-                <select id="custom-preset">
-                    <option value="custom">Custom (Kosong)</option>
-                    <option value="indomaret">Indomaret</option>
-                    <option value="alfamart">Alfamart</option>
-                    <option value="minimarket">Minimarket Umum</option>
-                    <option value="toko">Toko / Retail</option>
-                    <option value="cafe">Cafe / Restoran</option>
-                </select>
-            </div>
-
-            <hr class="panel-divider" />
+            </details>
 
             <!-- HEADER INFO -->
-            <h3>Informasi Bisnis</h3>
-            <div class="form-group">
-                <label>Nama Bisnis / Toko</label>
-                <input type="text" id="custom-business-name" value="TOKO SAYA" />
-            </div>
-            <div class="form-group">
-                <label>Alamat Bisnis</label>
-                <input type="text" id="custom-business-address" value="Jl. Contoh No. 123, Kota" />
-            </div>
-            <div class="form-group">
-                <label>Telepon Bisnis</label>
-                <input type="text" id="custom-business-phone" value="+62 812-3456-7890" />
-            </div>
-            <div class="form-group">
-                <label>Upload Logo Bisnis</label>
-                <input type="file" id="custom-logo-upload" accept="image/*" />
-            </div>
-
-            <hr class="panel-divider" />
+            <details open>
+                <summary>Informasi Bisnis</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Nama Bisnis / Toko</label>
+                        <input type="text" id="custom-business-name" value="TOKO SAYA" />
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat Bisnis</label>
+                        <input type="text" id="custom-business-address" value="Jl. Contoh No. 123, Kota" />
+                    </div>
+                    <div class="form-group">
+                        <label>Telepon Bisnis</label>
+                        <input type="text" id="custom-business-phone" value="+62 812-3456-7890" />
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Logo Bisnis</label>
+                        <input type="file" id="custom-logo-upload" accept="image/*" />
+                    </div>
+                </div>
+            </details>
 
             <!-- NOTA META -->
-            <h3>Detail Nota</h3>
-            <div class="form-group">
-                <label>No. Dokumen / Slip</label>
-                <input type="text" id="custom-doc-number" value="INV-001" />
-            </div>
-            <div class="form-group" id="grp-merchant" style="display: none;">
-                <label>Merchant / Biller (Indomaret)</label>
-                <input type="text" id="custom-merchant" value="Google Play Indonesia" />
-            </div>
-            <div class="form-group" id="grp-notagihan" style="display: none;">
-                <label>No. Tagihan</label>
-                <input type="text" id="custom-notagihan" value="8825800134190709" />
-            </div>
-            <div class="form-group">
-                <label>Nama Kasir</label>
-                <input type="text" id="custom-kasir" value="ADI" />
-            </div>
-            <div class="form-group" id="grp-ponta" style="display: none;">
-                <label>No. Ponta (Alfamart)</label>
-                <input type="text" id="custom-ponta" value="" placeholder="0123456789" />
-            </div>
-            <div class="form-group">
-                <label>Tanggal & Waktu</label>
-                <input type="datetime-local" id="custom-date-time" />
-            </div>
-
-            <hr class="panel-divider" />
+            <details open>
+                <summary>Detail Nota</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>No. Dokumen / Slip</label>
+                        <input type="text" id="custom-doc-number" value="INV-001" />
+                    </div>
+                    <div class="form-group" id="grp-merchant" style="display: none;">
+                        <label>Merchant / Biller (Indomaret)</label>
+                        <input type="text" id="custom-merchant" value="Google Play Indonesia" />
+                    </div>
+                    <div class="form-group" id="grp-notagihan" style="display: none;">
+                        <label>No. Tagihan</label>
+                        <input type="text" id="custom-notagihan" value="8825800134190709" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Kasir</label>
+                        <input type="text" id="custom-kasir" value="ADI" />
+                    </div>
+                    <div class="form-group" id="grp-ponta" style="display: none;">
+                        <label>No. Ponta (Alfamart)</label>
+                        <input type="text" id="custom-ponta" value="" placeholder="0123456789" />
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal & Waktu</label>
+                        <input type="datetime-local" id="custom-date-time" />
+                    </div>
+                </div>
+            </details>
 
             <!-- CUSTOMER INFO -->
-            <h3>Info Pelanggan</h3>
-            <div class="form-group">
-                <label>Nama Pelanggan</label>
-                <input type="text" id="custom-customer-name" value="" placeholder="Nama pelanggan..." />
-            </div>
-            <div class="form-group">
-                <label>Alamat Pelanggan</label>
-                <input type="text" id="custom-customer-address" value="" placeholder="Alamat pelanggan..." />
-            </div>
-            <div class="form-group">
-                <label>Telepon Pelanggan</label>
-                <input type="text" id="custom-customer-phone" value="" placeholder="No. telepon..." />
-            </div>
-
-            <hr class="panel-divider" />
+            <details>
+                <summary>Info Pelanggan</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Nama Pelanggan</label>
+                        <input type="text" id="custom-customer-name" value="" placeholder="Nama pelanggan..." />
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat Pelanggan</label>
+                        <input type="text" id="custom-customer-address" value="" placeholder="Alamat pelanggan..." />
+                    </div>
+                    <div class="form-group">
+                        <label>Telepon Pelanggan</label>
+                        <input type="text" id="custom-customer-phone" value="" placeholder="No. telepon..." />
+                    </div>
+                </div>
+            </details>
 
             <!-- ITEMS -->
-            <h3>Daftar Item</h3>
-            <div id="custom-items-container"></div>
-            <button onclick="addCustomItem()" class="btn-add">+ Tambah Item</button>
-
-            <hr class="panel-divider" />
+            <details open>
+                <summary>Daftar Item</summary>
+                <div class="section-content">
+                    <div id="custom-items-container"></div>
+                    <button onclick="addCustomItem()" class="btn-add">+ Tambah Item</button>
+                </div>
+            </details>
 
             <!-- COST DETAILS -->
-            <h3>Rincian Biaya</h3>
-            <div id="custom-costs-container"></div>
-            <button onclick="addCustomCost()" class="btn-add" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border-color: rgba(99, 102, 241, 0.2);">+ Tambah Biaya Tambahan</button>
-
-            <hr class="panel-divider" />
+            <details>
+                <summary>Rincian Biaya Tambahan</summary>
+                <div class="section-content">
+                    <div id="custom-costs-container"></div>
+                    <button onclick="addCustomCost()" class="btn-add">+ Tambah Biaya</button>
+                </div>
+            </details>
 
             <!-- PAYMENT -->
-            <h3>Pembayaran</h3>
-            <div class="form-group">
-                <label>Metode Pembayaran</label>
-                <select id="custom-payment-method">
-                    <option value="cash">Cash / Tunai</option>
-                    <option value="transfer">Transfer Bank</option>
-                    <option value="ewallet">E-Wallet (GoPay, OVO, Dana, dll)</option>
-                    <option value="qris">QRIS</option>
-                    <option value="cod">COD (Cash on Delivery)</option>
-                    <option value="credit">Kartu Kredit</option>
-                    <option value="custom">Lainnya (Custom)</option>
-                </select>
-            </div>
-            <div class="form-group" id="custom-payment-custom-group" style="display: none;">
-                <label>Nama Metode Custom</label>
-                <input type="text" id="custom-payment-custom-name" value="" placeholder="Contoh: Cicilan 3 bulan" />
-            </div>
-            <div class="form-group" id="custom-bank-group" style="display: none;">
-                <label>Nama Bank / E-Wallet</label>
-                <input type="text" id="custom-bank-name" value="" placeholder="BCA / BRI / GoPay..." />
-            </div>
-            <div class="form-group" id="custom-account-group" style="display: none;">
-                <label>No. Rekening / ID</label>
-                <input type="text" id="custom-account-number" value="" placeholder="1234567890" />
-            </div>
-            <div class="form-group" id="custom-account-holder-group" style="display: none;">
-                <label>Atas Nama</label>
-                <input type="text" id="custom-account-holder" value="" placeholder="Nama pemilik rekening" />
-            </div>
-            <div class="form-group">
-                <label>Status Pembayaran</label>
-                <select id="custom-payment-status">
-                    <option value="LUNAS">LUNAS</option>
-                    <option value="BELUM LUNAS">BELUM LUNAS</option>
-                    <option value="DP">DP (Uang Muka)</option>
-                    <option value="CICILAN">CICILAN</option>
-                </select>
-            </div>
-            <div class="form-group" id="custom-dp-group" style="display: none;">
-                <label>Jumlah DP / Sudah Dibayar</label>
-                <input type="number" id="custom-dp-amount" value="0" />
-            </div>
-
-            <hr class="panel-divider" />
+            <details>
+                <summary>Pembayaran</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Metode Pembayaran</label>
+                        <select id="custom-payment-method">
+                            <option value="cash">Cash / Tunai</option>
+                            <option value="transfer">Transfer Bank</option>
+                            <option value="ewallet">E-Wallet (GoPay, OVO, Dana, dll)</option>
+                            <option value="qris">QRIS</option>
+                            <option value="cod">COD (Cash on Delivery)</option>
+                            <option value="credit">Kartu Kredit</option>
+                            <option value="custom">Lainnya (Custom)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="custom-payment-custom-group" style="display: none;">
+                        <label>Nama Metode Custom</label>
+                        <input type="text" id="custom-payment-custom-name" value="" placeholder="Contoh: Cicilan 3 bulan" />
+                    </div>
+                    <div class="form-group" id="custom-bank-group" style="display: none;">
+                        <label>Nama Bank / E-Wallet</label>
+                        <input type="text" id="custom-bank-name" value="" placeholder="BCA / BRI / GoPay..." />
+                    </div>
+                    <div class="form-group" id="custom-account-group" style="display: none;">
+                        <label>No. Rekening / ID</label>
+                        <input type="text" id="custom-account-number" value="" placeholder="1234567890" />
+                    </div>
+                    <div class="form-group" id="custom-account-holder-group" style="display: none;">
+                        <label>Atas Nama</label>
+                        <input type="text" id="custom-account-holder" value="" placeholder="Nama pemilik rekening" />
+                    </div>
+                    <div class="form-group">
+                        <label>Status Pembayaran</label>
+                        <select id="custom-payment-status">
+                            <option value="LUNAS">LUNAS</option>
+                            <option value="BELUM LUNAS">BELUM LUNAS</option>
+                            <option value="DP">DP (Uang Muka)</option>
+                            <option value="CICILAN">CICILAN</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="custom-dp-group" style="display: none;">
+                        <label>Jumlah DP / Sudah Dibayar</label>
+                        <input type="number" id="custom-dp-amount" value="0" />
+                    </div>
+                </div>
+            </details>
 
             <!-- NOTES -->
-            <h3>Catatan</h3>
-            <div id="custom-notes-container"></div>
-            <button onclick="addCustomNote()" class="btn-add" style="background: rgba(251, 191, 36, 0.12); color: #fbbf24; border-color: rgba(251, 191, 36, 0.2);">+ Tambah Catatan</button>
-
-            <hr class="panel-divider" />
+            <details>
+                <summary>Catatan</summary>
+                <div class="section-content">
+                    <div id="custom-notes-container"></div>
+                    <button onclick="addCustomNote()" class="btn-add">+ Tambah Catatan</button>
+                </div>
+            </details>
 
             <!-- EDITABLE LABELS -->
-            <h3>Keterangan / Label Custom</h3>
-            <div class="form-group">
-                <label>Tipe Dokumen (di nota A4)</label>
-                <input type="text" id="custom-label-doctype" value="NOTA" />
-            </div>
-            <div class="form-group">
-                <label>Label "No."</label>
-                <input type="text" id="custom-label-no" value="No." />
-            </div>
-            <div class="form-group">
-                <label>Label "Tanggal"</label>
-                <input type="text" id="custom-label-tanggal" value="Tanggal" />
-            </div>
-            <div class="form-group">
-                <label>Label "Kepada"</label>
-                <input type="text" id="custom-label-kepada" value="Kepada" />
-            </div>
-            <div class="form-group">
-                <label>Label "Alamat"</label>
-                <input type="text" id="custom-label-alamat" value="Alamat" />
-            </div>
-            <div class="form-group">
-                <label>Label "Telp"</label>
-                <input type="text" id="custom-label-telp" value="Telp" />
-            </div>
-            <div class="form-group">
-                <label>Label Kolom "Deskripsi"</label>
-                <input type="text" id="custom-label-deskripsi" value="Deskripsi" />
-            </div>
-            <div class="form-group">
-                <label>Label Kolom "Qty"</label>
-                <input type="text" id="custom-label-qty" value="Qty" />
-            </div>
-            <div class="form-group">
-                <label>Label Kolom "Harga"</label>
-                <input type="text" id="custom-label-harga" value="Harga" />
-            </div>
-            <div class="form-group">
-                <label>Label Kolom "Total"</label>
-                <input type="text" id="custom-label-total-col" value="Total" />
-            </div>
-            <div class="form-group">
-                <label>Label "Subtotal"</label>
-                <input type="text" id="custom-label-subtotal" value="Subtotal" />
-            </div>
-            <div class="form-group">
-                <label>Label "Total"</label>
-                <input type="text" id="custom-label-total" value="Total" />
-            </div>
-            <div class="form-group">
-                <label>Label "Pembayaran"</label>
-                <input type="text" id="custom-label-pembayaran" value="Pembayaran" />
-            </div>
-            <div class="form-group">
-                <label>Label Tanda Tangan Kiri</label>
-                <input type="text" id="custom-label-sig-left" value="Hormat Kami," />
-            </div>
-            <div class="form-group">
-                <label>Label Tanda Tangan Kanan</label>
-                <input type="text" id="custom-label-sig-right" value="Diterima," />
-            </div>
-            <div class="form-group">
-                <label>Label "No" (thermal)</label>
-                <input type="text" id="custom-label-th-no" value="No" />
-            </div>
-            <div class="form-group">
-                <label>Label "Tgl" (thermal)</label>
-                <input type="text" id="custom-label-th-tgl" value="Tgl" />
-            </div>
-            <div class="form-group">
-                <label>Label "Kasir" (thermal)</label>
-                <input type="text" id="custom-label-th-kasir" value="Kasir" />
-            </div>
+            <details>
+                <summary>Label Custom</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Tipe Dokumen (di nota A4)</label>
+                        <input type="text" id="custom-label-doctype" value="NOTA" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "No."</label>
+                        <input type="text" id="custom-label-no" value="No." />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Tanggal"</label>
+                        <input type="text" id="custom-label-tanggal" value="Tanggal" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Kepada"</label>
+                        <input type="text" id="custom-label-kepada" value="Kepada" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Alamat"</label>
+                        <input type="text" id="custom-label-alamat" value="Alamat" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Telp"</label>
+                        <input type="text" id="custom-label-telp" value="Telp" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Kolom "Deskripsi"</label>
+                        <input type="text" id="custom-label-deskripsi" value="Deskripsi" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Kolom "Qty"</label>
+                        <input type="text" id="custom-label-qty" value="Qty" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Kolom "Harga"</label>
+                        <input type="text" id="custom-label-harga" value="Harga" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Kolom "Total"</label>
+                        <input type="text" id="custom-label-total-col" value="Total" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Subtotal"</label>
+                        <input type="text" id="custom-label-subtotal" value="Subtotal" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Total"</label>
+                        <input type="text" id="custom-label-total" value="Total" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Pembayaran"</label>
+                        <input type="text" id="custom-label-pembayaran" value="Pembayaran" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Tanda Tangan Kiri</label>
+                        <input type="text" id="custom-label-sig-left" value="Hormat Kami," />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Tanda Tangan Kanan</label>
+                        <input type="text" id="custom-label-sig-right" value="Diterima," />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "No" (thermal)</label>
+                        <input type="text" id="custom-label-th-no" value="No" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Tgl" (thermal)</label>
+                        <input type="text" id="custom-label-th-tgl" value="Tgl" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Kasir" (thermal)</label>
+                        <input type="text" id="custom-label-th-kasir" value="Kasir" />
+                    </div>
+                </div>
+            </details>
         </div>
 
-        <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+        <!-- Bottom Actions -->
+        <div class="panel-actions">
+            <div class="save-indicator" id="save-indicator">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                <span>Belum ada perubahan</span>
+            </div>
+            <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+            <button onclick="resetCustomData()" class="btn-reset">Reset Data</button>
+        </div>
     </div>
 
     <!-- Right Side: Nota Preview -->
