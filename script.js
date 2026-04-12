@@ -1032,10 +1032,10 @@ document.addEventListener("DOMContentLoaded", () => {
               box-sizing: border-box !important;
             }
             .thermal-receipt {
-              width: 48mm !important;
-              max-width: 48mm !important;
-              padding: 2mm 3mm !important;
-              margin: 0 auto !important;
+              width: 100% !important;
+              max-width: 100% !important;
+              padding: 2mm 5mm !important;
+              margin: 0 !important;
               box-shadow: none !important;
               border: none !important;
               font-size: 8pt !important;
@@ -1069,10 +1069,10 @@ document.addEventListener("DOMContentLoaded", () => {
               box-sizing: border-box !important;
             }
             .thermal-receipt {
-              width: 72mm !important;
-              max-width: 72mm !important;
-              padding: 2mm 4mm !important;
-              margin: 0 auto !important;
+              width: 100% !important;
+              max-width: 100% !important;
+              padding: 2mm 6mm !important;
+              margin: 0 !important;
               box-shadow: none !important;
               border: none !important;
               font-size: 10pt !important;
