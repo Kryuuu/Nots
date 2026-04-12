@@ -1034,7 +1034,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .thermal-receipt {
               width: 48mm !important;
               max-width: 48mm !important;
-              padding: 2mm 0 !important;
+              padding: 2mm 3mm !important;
               margin: 0 auto !important;
               box-shadow: none !important;
               border: none !important;
@@ -1071,7 +1071,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .thermal-receipt {
               width: 72mm !important;
               max-width: 72mm !important;
-              padding: 2mm 0 !important;
+              padding: 2mm 4mm !important;
               margin: 0 auto !important;
               box-shadow: none !important;
               border: none !important;
