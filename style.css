@@ -158,20 +158,26 @@ body.dashboard-body {
 /* -------------------------------------------------------------------------- */
 
 :root {
-  --bg-color: #f5f5f5;
+  --bg-color: #111318;
   --paper-color: #ffffff;
   --text-color: #000000;
   --border-color: #000000;
   --shopee-orange: #ee4d2d;
-  --accent-primary: #2563eb;
-  --accent-primary-light: #3b82f6;
-  --accent-secondary: #1d4ed8;
-  --panel-bg: #ffffff;
-  --input-bg: #f9fafb;
-  --input-border: #e5e7eb;
-  --input-focus-border: #93c5fd;
-  --label-color: #6b7280;
-  --panel-text: #1f2937;
+  --accent-primary: #10b981;
+  --accent-primary-light: #34d399;
+  --accent-secondary: #059669;
+  --panel-bg: #0f1117;
+  --panel-surface: #181a20;
+  --panel-surface-hover: #1e2028;
+  --panel-border: rgba(255, 255, 255, 0.06);
+  --panel-border-hover: rgba(255, 255, 255, 0.1);
+  --input-bg: #181a20;
+  --input-border: rgba(255, 255, 255, 0.08);
+  --input-focus-border: rgba(16, 185, 129, 0.5);
+  --label-color: rgba(255, 255, 255, 0.4);
+  --panel-text: rgba(255, 255, 255, 0.88);
+  --panel-text-dim: rgba(255, 255, 255, 0.5);
+  --panel-text-muted: rgba(255, 255, 255, 0.3);
 }
 
 body.app-body {
@@ -187,7 +193,7 @@ body.app-body {
   width: 380px;
   background: var(--panel-bg);
   padding: 28px 24px;
-  box-shadow: 1px 0 0 #e5e7eb;
+  box-shadow: 1px 0 0 var(--panel-border);
   overflow-y: auto;
   height: 100vh;
   box-sizing: border-box;
@@ -206,17 +212,17 @@ body.app-body {
   background: transparent;
 }
 .control-panel::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }
 .control-panel::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .control-panel .btn-back-dashboard {
-  background: #f3f4f6;
-  color: #6b7280;
-  border: 1px solid #e5e7eb;
+  background: var(--panel-surface);
+  color: var(--panel-text-dim);
+  border: 1px solid var(--panel-border);
   border-radius: 8px;
   padding: 8px 14px;
   font-size: 13px;
@@ -225,9 +231,9 @@ body.app-body {
 }
 
 .control-panel .btn-back-dashboard:hover {
-  background: #e5e7eb;
-  color: #111827;
-  border-color: #d1d5db;
+  background: var(--panel-surface-hover);
+  color: var(--panel-text);
+  border-color: var(--panel-border-hover);
 }
 
 .control-panel h1 {
@@ -235,13 +241,13 @@ body.app-body {
   font-size: 20px;
   font-weight: 700;
   margin: 0 0 4px 0;
-  color: #111827;
+  color: #fff;
   letter-spacing: -0.3px;
 }
 
 .control-panel .panel-subtitle {
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--panel-text-muted);
   margin: 0 0 20px 0;
 }
 
@@ -249,7 +255,7 @@ body.app-body {
   font-family: "Outfit", sans-serif;
   font-size: 11px;
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--panel-text-muted);
   text-transform: uppercase;
   letter-spacing: 1.2px;
   margin: 0 0 12px;
@@ -259,22 +265,22 @@ body.app-body {
 
 .panel-divider {
   border: none;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--panel-border);
   margin: 16px 0;
 }
 
 /* ===== Collapsible Sections ===== */
 .control-panel details {
   margin-bottom: 4px;
-  border: 1px solid #f3f4f6;
+  border: 1px solid var(--panel-border);
   border-radius: 10px;
   overflow: hidden;
   transition: all 0.2s ease;
 }
 
 .control-panel details[open] {
-  border-color: #e5e7eb;
-  background: #fafafa;
+  border-color: var(--panel-border-hover);
+  background: var(--panel-surface);
 }
 
 .control-panel details summary {
@@ -285,7 +291,7 @@ body.app-body {
   font-family: "Outfit", sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--panel-text);
   cursor: pointer;
   user-select: none;
   list-style: none;
@@ -301,7 +307,7 @@ body.app-body {
   display: inline-block;
   width: 16px;
   height: 16px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
   background-size: contain;
   background-repeat: no-repeat;
   flex-shrink: 0;
@@ -313,7 +319,7 @@ body.app-body {
 }
 
 .control-panel details summary:hover {
-  background: #f3f4f6;
+  background: var(--panel-surface-hover);
 }
 
 .control-panel details .section-content {
@@ -344,7 +350,7 @@ body.app-body {
   border-radius: 8px;
   font-family: "Inter", sans-serif;
   font-size: 13px;
-  color: #1f2937;
+  color: var(--panel-text);
   box-sizing: border-box;
   transition: all 0.2s ease;
   outline: none;
@@ -352,21 +358,21 @@ body.app-body {
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: #d1d5db;
+  color: var(--panel-text-muted);
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   border-color: var(--input-focus-border);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+  background: #1a1d25;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08);
 }
 
 .form-group select {
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
@@ -374,14 +380,14 @@ body.app-body {
 }
 
 .form-group select option {
-  background: #fff;
-  color: #1f2937;
+  background: #1a1d25;
+  color: #fff;
 }
 
 /* ===== Item Rows ===== */
 .item-row {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--panel-surface);
+  border: 1px solid var(--panel-border);
   padding: 12px;
   border-radius: 10px;
   margin-bottom: 8px;
@@ -389,38 +395,37 @@ body.app-body {
 }
 
 .item-row:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-color: var(--panel-border-hover);
 }
 
 .item-row input {
   width: 100%;
   margin-bottom: 6px;
   padding: 7px 10px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
   box-sizing: border-box;
   font-family: "Inter", sans-serif;
   font-size: 12px;
-  color: #1f2937;
+  color: var(--panel-text);
   transition: all 0.15s ease;
   outline: none;
 }
 
 .item-row input:focus {
-  border-color: #93c5fd;
-  background: #fff;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.06);
+  border-color: var(--input-focus-border);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.06);
 }
 
 .item-row input::placeholder {
-  color: #d1d5db;
+  color: var(--panel-text-muted);
 }
 
 /* ===== Buttons ===== */
 .btn-print {
-  background: #111827;
+  background: var(--accent-primary);
   color: #fff;
   width: 100%;
   padding: 13px;
@@ -436,9 +441,9 @@ body.app-body {
 }
 
 .btn-print:hover {
-  background: #1f2937;
+  background: var(--accent-primary-light);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
 }
 
 .btn-print:active {
@@ -446,11 +451,11 @@ body.app-body {
 }
 
 .btn-reset {
-  background: #fff;
-  color: #6b7280;
+  background: transparent;
+  color: var(--panel-text-dim);
   width: 100%;
   padding: 11px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--panel-border);
   border-radius: 10px;
   font-family: "Outfit", sans-serif;
   font-size: 13px;
@@ -461,17 +466,17 @@ body.app-body {
 }
 
 .btn-reset:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  color: #374151;
+  background: var(--panel-surface);
+  border-color: var(--panel-border-hover);
+  color: var(--panel-text);
 }
 
 .btn-add {
-  background: #f9fafb;
-  color: #374151;
+  background: transparent;
+  color: var(--panel-text-dim);
   width: 100%;
   padding: 9px;
-  border: 1px dashed #d1d5db;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   font-family: "Outfit", sans-serif;
   font-size: 12px;
@@ -483,9 +488,9 @@ body.app-body {
 }
 
 .btn-add:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
-  color: #111827;
+  background: var(--panel-surface);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--panel-text);
 }
 
 /* ===== Save Indicator ===== */
@@ -495,13 +500,13 @@ body.app-body {
   justify-content: center;
   gap: 6px;
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--panel-text-muted);
   padding: 8px 0;
   transition: all 0.3s ease;
 }
 
 .save-indicator.saved {
-  color: #22c55e;
+  color: var(--accent-primary);
 }
 
 .save-indicator svg {
@@ -513,9 +518,9 @@ body.app-body {
 .panel-actions {
   position: sticky;
   bottom: 0;
-  background: #fff;
+  background: var(--panel-bg);
   padding: 16px 0 0;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--panel-border);
   margin-top: 16px;
 }
 
@@ -754,7 +759,7 @@ body.app-body {
     height: auto;
     max-height: none;
     padding: 20px 16px;
-    box-shadow: 0 1px 0 #e5e7eb;
+    box-shadow: 0 1px 0 var(--panel-border);
   }
 
   .control-panel h1 {
