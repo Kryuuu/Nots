@@ -53,23 +53,37 @@
         .progress-bar { width:100%; height:6px; background:rgba(255,255,255,0.06); border-radius:3px; margin-top:16px; overflow:hidden; display:none; }
         .progress-bar .fill { height:100%; width:0%; background:linear-gradient(90deg,#6366f1,#a78bfa); border-radius:3px; transition:width .3s; }
         .status-text { text-align:center; font-size:.85rem; color:rgba(255,255,255,0.4); margin-top:10px; }
+        .context-input { width:100%; padding:10px 14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:#e0e0e0; font-family:inherit; font-size:.85rem; outline:none; margin-top:12px; transition:border-color .2s; }
+        .context-input:focus { border-color:rgba(99,102,241,0.5); }
+        .context-input::placeholder { color:rgba(255,255,255,0.2); }
+        .context-hint { font-size:.73rem; color:rgba(255,255,255,0.25); margin-top:6px; margin-bottom:0; line-height:1.4; }
 
         /* Result */
-        .result-area { min-height:160px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:18px; font-family:'Inter',monospace; font-size:.9rem; line-height:1.7; color:rgba(255,255,255,0.8); white-space:pre-wrap; word-wrap:break-word; max-height:400px; overflow-y:auto; }
-        .result-area:empty::before { content:'Hasil transkripsi akan muncul di sini...'; color:rgba(255,255,255,0.2); }
-        .result-actions { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
-        .btn-action { padding:10px 18px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.7); font-family:inherit; font-size:.85rem; font-weight:500; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
-        .btn-action:hover { background:rgba(255,255,255,0.12); color:#fff; }
+        .result-area { min-height:200px; background:linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 100%); border:1px solid rgba(255,255,255,0.07); border-radius:16px; padding:0; font-family:'Inter',sans-serif; font-size:.95rem; color:rgba(255,255,255,0.88); max-height:560px; overflow-y:auto; scroll-behavior:smooth; position:relative; }
+        .result-area::-webkit-scrollbar { width:5px; } .result-area::-webkit-scrollbar-track { background:transparent; } .result-area::-webkit-scrollbar-thumb { background:rgba(139,92,246,0.3); border-radius:10px; } .result-area::-webkit-scrollbar-thumb:hover { background:rgba(139,92,246,0.5); }
+        .result-area:empty { display:flex; align-items:center; justify-content:center; }
+        .result-area:empty::before { content:'Hasil transkripsi akan muncul di sini...'; color:rgba(255,255,255,0.12); font-style:italic; font-size:.9rem; padding:60px 20px; }
+        .result-inner { padding:28px 32px; }
+        .result-paragraph { margin-bottom:18px; line-height:1.9; letter-spacing:0.015em; color:rgba(255,255,255,0.88); font-size:.95rem; text-align:left; word-wrap:break-word; }
+        .result-paragraph:last-child { margin-bottom:0; }
+        .result-paragraph .sentence { transition:background .2s; border-radius:3px; padding:1px 0; }
+        .result-paragraph .sentence:hover { background:rgba(139,92,246,0.12); }
+        .chunk-label { display:inline-block; background:linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15)); border:1px solid rgba(139,92,246,0.2); color:#a78bfa; font-size:.7rem; font-weight:600; padding:2px 10px; border-radius:20px; margin-bottom:10px; letter-spacing:.5px; text-transform:uppercase; }
+        .result-toolbar { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; background:rgba(0,0,0,0.15); border-bottom:1px solid rgba(255,255,255,0.05); border-radius:16px 16px 0 0; position:sticky; top:0; z-index:2; backdrop-filter:blur(8px); }
+        .result-toolbar-label { font-size:.75rem; color:rgba(255,255,255,0.3); font-weight:500; letter-spacing:.3px; display:flex; align-items:center; gap:6px; }
+        .result-toolbar-actions { display:flex; gap:6px; }
+        .toolbar-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); color:rgba(255,255,255,0.5); padding:4px 10px; border-radius:6px; font-size:.72rem; font-family:inherit; cursor:pointer; transition:all .2s; }
+        .toolbar-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+        .result-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+        .result-stats { display:flex; gap:16px; flex-wrap:wrap; }
+        .stat-badge { background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.15); padding:5px 12px; border-radius:20px; font-size:.75rem; color:#c4b5fd; font-weight:500; display:inline-flex; align-items:center; gap:5px; }
+        .result-actions { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+        .btn-action { padding:10px 20px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.7); font-family:inherit; font-size:.85rem; font-weight:500; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:7px; }
+        .btn-action:hover { background:rgba(255,255,255,0.12); color:#fff; transform:translateY(-1px); }
         .btn-action.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; }
+        .btn-action.primary:hover { box-shadow:0 4px 16px rgba(99,102,241,0.35); }
         .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(80px); background:#10b981; color:#fff; padding:12px 24px; border-radius:10px; font-size:.9rem; font-weight:500; opacity:0; transition:all .4s; z-index:999; pointer-events:none; }
         .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-        .api-key-section { margin-top:16px; }
-        .api-key-section label { font-size:.8rem; color:rgba(255,255,255,0.35); display:block; margin-bottom:6px; }
-        .api-key-input { width:100%; padding:10px 14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:#e0e0e0; font-family:inherit; font-size:.85rem; outline:none; }
-        .api-key-input:focus { border-color:rgba(99,102,241,0.5); }
-        .api-key-input::placeholder { color:rgba(255,255,255,0.2); }
-        .note { font-size:.78rem; color:rgba(255,255,255,0.3); margin-top:8px; line-height:1.5; }
-        .note a { color:#a78bfa; }
 
         @media(max-width:640px) {
             .page-header h1 { font-size:1.6rem; }
@@ -102,18 +116,12 @@
                 <div class="upload-zone" id="drop-zone">
                     <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                     <h3>Klik atau Drag & Drop File</h3>
-                    <p>Mendukung MP3, MP4, WAV, OGG, WebM (Maks 25MB)</p>
-                    <input type="file" id="file-input" accept="audio/*,video/mp4,video/webm" style="display:none" />
+                    <p>Mendukung MP3, MP4, WAV, OGG, WebM — file besar otomatis dipotong</p>
+                    <input type="file" id="file-input" accept="audio/*,video/mp4,video/webm,.mp3,.mp4,.wav,.ogg,.webm,.m4a,.flac" style="display:none" />
                 </div>
                 <div id="file-info-box" style="display:none"></div>
 
-                <div class="api-key-section">
-                    <label>Groq API Key (gratis di <a href="https://console.groq.com" target="_blank" style="color:#a78bfa">console.groq.com</a>)</label>
-                    <input type="password" class="api-key-input" id="api-key" placeholder="gsk_xxxxxxxxxxxx" />
-                    <p class="note">🔒 Key disimpan di browser Anda saja (localStorage). Groq menyediakan Whisper API gratis dengan akurasi tinggi.</p>
-                </div>
-
-                <select class="lang-select" id="upload-lang" style="width:100%;margin-top:12px">
+                <select class="lang-select" id="upload-lang" style="width:100%;margin-top:16px">
                     <option value="id">🇮🇩 Bahasa Indonesia</option>
                     <option value="en">🇬🇧 English</option>
                     <option value="ja">🇯🇵 日本語</option>
@@ -121,6 +129,14 @@
                     <option value="zh">🇨🇳 中文</option>
                     <option value="auto">🌐 Auto Detect</option>
                 </select>
+
+                <input type="text" class="context-input" id="context-prompt" placeholder="💡 Konteks opsional: nama, istilah, topik untuk akurasi lebih tinggi..." />
+                <p class="context-hint">🎯 Tulis kata kunci, nama orang, istilah khusus agar AI lebih akurat mengenali kata-kata tersebut</p>
+
+                <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
+                    <input type="password" class="context-input" id="api-key" placeholder="🔑 Groq API Key (gsk_...)" style="margin-top:0;flex:1" />
+                    <a href="https://console.groq.com" target="_blank" style="color:#a78bfa;font-size:.72rem;white-space:nowrap;text-decoration:none">Dapatkan Key →</a>
+                </div>
 
                 <button class="btn-transcribe" id="btn-transcribe" disabled>Mulai Transkripsi</button>
                 <div class="progress-bar" id="progress-bar"><div class="fill" id="progress-fill"></div></div>
@@ -148,8 +164,16 @@
 
         <!-- Result Card -->
         <div class="card">
-            <h2><span class="icon" style="background:rgba(16,185,129,0.12);color:#34d399">📝</span> Hasil Transkripsi</h2>
+            <div class="result-header">
+                <h2 style="margin-bottom:0"><span class="icon" style="background:rgba(16,185,129,0.12);color:#34d399">📝</span> Hasil Transkripsi</h2>
+                <div class="result-stats" id="result-stats" style="display:none">
+                    <span class="stat-badge" id="stat-words">📊 0 kata</span>
+                    <span class="stat-badge" id="stat-chars">🔤 0 karakter</span>
+                    <span class="stat-badge" id="stat-duration">⏱️ 0s</span>
+                </div>
+            </div>
             <div class="result-area" id="result-area"></div>
+            <input type="hidden" id="raw-transcript" />
             <div class="result-actions">
                 <button class="btn-action primary" onclick="copyResult()">📋 Salin Teks</button>
                 <button class="btn-action" onclick="downloadResult()">⬇️ Download .txt</button>
@@ -165,6 +189,10 @@ let selectedFile = null;
 let isRecording = false;
 let recognition = null;
 let fullTranscript = '';
+let isTranscribing = false;
+
+const CHUNK_DURATION_SEC = 240; // 4 minutes per chunk
+const MAX_CHUNK_BYTES = 24 * 1024 * 1024; // 24MB safety margin
 
 // --- Tab Switching ---
 function switchTab(tab) {
@@ -187,7 +215,6 @@ dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.
 fileInput.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
 
 function handleFile(file) {
-    if(file.size > 25*1024*1024) { showToast('File terlalu besar! Maks 25MB','#ef4444'); return; }
     selectedFile = file;
     const box = document.getElementById('file-info-box');
     const sizeMB = (file.size/1024/1024).toFixed(2);
@@ -203,60 +230,302 @@ function removeFile() {
     btnTranscribe.disabled = true;
 }
 
-// --- Load API Key ---
-const apiKeyInput = document.getElementById('api-key');
-apiKeyInput.value = localStorage.getItem('groq_api_key') || '';
-apiKeyInput.addEventListener('input', () => localStorage.setItem('groq_api_key', apiKeyInput.value));
+// --- API Key (from localStorage) ---
+function getApiKey() {
+    return (document.getElementById('api-key').value || '').trim();
+}
+// Load saved key
+const _savedKey = localStorage.getItem('groq_api_key') || '';
+document.getElementById('api-key').value = _savedKey;
+document.getElementById('api-key').addEventListener('input', function() {
+    localStorage.setItem('groq_api_key', this.value);
+});
 
-// --- Transcribe with Groq Whisper ---
+// --- Stats Helper ---
+function updateStats(text, duration) {
+    const stats = document.getElementById('result-stats');
+    if (!text) { stats.style.display = 'none'; return; }
+    stats.style.display = 'flex';
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+    const chars = text.length;
+    document.getElementById('stat-words').textContent = `📊 ${words.toLocaleString()} kata`;
+    document.getElementById('stat-chars').textContent = `🔤 ${chars.toLocaleString()} karakter`;
+    if (duration) document.getElementById('stat-duration').textContent = `⏱️ ${Math.round(duration)}s`;
+}
+
+// --- Format Result ---
+// Splits text into sentences, wraps each in a span, groups into paragraphs
+function formatResult(text, chunkCount) {
+    const area = document.getElementById('result-area');
+    document.getElementById('raw-transcript').value = text;
+    if (!text) { area.innerHTML = ''; return; }
+
+    // Split into sentences (handles . ! ? and keeps delimiter)
+    const sentences = text.match(/[^.!?]*[.!?]+[\s]*/g) || [text];
+    // Group sentences into paragraphs (~3-5 sentences each)
+    const parasSize = Math.max(3, Math.min(5, Math.ceil(sentences.length / 4)));
+    const paragraphs = [];
+    for (let i = 0; i < sentences.length; i += parasSize) {
+        paragraphs.push(sentences.slice(i, i + parasSize));
+    }
+
+    let html = '';
+    // Toolbar
+    html += `<div class="result-toolbar">`;
+    html += `<span class="result-toolbar-label">📄 TRANSKRIPSI${chunkCount > 1 ? ` • ${chunkCount} bagian` : ''}</span>`;
+    html += `<div class="result-toolbar-actions">`;
+    html += `<button class="toolbar-btn" onclick="selectAllResult()">Pilih Semua</button>`;
+    html += `<button class="toolbar-btn" onclick="copyResult()">Salin</button>`;
+    html += `</div></div>`;
+
+    html += `<div class="result-inner">`;
+    paragraphs.forEach((para) => {
+        html += `<p class="result-paragraph">`;
+        para.forEach(s => {
+            const trimmed = s.trim();
+            if (trimmed) html += `<span class="sentence">${escapeHtml(trimmed)} </span>`;
+        });
+        html += `</p>`;
+    });
+    html += `</div>`;
+
+    area.innerHTML = html;
+    area.scrollTop = area.scrollHeight;
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function selectAllResult() {
+    const inner = document.querySelector('.result-inner');
+    if (!inner) return;
+    const range = document.createRange();
+    range.selectNodeContents(inner);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    showToast('Teks dipilih!','#6366f1');
+}
+
+// --- Audio Helpers ---
+
+// Decode any audio/video file to raw PCM via AudioContext
+async function decodeAudioFile(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    audioCtx.close();
+    return audioBuffer;
+}
+
+// Encode an AudioBuffer (or a slice) to a WAV Blob
+function audioBufferToWav(audioBuffer, startSample, endSample) {
+    const numChannels = Math.min(audioBuffer.numberOfChannels, 1); // mono for smaller size
+    const sampleRate = audioBuffer.sampleRate;
+    const length = endSample - startSample;
+    const buffer = new ArrayBuffer(44 + length * 2);
+    const view = new DataView(buffer);
+
+    // Get mono mix
+    const channelData = audioBuffer.getChannelData(0);
+
+    // WAV header
+    writeString(view, 0, 'RIFF');
+    view.setUint32(4, 36 + length * 2, true);
+    writeString(view, 8, 'WAVE');
+    writeString(view, 12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); // PCM
+    view.setUint16(22, 1, true); // mono
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true); // byte rate
+    view.setUint16(32, 2, true); // block align
+    view.setUint16(34, 16, true); // bits per sample
+    writeString(view, 36, 'data');
+    view.setUint32(40, length * 2, true);
+
+    // Write PCM samples
+    let offset = 44;
+    for (let i = startSample; i < endSample; i++) {
+        const s = Math.max(-1, Math.min(1, channelData[i]));
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        offset += 2;
+    }
+
+    return new Blob([buffer], { type: 'audio/wav' });
+}
+
+function writeString(view, offset, str) {
+    for (let i = 0; i < str.length; i++) {
+        view.setUint8(offset + i, str.charCodeAt(i));
+    }
+}
+
+// Split AudioBuffer into WAV chunks
+function splitAudioToChunks(audioBuffer) {
+    const sampleRate = audioBuffer.sampleRate;
+    const totalSamples = audioBuffer.length;
+    const chunkSamples = CHUNK_DURATION_SEC * sampleRate;
+    const chunks = [];
+
+    // Also check: if total file would be < 24MB as WAV, send as single chunk
+    const totalWavSize = 44 + totalSamples * 2;
+    if (totalWavSize <= MAX_CHUNK_BYTES) {
+        chunks.push(audioBufferToWav(audioBuffer, 0, totalSamples));
+        return chunks;
+    }
+
+    for (let start = 0; start < totalSamples; start += chunkSamples) {
+        const end = Math.min(start + chunkSamples, totalSamples);
+        chunks.push(audioBufferToWav(audioBuffer, start, end));
+    }
+    return chunks;
+}
+
+// Send a single chunk to Groq Whisper (with retry)
+async function transcribeChunk(blob, apiKey, lang, chunkIndex, promptContext, retries = 2) {
+    const formData = new FormData();
+    const fileName = blob.name || `chunk_${chunkIndex}.wav`;
+    formData.append('file', blob, fileName);
+    formData.append('model', 'whisper-large-v3');
+    formData.append('response_format', 'verbose_json');
+    formData.append('temperature', '0');
+    if (lang !== 'auto') formData.append('language', lang);
+    if (promptContext) formData.append('prompt', promptContext);
+
+    for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+            const resp = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + apiKey },
+                body: formData
+            });
+
+            if (resp.status === 429) {
+                // Rate limited — wait and retry
+                const wait = (attempt + 1) * 3000;
+                await new Promise(r => setTimeout(r, wait));
+                continue;
+            }
+
+            if (!resp.ok) {
+                const err = await resp.json().catch(() => ({}));
+                throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+
+            return await resp.json();
+        } catch(e) {
+            if (attempt < retries && !e.message.includes('API key')) {
+                await new Promise(r => setTimeout(r, 2000));
+                continue;
+            }
+            throw e;
+        }
+    }
+}
+
+// --- Main Transcribe Handler ---
 btnTranscribe.addEventListener('click', async () => {
-    const apiKey = apiKeyInput.value.trim();
-    if(!apiKey) { showToast('Masukkan Groq API Key terlebih dahulu!','#ef4444'); apiKeyInput.focus(); return; }
-    if(!selectedFile) return;
+    if (isTranscribing) return;
+    const apiKey = getApiKey();
+    if (!apiKey) { showToast('Masukkan Groq API Key dulu!','#ef4444'); document.getElementById('api-key').focus(); return; }
+    if (!selectedFile) return;
 
     const bar = document.getElementById('progress-bar');
     const fill = document.getElementById('progress-fill');
     const status = document.getElementById('status-text');
     const result = document.getElementById('result-area');
-
-    bar.style.display = 'block';
-    fill.style.width = '30%';
-    status.textContent = 'Mengunggah dan memproses audio...';
-    btnTranscribe.disabled = true;
-
     const lang = document.getElementById('upload-lang').value;
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('model', 'whisper-large-v3');
-    formData.append('response_format', 'verbose_json');
-    if(lang !== 'auto') formData.append('language', lang);
+
+    isTranscribing = true;
+    bar.style.display = 'block';
+    fill.style.width = '0%';
+    btnTranscribe.disabled = true;
+    btnTranscribe.textContent = 'Memproses...';
+    result.innerHTML = '';
+    fullTranscript = '';
+    const userPrompt = (document.getElementById('context-prompt').value || '').trim();
 
     try {
-        fill.style.width = '60%';
-        const resp = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
-            method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + apiKey },
-            body: formData
-        });
-        fill.style.width = '90%';
-
-        if(!resp.ok) {
-            const err = await resp.json().catch(() => ({}));
-            throw new Error(err.error?.message || `HTTP ${resp.status}`);
+        // Step 1: If file is small enough, send directly without decoding
+        if (selectedFile.size <= MAX_CHUNK_BYTES) {
+            status.textContent = '📤 Mengunggah dan memproses audio...';
+            fill.style.width = '40%';
+            const data = await transcribeChunk(selectedFile, apiKey, lang, 0, userPrompt);
+            fill.style.width = '100%';
+            fullTranscript = data.text || '';
+            formatResult(fullTranscript, 1);
+            updateStats(fullTranscript, data.duration);
+            status.textContent = `✅ Selesai! Durasi: ${Math.round(data.duration||0)}s | Bahasa: ${data.language||'N/A'}`;
+            showToast('Transkripsi berhasil!','#10b981');
+            return;
         }
 
-        const data = await resp.json();
+        // Step 2: Decode audio for chunking
+        status.textContent = '🔄 Mendekode audio... (ini mungkin butuh waktu untuk file besar)';
+        fill.style.width = '10%';
+
+        const audioBuffer = await decodeAudioFile(selectedFile);
+        const totalDuration = audioBuffer.duration;
+        status.textContent = `🔪 Memotong audio (${Math.round(totalDuration)}s) menjadi bagian-bagian kecil...`;
+        fill.style.width = '20%';
+
+        const chunks = splitAudioToChunks(audioBuffer);
+        const totalChunks = chunks.length;
+        status.textContent = `📦 ${totalChunks} bagian siap diproses...`;
+
+        let detectedLang = '';
+        let totalProcessedDuration = 0;
+        let lastChunkText = '';
+
+        // Step 3: Transcribe each chunk
+        for (let i = 0; i < totalChunks; i++) {
+            const chunkNum = i + 1;
+            status.textContent = `🎯 Memproses bagian ${chunkNum} dari ${totalChunks}...`;
+            const progress = 20 + (i / totalChunks) * 75;
+            fill.style.width = progress + '%';
+
+            // Build prompt: user context + last chunk's tail for continuity
+            const chunkPrompt = [userPrompt, lastChunkText].filter(Boolean).join('. ');
+
+            const data = await transcribeChunk(chunks[i], apiKey, lang, i, chunkPrompt);
+
+            const chunkText = (data.text || '').trim();
+            if (chunkText) {
+                fullTranscript += (fullTranscript ? ' ' : '') + chunkText;
+                formatResult(fullTranscript, i + 1);
+                updateStats(fullTranscript, totalProcessedDuration + (data.duration || 0));
+                // Keep last ~200 chars as context for next chunk
+                lastChunkText = chunkText.slice(-200);
+            }
+
+            if (data.language && !detectedLang) detectedLang = data.language;
+            totalProcessedDuration += (data.duration || 0);
+
+            // Small delay between API calls to avoid rate limiting
+            if (i < totalChunks - 1) {
+                status.textContent = `⏳ Menunggu sebentar sebelum bagian berikutnya...`;
+                await new Promise(r => setTimeout(r, 1000));
+            }
+        }
+
         fill.style.width = '100%';
-        fullTranscript = data.text || '';
-        result.textContent = fullTranscript;
-        status.textContent = `✅ Selesai! Durasi: ${Math.round(data.duration||0)}s | Bahasa: ${data.language||'N/A'}`;
+        updateStats(fullTranscript, totalProcessedDuration);
+        status.textContent = `✅ Selesai! ${totalChunks} bagian diproses | Durasi: ${Math.round(totalProcessedDuration)}s | Bahasa: ${detectedLang||'N/A'}`;
         showToast('Transkripsi berhasil!','#10b981');
+
     } catch(e) {
         status.textContent = '❌ Error: ' + e.message;
         showToast('Gagal: ' + e.message,'#ef4444');
+        if (fullTranscript) {
+            status.textContent += ' (hasil parsial tersimpan di bawah)';
+        }
     } finally {
+        isTranscribing = false;
         btnTranscribe.disabled = false;
-        setTimeout(() => { bar.style.display='none'; fill.style.width='0%'; }, 2000);
+        btnTranscribe.textContent = 'Mulai Transkripsi';
+        setTimeout(() => { bar.style.display='none'; fill.style.width='0%'; }, 3000);
     }
 });
 
@@ -280,7 +549,7 @@ function toggleMic() {
             else interim += e.results[i][0].transcript;
         }
         if(final) fullTranscript += final;
-        document.getElementById('result-area').textContent = fullTranscript + interim;
+        document.getElementById('result-area').innerHTML = `<div class="result-inner"><p class="result-paragraph">${escapeHtml(fullTranscript + interim)}</p></div>`;
     };
     recognition.onerror = e => { showToast('Mic error: '+e.error,'#ef4444'); stopMic(); };
     recognition.onend = () => { if(isRecording) recognition.start(); };
@@ -298,14 +567,18 @@ function stopMic() {
 }
 
 // --- Result Actions ---
+function getPlainText() {
+    return document.getElementById('raw-transcript').value || document.getElementById('result-area').innerText || '';
+}
+
 function copyResult() {
-    const t = document.getElementById('result-area').textContent;
+    const t = getPlainText().trim();
     if(!t) { showToast('Tidak ada teks!','#f59e0b'); return; }
-    navigator.clipboard.writeText(t).then(() => showToast('Teks disalin!','#10b981'));
+    navigator.clipboard.writeText(t).then(() => showToast('Teks berhasil disalin!','#10b981'));
 }
 
 function downloadResult() {
-    const t = document.getElementById('result-area').textContent;
+    const t = getPlainText().trim();
     if(!t) { showToast('Tidak ada teks!','#f59e0b'); return; }
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([t],{type:'text/plain'}));
@@ -314,8 +587,10 @@ function downloadResult() {
 }
 
 function clearResult() {
-    document.getElementById('result-area').textContent = '';
+    document.getElementById('result-area').innerHTML = '';
+    document.getElementById('raw-transcript').value = '';
     fullTranscript = '';
+    updateStats('', 0);
 }
 
 function showToast(msg, bg) {
