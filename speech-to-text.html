@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speech to Text - Konversi Suara ke Teks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Outfit','Inter',sans-serif; background:linear-gradient(135deg,#0f0c29,#302b63,#24243e); min-height:100vh; color:#e0e0e0; }
+        .container { max-width:900px; margin:0 auto; padding:30px 20px; }
+        .back-btn { display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:rgba(255,255,255,0.5); font-size:14px; padding:8px 14px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:8px; margin-bottom:24px; transition:all .2s; }
+        .back-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+        .page-header { text-align:center; margin-bottom:36px; }
+        .page-header h1 { font-size:2.4rem; font-weight:700; background:linear-gradient(135deg,#a78bfa,#6366f1,#818cf8); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+        .page-header p { color:rgba(255,255,255,0.45); font-size:1rem; }
+        .card { background:rgba(255,255,255,0.05); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:28px; margin-bottom:24px; }
+        .card h2 { font-size:1.1rem; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+        .card h2 .icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .tabs { display:flex; gap:8px; margin-bottom:24px; }
+        .tab { flex:1; padding:12px; border:1px solid rgba(255,255,255,0.1); background:transparent; color:rgba(255,255,255,0.5); border-radius:10px; font-family:inherit; font-size:.9rem; font-weight:500; cursor:pointer; transition:all .25s; text-align:center; }
+        .tab.active { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border-color:transparent; box-shadow:0 4px 20px rgba(99,102,241,0.3); }
+        .tab:hover:not(.active) { background:rgba(255,255,255,0.08); color:#fff; }
+        .panel { display:none; } .panel.active { display:block; }
+
+        /* Upload Zone */
+        .upload-zone { border:2px dashed rgba(139,92,246,0.3); border-radius:14px; padding:40px 20px; text-align:center; cursor:pointer; transition:all .25s; background:rgba(139,92,246,0.04); }
+        .upload-zone:hover,.upload-zone.dragover { background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.6); }
+        .upload-zone svg { margin-bottom:12px; }
+        .upload-zone h3 { color:#c4b5fd; font-size:1rem; margin-bottom:4px; }
+        .upload-zone p { color:rgba(255,255,255,0.35); font-size:.85rem; }
+        .file-info { display:flex; align-items:center; gap:14px; background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.15); padding:14px 18px; border-radius:12px; margin-top:16px; }
+        .file-info .fname { font-weight:600; font-size:.9rem; color:#c4b5fd; }
+        .file-info .fsize { font-size:.8rem; color:rgba(255,255,255,0.35); }
+        .file-info .remove-file { margin-left:auto; background:rgba(239,68,68,0.15); color:#f87171; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:.8rem; font-weight:600; }
+
+        /* Mic */
+        .mic-area { text-align:center; padding:20px 0; }
+        .mic-btn { width:80px; height:80px; border-radius:50%; border:none; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; cursor:pointer; font-size:28px; transition:all .3s; box-shadow:0 4px 24px rgba(99,102,241,0.3); display:inline-flex; align-items:center; justify-content:center; }
+        .mic-btn:hover { transform:scale(1.08); box-shadow:0 6px 30px rgba(99,102,241,0.45); }
+        .mic-btn.recording { background:linear-gradient(135deg,#ef4444,#dc2626); animation:pulse 1.5s infinite; box-shadow:0 4px 24px rgba(239,68,68,0.4); }
+        @keyframes pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(239,68,68,0.4); } 50%{ box-shadow:0 0 0 16px rgba(239,68,68,0); } }
+        .mic-label { margin-top:14px; font-size:.9rem; color:rgba(255,255,255,0.4); }
+        .lang-select { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#e0e0e0; padding:8px 14px; border-radius:8px; font-family:inherit; font-size:.85rem; margin-top:12px; outline:none; }
+        .lang-select option { background:#1e1b4b; color:#fff; }
+
+        /* Transcribe Button */
+        .btn-transcribe { width:100%; padding:14px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; border-radius:12px; font-family:inherit; font-size:1rem; font-weight:600; cursor:pointer; transition:all .25s; margin-top:16px; }
+        .btn-transcribe:hover { box-shadow:0 4px 20px rgba(99,102,241,0.4); transform:translateY(-2px); }
+        .btn-transcribe:disabled { opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+        /* Progress */
+        .progress-bar { width:100%; height:6px; background:rgba(255,255,255,0.06); border-radius:3px; margin-top:16px; overflow:hidden; display:none; }
+        .progress-bar .fill { height:100%; width:0%; background:linear-gradient(90deg,#6366f1,#a78bfa); border-radius:3px; transition:width .3s; }
+        .status-text { text-align:center; font-size:.85rem; color:rgba(255,255,255,0.4); margin-top:10px; }
+
+        /* Result */
+        .result-area { min-height:160px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:18px; font-family:'Inter',monospace; font-size:.9rem; line-height:1.7; color:rgba(255,255,255,0.8); white-space:pre-wrap; word-wrap:break-word; max-height:400px; overflow-y:auto; }
+        .result-area:empty::before { content:'Hasil transkripsi akan muncul di sini...'; color:rgba(255,255,255,0.2); }
+        .result-actions { display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+        .btn-action { padding:10px 18px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.7); font-family:inherit; font-size:.85rem; font-weight:500; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
+        .btn-action:hover { background:rgba(255,255,255,0.12); color:#fff; }
+        .btn-action.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; }
+        .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(80px); background:#10b981; color:#fff; padding:12px 24px; border-radius:10px; font-size:.9rem; font-weight:500; opacity:0; transition:all .4s; z-index:999; pointer-events:none; }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+        .api-key-section { margin-top:16px; }
+        .api-key-section label { font-size:.8rem; color:rgba(255,255,255,0.35); display:block; margin-bottom:6px; }
+        .api-key-input { width:100%; padding:10px 14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:#e0e0e0; font-family:inherit; font-size:.85rem; outline:none; }
+        .api-key-input:focus { border-color:rgba(99,102,241,0.5); }
+        .api-key-input::placeholder { color:rgba(255,255,255,0.2); }
+        .note { font-size:.78rem; color:rgba(255,255,255,0.3); margin-top:8px; line-height:1.5; }
+        .note a { color:#a78bfa; }
+
+        @media(max-width:640px) {
+            .page-header h1 { font-size:1.6rem; }
+            .card { padding:18px; }
+            .tabs { flex-direction:column; }
+            .result-actions { flex-direction:column; }
+            .btn-action { justify-content:center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Kembali ke Dashboard
+        </a>
+        <header class="page-header">
+            <h1>🎙️ Speech to Text</h1>
+            <p>Konversi audio/video menjadi teks dengan akurat menggunakan AI</p>
+        </header>
+
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('upload')">📁 Upload File</button>
+                <button class="tab" onclick="switchTab('mic')">🎤 Mikrofon Live</button>
+            </div>
+
+            <!-- Upload Panel -->
+            <div class="panel active" id="panel-upload">
+                <div class="upload-zone" id="drop-zone">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <h3>Klik atau Drag & Drop File</h3>
+                    <p>Mendukung MP3, MP4, WAV, OGG, WebM (Maks 25MB)</p>
+                    <input type="file" id="file-input" accept="audio/*,video/mp4,video/webm" style="display:none" />
+                </div>
+                <div id="file-info-box" style="display:none"></div>
+
+                <div class="api-key-section">
+                    <label>Groq API Key (gratis di <a href="https://console.groq.com" target="_blank" style="color:#a78bfa">console.groq.com</a>)</label>
+                    <input type="password" class="api-key-input" id="api-key" placeholder="gsk_xxxxxxxxxxxx" />
+                    <p class="note">🔒 Key disimpan di browser Anda saja (localStorage). Groq menyediakan Whisper API gratis dengan akurasi tinggi.</p>
+                </div>
+
+                <select class="lang-select" id="upload-lang" style="width:100%;margin-top:12px">
+                    <option value="id">🇮🇩 Bahasa Indonesia</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                    <option value="ko">🇰🇷 한국어</option>
+                    <option value="zh">🇨🇳 中文</option>
+                    <option value="auto">🌐 Auto Detect</option>
+                </select>
+
+                <button class="btn-transcribe" id="btn-transcribe" disabled>Mulai Transkripsi</button>
+                <div class="progress-bar" id="progress-bar"><div class="fill" id="progress-fill"></div></div>
+                <div class="status-text" id="status-text"></div>
+            </div>
+
+            <!-- Mic Panel -->
+            <div class="panel" id="panel-mic">
+                <div class="mic-area">
+                    <button class="mic-btn" id="mic-btn" onclick="toggleMic()">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                    </button>
+                    <div class="mic-label" id="mic-label">Klik untuk mulai merekam</div>
+                    <select class="lang-select" id="mic-lang">
+                        <option value="id-ID">🇮🇩 Bahasa Indonesia</option>
+                        <option value="en-US">🇬🇧 English (US)</option>
+                        <option value="en-GB">🇬🇧 English (UK)</option>
+                        <option value="ja-JP">🇯🇵 日本語</option>
+                        <option value="ko-KR">🇰🇷 한국어</option>
+                        <option value="zh-CN">🇨🇳 中文</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="card">
+            <h2><span class="icon" style="background:rgba(16,185,129,0.12);color:#34d399">📝</span> Hasil Transkripsi</h2>
+            <div class="result-area" id="result-area"></div>
+            <div class="result-actions">
+                <button class="btn-action primary" onclick="copyResult()">📋 Salin Teks</button>
+                <button class="btn-action" onclick="downloadResult()">⬇️ Download .txt</button>
+                <button class="btn-action" onclick="clearResult()">🗑️ Hapus</button>
+            </div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+<script>
+// --- State ---
+let selectedFile = null;
+let isRecording = false;
+let recognition = null;
+let fullTranscript = '';
+
+// --- Tab Switching ---
+function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach((t,i) => {
+        t.classList.toggle('active', (tab==='upload' && i===0)||(tab==='mic' && i===1));
+    });
+    document.getElementById('panel-upload').classList.toggle('active', tab==='upload');
+    document.getElementById('panel-mic').classList.toggle('active', tab==='mic');
+}
+
+// --- File Upload ---
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const btnTranscribe = document.getElementById('btn-transcribe');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(file) {
+    if(file.size > 25*1024*1024) { showToast('File terlalu besar! Maks 25MB','#ef4444'); return; }
+    selectedFile = file;
+    const box = document.getElementById('file-info-box');
+    const sizeMB = (file.size/1024/1024).toFixed(2);
+    box.style.display = 'block';
+    box.innerHTML = `<div class="file-info"><div><div class="fname">${file.name}</div><div class="fsize">${sizeMB} MB</div></div><button class="remove-file" onclick="removeFile()">Hapus</button></div>`;
+    btnTranscribe.disabled = false;
+}
+
+function removeFile() {
+    selectedFile = null;
+    fileInput.value = '';
+    document.getElementById('file-info-box').style.display = 'none';
+    btnTranscribe.disabled = true;
+}
+
+// --- Load API Key ---
+const apiKeyInput = document.getElementById('api-key');
+apiKeyInput.value = localStorage.getItem('groq_api_key') || '';
+apiKeyInput.addEventListener('input', () => localStorage.setItem('groq_api_key', apiKeyInput.value));
+
+// --- Transcribe with Groq Whisper ---
+btnTranscribe.addEventListener('click', async () => {
+    const apiKey = apiKeyInput.value.trim();
+    if(!apiKey) { showToast('Masukkan Groq API Key terlebih dahulu!','#ef4444'); apiKeyInput.focus(); return; }
+    if(!selectedFile) return;
+
+    const bar = document.getElementById('progress-bar');
+    const fill = document.getElementById('progress-fill');
+    const status = document.getElementById('status-text');
+    const result = document.getElementById('result-area');
+
+    bar.style.display = 'block';
+    fill.style.width = '30%';
+    status.textContent = 'Mengunggah dan memproses audio...';
+    btnTranscribe.disabled = true;
+
+    const lang = document.getElementById('upload-lang').value;
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('model', 'whisper-large-v3');
+    formData.append('response_format', 'verbose_json');
+    if(lang !== 'auto') formData.append('language', lang);
+
+    try {
+        fill.style.width = '60%';
+        const resp = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + apiKey },
+            body: formData
+        });
+        fill.style.width = '90%';
+
+        if(!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.error?.message || `HTTP ${resp.status}`);
+        }
+
+        const data = await resp.json();
+        fill.style.width = '100%';
+        fullTranscript = data.text || '';
+        result.textContent = fullTranscript;
+        status.textContent = `✅ Selesai! Durasi: ${Math.round(data.duration||0)}s | Bahasa: ${data.language||'N/A'}`;
+        showToast('Transkripsi berhasil!','#10b981');
+    } catch(e) {
+        status.textContent = '❌ Error: ' + e.message;
+        showToast('Gagal: ' + e.message,'#ef4444');
+    } finally {
+        btnTranscribe.disabled = false;
+        setTimeout(() => { bar.style.display='none'; fill.style.width='0%'; }, 2000);
+    }
+});
+
+// --- Microphone (Web Speech API) ---
+function toggleMic() {
+    if(isRecording) { stopMic(); return; }
+    if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        showToast('Browser tidak mendukung Speech Recognition. Gunakan Chrome!','#ef4444');
+        return;
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = document.getElementById('mic-lang').value;
+
+    recognition.onresult = e => {
+        let interim = '', final = '';
+        for(let i = e.resultIndex; i < e.results.length; i++) {
+            if(e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
+            else interim += e.results[i][0].transcript;
+        }
+        if(final) fullTranscript += final;
+        document.getElementById('result-area').textContent = fullTranscript + interim;
+    };
+    recognition.onerror = e => { showToast('Mic error: '+e.error,'#ef4444'); stopMic(); };
+    recognition.onend = () => { if(isRecording) recognition.start(); };
+    recognition.start();
+    isRecording = true;
+    document.getElementById('mic-btn').classList.add('recording');
+    document.getElementById('mic-label').textContent = 'Merekam... Klik untuk berhenti';
+}
+
+function stopMic() {
+    if(recognition) recognition.stop();
+    isRecording = false;
+    document.getElementById('mic-btn').classList.remove('recording');
+    document.getElementById('mic-label').textContent = 'Klik untuk mulai merekam';
+}
+
+// --- Result Actions ---
+function copyResult() {
+    const t = document.getElementById('result-area').textContent;
+    if(!t) { showToast('Tidak ada teks!','#f59e0b'); return; }
+    navigator.clipboard.writeText(t).then(() => showToast('Teks disalin!','#10b981'));
+}
+
+function downloadResult() {
+    const t = document.getElementById('result-area').textContent;
+    if(!t) { showToast('Tidak ada teks!','#f59e0b'); return; }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([t],{type:'text/plain'}));
+    a.download = 'transkripsi.txt';
+    a.click();
+}
+
+function clearResult() {
+    document.getElementById('result-area').textContent = '';
+    fullTranscript = '';
+}
+
+function showToast(msg, bg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = bg || '#10b981';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

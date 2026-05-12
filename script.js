@@ -1116,19 +1116,33 @@ document.addEventListener("DOMContentLoaded", () => {
               min-height: 0 !important;
               display: block !important;
               width: 100% !important;
+              background: #fff !important;
               box-sizing: border-box !important;
             }
             .thermal-receipt {
               width: 100% !important;
               max-width: 100% !important;
-              padding: 2mm 5mm !important;
+              padding: 1mm 2mm !important;
               margin: 0 !important;
               box-shadow: none !important;
               border: none !important;
-              font-size: 8pt !important;
+              font-size: 7pt !important;
               font-weight: 900 !important;
               box-sizing: border-box !important;
+              overflow-wrap: break-word !important;
+              word-break: break-word !important;
+            }
+            .thermal-divider {
               overflow: hidden !important;
+              white-space: nowrap !important;
+            }
+            .thermal-item-name {
+              overflow-wrap: break-word !important;
+              word-break: break-word !important;
+            }
+            .thermal-total-row,
+            .thermal-item-detail {
+              gap: 4px !important;
             }
           }
         `;
@@ -1153,19 +1167,33 @@ document.addEventListener("DOMContentLoaded", () => {
               min-height: 0 !important;
               display: block !important;
               width: 100% !important;
+              background: #fff !important;
               box-sizing: border-box !important;
             }
             .thermal-receipt {
               width: 100% !important;
               max-width: 100% !important;
-              padding: 2mm 6mm !important;
+              padding: 1mm 3mm !important;
               margin: 0 !important;
               box-shadow: none !important;
               border: none !important;
-              font-size: 10pt !important;
+              font-size: 9pt !important;
               font-weight: 900 !important;
               box-sizing: border-box !important;
+              overflow-wrap: break-word !important;
+              word-break: break-word !important;
+            }
+            .thermal-divider {
               overflow: hidden !important;
+              white-space: nowrap !important;
+            }
+            .thermal-item-name {
+              overflow-wrap: break-word !important;
+              word-break: break-word !important;
+            }
+            .thermal-total-row,
+            .thermal-item-detail {
+              gap: 4px !important;
             }
           }
         `;

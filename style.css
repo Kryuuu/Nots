@@ -863,6 +863,7 @@ body.app-body {
     min-height: unset !important;
     display: block !important;
     width: 100% !important;
+    background: #fff !important;
   }
 
   .nota-container, .nota-container-shopee, .custom-nota {
@@ -876,7 +877,12 @@ body.app-body {
     box-shadow: none;
     border: none;
     margin: 0;
+    overflow: visible;
+  }
+
+  .thermal-divider {
     overflow: hidden;
+    white-space: nowrap;
   }
 }
 
