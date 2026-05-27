@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Sumber Pangan — Nota Builder Pro</title>
+    <meta name="description" content="Template struk thermal Sumber Pangan Frozen Food" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        .sp-container {
+            width: 300px; /* Thermal 80mm approx */
+            background: #fff;
+            color: #000;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 12px 40px rgba(0,0,0,0.25);
+            border-radius: 2px;
+        }
+
+        .sp-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .sp-logo-placeholder {
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .sp-logo-img {
+            font-size: 50px; /* Penguin emoji as placeholder */
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+        
+        .sp-logo-text {
+            font-family: 'Arial Black', sans-serif;
+            font-weight: 900;
+            font-size: 16px;
+            line-height: 1;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+        
+        .sp-logo-sub {
+            font-family: 'Arial', sans-serif;
+            font-size: 8px;
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
+        .sp-store-name {
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        .sp-barcode-num {
+            font-size: 10px;
+        }
+
+        .sp-divider {
+            border-top: 1px dashed #000;
+            margin: 8px 0;
+        }
+        
+        .sp-divider-double {
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            height: 2px;
+            margin: 8px 0;
+        }
+
+        .sp-meta {
+            display: grid;
+            grid-template-columns: 75px 10px auto;
+            row-gap: 2px;
+            margin-bottom: 8px;
+        }
+
+        .sp-item {
+            margin-bottom: 6px;
+        }
+        .sp-item-name {
+            margin-bottom: 2px;
+        }
+        .sp-item-details {
+            display: flex;
+            justify-content: space-between;
+            padding-left: 5px;
+        }
+
+        .sp-summary-grid {
+            display: grid;
+            grid-template-columns: auto auto;
+            justify-content: end;
+            column-gap: 10px;
+            row-gap: 2px;
+            margin-bottom: 8px;
+        }
+        .sp-summary-grid > div:nth-child(odd) {
+            text-align: right;
+        }
+
+        .sp-total-box {
+            display: flex;
+            justify-content: flex-end;
+            align-items: baseline;
+            gap: 10px;
+            font-size: 14px;
+            margin: 10px 0 2px;
+        }
+        
+        .sp-tax-note {
+            text-align: right;
+            font-size: 9px;
+            margin-bottom: 10px;
+        }
+
+        .sp-payment-grid {
+            display: grid;
+            grid-template-columns: auto auto;
+            justify-content: end;
+            column-gap: 30px;
+            row-gap: 2px;
+        }
+        .sp-payment-grid > div:nth-child(odd) {
+            text-align: right;
+        }
+
+        .sp-footer {
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 30px; /* Space at bottom like a real receipt */
+        }
+
+        @media print {
+            body { background: #fff !important; }
+            .no-print { display: none !important; }
+            .sp-container { box-shadow: none; margin: 0; padding: 0; }
+            #nota-wrapper { padding: 0 !important; margin: 0 !important; }
+        }
+    </style>
+</head>
+<body class="app-body">
+    
+    <div class="control-panel no-print">
+        <a href="../index.html" class="btn-back-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Kembali
+        </a>
+        <h1>Sumber Pangan</h1>
+        <p class="panel-subtitle">Template struk thermal persis referensi</p>
+
+        <div class="template-inputs">
+            <div class="form-group">
+                <label>Pelanggan</label>
+                <input type="text" id="inp-pelanggan" value="-" oninput="updateSP()" />
+            </div>
+            <div class="form-group">
+                <label>Transaksi (Tgl/Jam)</label>
+                <input type="text" id="inp-transaksi" value="03 Sep 2025, 12.33" oninput="updateSP()" />
+            </div>
+            <div class="form-group">
+                <label>Karyawan</label>
+                <input type="text" id="inp-karyawan" value="KASIR 2" oninput="updateSP()" />
+            </div>
+            <div class="form-group">
+                <label>Salesman</label>
+                <input type="text" id="inp-salesman" value="KASIR 2" oninput="updateSP()" />
+            </div>
+
+            <hr class="panel-divider" />
+            <h3>Item Pesanan</h3>
+            <div id="sp-items-container"></div>
+            <button onclick="addSpItem()" class="btn-add">+ Tambah Item</button>
+
+            <hr class="panel-divider" />
+            <div class="form-group">
+                <label>Tunai</label>
+                <input type="text" id="inp-tunai" value="90.000" oninput="updateSP()" />
+            </div>
+
+            <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+        </div>
+    </div>
+
+    <div id="nota-wrapper">
+        <div class="sp-container">
+            <div class="sp-header">
+                <div class="sp-logo-placeholder">
+                    <div class="sp-logo-img">🐧</div>
+                    <div class="sp-logo-text">SUMBER<br>PANGAN</div>
+                    <div class="sp-logo-sub">FROZEN FOOD</div>
+                </div>
+                <div class="sp-store-name">Sumber Pangan Frozen Food</div>
+                <div class="sp-barcode-num">0000450008252025</div>
+            </div>
+
+            <div class="sp-divider"></div>
+            
+            <div class="sp-meta">
+                <div>Pelanggan</div><div>:</div><div id="out-pelanggan">-</div>
+                <div>Transaksi</div><div>:</div><div id="out-transaksi">03 Sep 2025, 12.33</div>
+                <div>Karyawan</div><div>:</div><div id="out-karyawan">KASIR 2</div>
+                <div>Salesman</div><div>:</div><div id="out-salesman">KASIR 2</div>
+            </div>
+
+            <div class="sp-divider"></div>
+
+            <div id="out-items">
+                <!-- JS Items -->
+            </div>
+
+            <div class="sp-divider"></div>
+
+            <div class="sp-summary-grid">
+                <div>Jumlah Item :</div><div id="out-jml-item">3</div>
+                <div>Jumlah Kuantitas :</div><div id="out-jml-qty">3</div>
+            </div>
+            
+            <div class="sp-divider"></div>
+            
+            <div class="sp-summary-grid">
+                <div>Subtotal :</div><div id="out-subtotal">Rp83.000</div>
+            </div>
+
+            <div class="sp-divider-double"></div>
+
+            <div class="sp-total-box">
+                <div>Total :</div>
+                <div style="font-weight: bold; font-family: 'Arial', sans-serif; letter-spacing: -1px;" id="out-total">Rp83.000</div>
+            </div>
+            <div class="sp-tax-note">*Termasuk Pajak</div>
+            
+            <div class="sp-divider"></div>
+
+            <div class="sp-payment-grid">
+                <div>Tunai :</div><div id="out-tunai">Rp90.000</div>
+                <div>Kembali :</div><div id="out-kembali">Rp7.000</div>
+            </div>
+            
+            <div class="sp-divider"></div>
+
+            <div class="sp-footer">
+                Terima Kasih
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let spItems = [
+            { nama: "Sultan Sosis Bakar Mini 500gr", qty: 1, harga: 35000 },
+            { nama: "Hemato Nugget Ayam Hati 500gr", qty: 1, harga: 22000 },
+            { nama: "Jofrans Nugget Crispy Bubble 500gr", qty: 1, harga: 26000 }
+        ];
+
+        function formatRp(num) {
+            return "Rp" + num.toLocaleString('id-ID');
+        }
+
+        function renderSpItems() {
+            const container = document.getElementById("sp-items-container");
+            const outItems = document.getElementById("out-items");
+            container.innerHTML = "";
+            let html = "";
+            
+            let totalQty = 0;
+            let subtotal = 0;
+
+            spItems.forEach((item, i) => {
+                const totalHarga = item.qty * item.harga;
+                totalQty += parseInt(item.qty) || 0;
+                subtotal += totalHarga;
+
+                // Control panel
+                container.innerHTML += `
+                    <div class="item-row">
+                        <input type="text" placeholder="Nama Barang" value="${item.nama}" oninput="updateSpItem(${i}, 'nama', this.value)">
+                        <div style="display:flex; gap:5px;">
+                            <input type="number" placeholder="Qty" value="${item.qty}" oninput="updateSpItem(${i}, 'qty', this.value)" style="flex:1;">
+                            <input type="number" placeholder="Harga" value="${item.harga}" oninput="updateSpItem(${i}, 'harga', this.value)" style="flex:2;">
+                        </div>
+                        <button onclick="removeSpItem(${i})" class="btn-reset" style="padding:5px; margin-top:0;">Hapus</button>
+                    </div>
+                `;
+                // Receipt output
+                html += `
+                    <div class="sp-item">
+                        <div class="sp-item-name">${item.nama}</div>
+                        <div class="sp-item-details">
+                            <div>${item.qty} PCS x ${formatRp(item.harga)}</div>
+                            <div>${formatRp(totalHarga)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            outItems.innerHTML = html;
+
+            document.getElementById("out-jml-item").innerText = spItems.length;
+            document.getElementById("out-jml-qty").innerText = totalQty;
+            
+            document.getElementById("out-subtotal").innerText = formatRp(subtotal);
+            document.getElementById("out-total").innerText = formatRp(subtotal);
+
+            // Calculate Kembali
+            const tunaiRaw = document.getElementById("inp-tunai").value.replace(/\D/g,'');
+            const tunai = parseInt(tunaiRaw) || 0;
+            const kembali = tunai - subtotal;
+
+            document.getElementById("out-tunai").innerText = formatRp(tunai);
+            document.getElementById("out-kembali").innerText = formatRp(Math.max(0, kembali));
+        }
+
+        function addSpItem() {
+            spItems.push({ nama: "", qty: 1, harga: 0 });
+            renderSpItems();
+        }
+        function removeSpItem(index) {
+            spItems.splice(index, 1);
+            renderSpItems();
+        }
+        function updateSpItem(index, key, val) {
+            spItems[index][key] = (key === 'qty' || key === 'harga') ? (parseInt(val)||0) : val;
+            renderSpItems();
+        }
+
+        function updateSP() {
+            document.getElementById("out-pelanggan").innerText = document.getElementById("inp-pelanggan").value;
+            document.getElementById("out-transaksi").innerText = document.getElementById("inp-transaksi").value;
+            document.getElementById("out-karyawan").innerText = document.getElementById("inp-karyawan").value;
+            document.getElementById("out-salesman").innerText = document.getElementById("inp-salesman").value;
+            
+            // Re-render items to update calculations based on tunai input
+            renderSpItems();
+        }
+
+        // Init
+        renderSpItems();
+        updateSP();
+    </script>
+</body>
+</html>
+

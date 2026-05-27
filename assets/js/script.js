@@ -1009,6 +1009,43 @@ document.addEventListener("DOMContentLoaded", () => {
         customNotes = p.notes ? [...p.notes] : [];
         renderCustomItems();
         renderCustomNotes();
+
+        // Auto-switch print format if preset specifies one
+        if (p.format && docFormat) {
+          docFormat.value = p.format;
+          applyPaperSize();
+        }
+
+        // Apply custom labels (with defaults fallback)
+        const defaultLabels = {
+          "custom-label-doctype": "NOTA", "custom-label-no": "No.", "custom-label-tanggal": "Tanggal",
+          "custom-label-kepada": "Kepada", "custom-label-alamat": "Alamat", "custom-label-telp": "Telp",
+          "custom-label-deskripsi": "Deskripsi", "custom-label-qty": "Qty",
+          "custom-label-harga": "Harga", "custom-label-total-col": "Total",
+          "custom-label-subtotal": "Subtotal", "custom-label-total": "Total",
+          "custom-label-pembayaran": "Pembayaran",
+          "custom-label-sig-left": "Hormat Kami,", "custom-label-sig-right": "Diterima,",
+          "custom-label-th-no": "No", "custom-label-th-tgl": "Tgl", "custom-label-th-kasir": "Kasir"
+        };
+        const pLabels = p.labels || {};
+        Object.keys(defaultLabels).forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = pLabels[id] !== undefined ? pLabels[id] : defaultLabels[id];
+        });
+
+        // Set payment status & DP if preset specifies
+        if (p.paymentStatus && paymentStatus) {
+          paymentStatus.value = p.paymentStatus;
+          if (dpGroup) dpGroup.style.display = (p.paymentStatus === "DP" || p.paymentStatus === "CICILAN") ? "block" : "none";
+        } else if (paymentStatus) {
+          paymentStatus.value = "LUNAS";
+          if (dpGroup) dpGroup.style.display = "none";
+        }
+        if (p.dpAmount !== undefined) {
+          const dpEl = document.getElementById("custom-dp-amount");
+          if (dpEl) dpEl.value = p.dpAmount;
+        }
+
       } else if (v !== "custom") {
         // Handle cases like minimarket, toko, cafe if they are added to HTML but not to presets yet
         // For now, let's just clear or set to generic to avoid crash

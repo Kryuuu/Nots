@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nota Shopee</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Nota Shopee — Nota Builder Pro</title>
+    <meta name="description" content="Format rincian pesanan dan biaya ala marketplace Shopee." />
+    <link rel="stylesheet" href="../assets/css/style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body class="app-body">
     <!-- Left Side: Control Panel -->
     <div class="control-panel no-print">
-        <a href="index.html" class="btn-back-dashboard">
+        <a href="../index.html" class="btn-back-dashboard">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            Kembali ke Dashboard
+            Kembali
         </a>
         <h1>Nota Shopee</h1>
+        <p class="panel-subtitle">Format rincian pesanan marketplace Shopee</p>
 
         <!-- SHOPEE INPUTS -->
         <div id="shopee-inputs" class="template-inputs">
@@ -28,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label>Alamat Pembeli</label>
-                <textarea id="shopee-alamat-pembeli" rows="4" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px; font-family:inherit; box-sizing:border-box;">ASRAMA POLSEK KPL, KOTA BANJARMASIN, KALIMANTAN SELATAN, ID 70119</textarea>
+                <textarea id="shopee-alamat-pembeli" rows="4" style="width:100%; padding:9px 12px; background:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; font-family:inherit; box-sizing:border-box; color:var(--panel-text); outline:none; font-size:13px; resize:vertical;">ASRAMA POLSEK KPL, KOTA BANJARMASIN, KALIMANTAN SELATAN, ID 70119</textarea>
             </div>
             <div class="form-group">
                 <label>No. Handphone Pembeli</label>
@@ -57,7 +59,7 @@
             <h3>Item Pesanan Shopee</h3>
             <div id="shopee-items-container">
             </div>
-            <button onclick="addShopeeItem()" class="btn-add" style="background: #ee4d2d;">+ Tambah Item Shopee</button>
+            <button onclick="addShopeeItem()" class="btn-add">+ Tambah Item Shopee</button>
 
             <hr class="panel-divider" />
             <h3>Rincian Biaya Shopee</h3>
@@ -212,6 +214,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="../assets/js/script.js"></script>
 </body>
 </html>
+

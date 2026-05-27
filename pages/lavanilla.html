@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Lavanilla — Nota Builder Pro</title>
+    <meta name="description" content="Template struk Lavanilla Photography & Printing" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap" rel="stylesheet" />
+    <style>
+        .lv-container {
+            width: 320px; /* Thermal/A5 slim approx */
+            background: #fff;
+            color: #333;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 11px;
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 12px 40px rgba(0,0,0,0.25);
+            border-radius: 2px;
+        }
+
+        .lv-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .lv-logo-text-1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            letter-spacing: -1px;
+            color: #222;
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+        .lv-logo-text-2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .lv-phone {
+            margin-top: 15px;
+            color: #777;
+            font-size: 10px;
+        }
+
+        .lv-total-box {
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .lv-total-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        .lv-total-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .lv-divider {
+            border-top: 1px dashed #aaa;
+            margin: 10px 0;
+        }
+        .lv-divider-solid {
+            border-top: 1px solid #777;
+            margin: 10px 0;
+        }
+
+        .lv-table-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .lv-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+        .lv-item-desc {
+            width: 70%;
+        }
+        .lv-item-title {
+            font-weight: 700;
+            font-size: 11px;
+            color: #222;
+            margin-bottom: 3px;
+        }
+        .lv-item-sub {
+            color: #777;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+        .lv-item-price {
+            width: 30%;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .lv-summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .lv-summary-row.total {
+            font-weight: 700;
+            color: #222;
+        }
+        
+        .lv-payment-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+            color: #555;
+        }
+        .lv-payment-date {
+            font-size: 9px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .lv-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 10px;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        @media print {
+            body { background: #fff !important; }
+            .no-print { display: none !important; }
+            .lv-container { box-shadow: none; margin: 0; padding: 0; }
+            #nota-wrapper { padding: 0 !important; margin: 0 !important; }
+        }
+    </style>
+</head>
+<body class="app-body">
+    
+    <div class="control-panel no-print">
+        <a href="../index.html" class="btn-back-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Kembali
+        </a>
+        <h1>Nota Lavanilla</h1>
+        <p class="panel-subtitle">Template struk persis referensi</p>
+
+        <div class="template-inputs">
+            <div class="form-group">
+                <label>Nama Kustomer</label>
+                <input type="text" id="inp-cust-name" value="Muhammad Ridho" oninput="updateLV()" />
+            </div>
+            <div class="form-group">
+                <label>Email Kustomer</label>
+                <input type="text" id="inp-cust-email" value="ridho@gmail.com" oninput="updateLV()" />
+            </div>
+            <div class="form-group">
+                <label>Telp Kustomer</label>
+                <input type="text" id="inp-cust-phone" value="+6281933708882" oninput="updateLV()" />
+            </div>
+            <div class="form-group">
+                <label>Receipt No.</label>
+                <input type="text" id="inp-receipt" value="#G-8597" oninput="updateLV()" />
+            </div>
+            <div class="form-group">
+                <label>Tanggal & Waktu</label>
+                <input type="text" id="inp-datetime" value="Sep 04 2025, 09:23AM" oninput="updateLV()" />
+            </div>
+
+            <hr class="panel-divider" />
+            <h3>Item Pesanan</h3>
+            <div id="lv-items-container"></div>
+            <button onclick="addLvItem()" class="btn-add">+ Tambah Item</button>
+
+            <hr class="panel-divider" />
+            <div class="form-group">
+                <label>Cash (Uang Diterima)</label>
+                <input type="text" id="inp-cash" value="50000" oninput="updateLV()" />
+            </div>
+
+            <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+        </div>
+    </div>
+
+    <div id="nota-wrapper">
+        <div class="lv-container">
+            <div class="lv-header">
+                <div class="lv-logo-text-1">lavanilla</div>
+                <div class="lv-logo-text-2">PHOTOGRAPHY & PRINTING</div>
+                <div class="lv-phone">+628115134340</div>
+            </div>
+
+            <div class="lv-total-box">
+                <div class="lv-total-label">TOTAL</div>
+                <div class="lv-total-value" id="out-main-total">IDR 11,000.00</div>
+            </div>
+
+            <div class="lv-table-header">
+                <div>Items</div>
+                <div>Price</div>
+            </div>
+            
+            <div class="lv-divider-solid"></div>
+
+            <div id="out-items">
+                <!-- JS Items -->
+            </div>
+
+            <div class="lv-divider"></div>
+
+            <div class="lv-summary-row">
+                <div>Subtotal</div><div id="out-subtotal">IDR 11,000.00</div>
+            </div>
+            <div class="lv-summary-row total">
+                <div>Total</div><div id="out-total">IDR 11,000.00</div>
+            </div>
+
+            <div class="lv-divider-solid"></div>
+
+            <div class="lv-payment-row">
+                <div>Cash</div><div id="out-cash">IDR 50,000.00</div>
+            </div>
+            <div class="lv-payment-date" id="out-datetime-1">Sep 04 2025, 09:23AM</div>
+            
+            <div class="lv-payment-row">
+                <div>Change due</div><div id="out-change">IDR 39,000.00</div>
+            </div>
+
+            <div class="lv-divider-solid" style="margin-top:20px;"></div>
+
+            <div class="lv-footer">
+                Sold to: <strong id="out-cust-name">Muhammad Ridho</strong><br>
+                <span id="out-cust-email">ridho@gmail.com</span><br>
+                <span id="out-cust-phone">+6281933708882</span><br><br>
+                <span id="out-datetime-2">Sep 04 2025, 09:23AM</span><br>
+                Receipt <span id="out-receipt">#G-8597</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let lvItems = [
+            { title: "Cetak A3 HVS atau Art paper", sub: "Art Carton 260 gsm / Satu sisi /\nTanpa Laminasi dengan Jasa Potong\n(2 x IDR 5,500.00)", price: 11000 }
+        ];
+
+        function formatIDR(num) {
+            return "IDR " + num.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function renderLvItems() {
+            const container = document.getElementById("lv-items-container");
+            const outItems = document.getElementById("out-items");
+            container.innerHTML = "";
+            let html = "";
+            let subtotal = 0;
+
+            lvItems.forEach((item, i) => {
+                subtotal += parseInt(item.price) || 0;
+
+                // Control panel
+                container.innerHTML += `
+                    <div class="item-row">
+                        <input type="text" placeholder="Judul Item" value="${item.title}" oninput="updateLvItem(${i}, 'title', this.value)">
+                        <textarea placeholder="Detail (Subtext)" rows="3" oninput="updateLvItem(${i}, 'sub', this.value)" style="width:100%; padding:9px 12px; background:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; font-family:inherit; color:var(--panel-text); outline:none; font-size:12px; resize:vertical; margin-bottom:5px;">${item.sub}</textarea>
+                        <input type="number" placeholder="Harga" value="${item.price}" oninput="updateLvItem(${i}, 'price', this.value)">
+                        <button onclick="removeLvItem(${i})" class="btn-reset" style="padding:5px; margin-top:0;">Hapus</button>
+                    </div>
+                `;
+                // Receipt output
+                const subFormatted = item.sub.replace(/\n/g, '<br>');
+                html += `
+                    <div class="lv-item">
+                        <div class="lv-item-desc">
+                            <div class="lv-item-title">${item.title}</div>
+                            <div class="lv-item-sub">${subFormatted}</div>
+                        </div>
+                        <div class="lv-item-price">${formatIDR(item.price)}</div>
+                    </div>
+                `;
+            });
+            outItems.innerHTML = html;
+
+            document.getElementById("out-main-total").innerText = formatIDR(subtotal);
+            document.getElementById("out-subtotal").innerText = formatIDR(subtotal);
+            document.getElementById("out-total").innerText = formatIDR(subtotal);
+
+            // Calculate Change
+            const cashRaw = document.getElementById("inp-cash").value.replace(/\D/g,'');
+            const cash = parseInt(cashRaw) || 0;
+            const change = cash - subtotal;
+
+            document.getElementById("out-cash").innerText = formatIDR(cash);
+            document.getElementById("out-change").innerText = formatIDR(Math.max(0, change));
+        }
+
+        function addLvItem() {
+            lvItems.push({ title: "", sub: "", price: 0 });
+            renderLvItems();
+        }
+        function removeLvItem(index) {
+            lvItems.splice(index, 1);
+            renderLvItems();
+        }
+        function updateLvItem(index, key, val) {
+            lvItems[index][key] = (key === 'price') ? (parseInt(val)||0) : val;
+            renderLvItems();
+        }
+
+        function updateLV() {
+            document.getElementById("out-cust-name").innerText = document.getElementById("inp-cust-name").value;
+            document.getElementById("out-cust-email").innerText = document.getElementById("inp-cust-email").value;
+            document.getElementById("out-cust-phone").innerText = document.getElementById("inp-cust-phone").value;
+            document.getElementById("out-receipt").innerText = document.getElementById("inp-receipt").value;
+            
+            const dt = document.getElementById("inp-datetime").value;
+            document.getElementById("out-datetime-1").innerText = dt;
+            document.getElementById("out-datetime-2").innerText = dt;
+            
+            // Re-render items to update calculations based on cash input
+            renderLvItems();
+        }
+
+        // Init
+        renderLvItems();
+        updateLV();
+    </script>
+</body>
+</html>
+
