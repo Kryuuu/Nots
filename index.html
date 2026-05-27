@@ -7,6 +7,7 @@
     <meta name="description" content="Buat nota, invoice, struk, dan kwitansi profesional dengan mudah dan cepat." />
     <link rel="stylesheet" href="assets/css/style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="dashboard-body">
     <div class="dashboard-container">
@@ -16,49 +17,6 @@
         </header>
 
         <div class="cards-grid">
-            <!-- Nvy Store Card -->
-            <a href="pages/nvy.html" class="nav-card" id="card-nvy">
-                <div class="card-icon nvy-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                </div>
-                <h2>Nvy Store</h2>
-                <p>Template nota standar untuk transaksi retail Nvy Store.</p>
-                <div class="card-action">Buat Nota &rarr;</div>
-            </a>
-
-            <!-- Shopee Card -->
-            <a href="pages/shopee.html" class="nav-card" id="card-shopee">
-                <div class="card-icon shopee-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <path d="M16 10a4 4 0 0 1-8 0"></path>
-                    </svg>
-                </div>
-                <h2>Shopee</h2>
-                <p>Format rincian pesanan dan biaya ala marketplace Shopee.</p>
-                <div class="card-action">Buat Nota &rarr;</div>
-            </a>
-
-            <!-- Custom Nota Card -->
-            <a href="pages/custom.html" class="nav-card" id="card-custom">
-                <div class="card-icon" style="color: #f59e0b; background: rgba(245, 158, 11, 0.08);">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                    </svg>
-                </div>
-                <h2>Nota Custom</h2>
-                <p>Buat nota, invoice, struk, atau kwitansi sesuai kebutuhan Anda.</p>
-                <div class="card-action">Buat Nota &rarr;</div>
-            </a>
-
             <!-- RB Folder Card -->
             <a href="#" class="nav-card" id="card-rb" onclick="checkRBPassword(event)">
                 <div class="card-icon" style="color: #ef4444; background: rgba(239, 68, 68, 0.08);">
@@ -119,25 +77,22 @@
             <div class="modal-body">
                 <p>Silakan masukkan password untuk mengakses folder RB.</p>
                 <input type="password" id="rb-password" placeholder="Masukkan password..." onkeypress="handleRBEnter(event)" />
-                <p id="rb-error" class="error-msg" style="display: none;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    Password salah! Coba lagi.
-                </p>
             </div>
             <div class="modal-footer">
                 <button class="btn-cancel" onclick="closeRBModal()">Batal</button>
-                <button class="btn-submit" onclick="submitRBPassword()">Masuk</button>
+                <button class="btn-submit" id="rb-submit-btn" onclick="submitRBPassword()">Masuk</button>
             </div>
         </div>
     </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script>
         function checkRBPassword(e) {
             e.preventDefault();
             document.getElementById('rb-modal').style.display = 'flex';
             document.getElementById('rb-password').value = '';
-            document.getElementById('rb-error').style.display = 'none';
-            // slight delay to focus after display flex
             setTimeout(() => document.getElementById('rb-password').focus(), 50);
         }
         
@@ -151,13 +106,53 @@
             }
         }
 
-        function submitRBPassword() {
+        async function submitRBPassword() {
             let pass = document.getElementById('rb-password').value;
-            if (pass === "RBBJM") {
-                window.location.href = "pages/rb.html";
+            let btn = document.getElementById('rb-submit-btn');
+            btn.innerHTML = 'Memeriksa...';
+            btn.style.opacity = '0.7';
+            
+            // Generate decryption key dari password
+            const encoder = new TextEncoder();
+            const keyData = await crypto.subtle.digest('SHA-256', encoder.encode(pass));
+            const keyBytes = new Uint8Array(keyData);
+            
+            // Ciphertext rahasia (berisi path URL yang dienkripsi XOR)
+            const cipher = [137, 234, 179, 70, 244, 68, 125, 213, 59, 69, 136, 155, 134, 177, 139, 106, 129, 56, 140, 144, 185, 246, 184, 223, 109];
+            
+            // Coba decrypt
+            let result = "";
+            for (let i = 0; i < cipher.length; i++) {
+                result += String.fromCharCode(cipher[i] ^ keyBytes[i % keyBytes.length]);
+            }
+            
+            // Verifikasi sederhana jika hasil dekripsi adalah URL valid
+            if (result.startsWith("pages/rb_secret_")) {
+                closeRBModal(); // Tutup modal input
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Akses Diberikan!',
+                    text: 'Membuka folder rahasia...',
+                    background: '#1e293b',
+                    color: '#fff',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = result;
+                });
             } else {
-                document.getElementById('rb-error').style.display = 'flex';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Akses Ditolak',
+                    text: 'Password yang Anda masukkan salah!',
+                    background: '#1e293b',
+                    color: '#fff',
+                    confirmButtonColor: '#ef4444'
+                });
+                
                 document.getElementById('rb-password').focus();
+                btn.innerHTML = 'Masuk';
+                btn.style.opacity = '1';
             }
         }
     </script>
