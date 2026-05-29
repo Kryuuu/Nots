@@ -10,6 +10,7 @@
     <style>
         .lv-container {
             width: 320px; /* Thermal/A5 slim approx */
+            max-width: 100%;
             background: #fff;
             color: #333;
             padding: 20px;
@@ -18,6 +19,9 @@
             margin: 0 auto;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 12px 40px rgba(0,0,0,0.25);
             border-radius: 2px;
+            box-sizing: border-box;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         .lv-header {
@@ -193,6 +197,22 @@
             </div>
 
             <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+
+            <hr class="panel-divider" />
+            <h3>THERMAL DIRECT</h3>
+            <div class="thermal-status-box no-print" id="thermal-status-box">
+                <div class="thermal-status-dot" id="thermal-status-dot"></div>
+                <span id="thermal-status-text">Belum terhubung</span>
+            </div>
+            <div class="thermal-btn-group no-print">
+                <button id="btn-thermal-connect" class="btn-thermal btn-thermal-connect" onclick="lvConnectThermal()">Connect Printer</button>
+                <button id="btn-thermal-disconnect" class="btn-thermal btn-thermal-disconnect" onclick="lvDisconnectThermal()" style="display:none;">Disconnect</button>
+            </div>
+            <button id="btn-thermal-print" class="btn-print btn-thermal-print-main no-print" onclick="lvPrintThermal()" disabled>⚡ Cetak Thermal Direct</button>
+            <div class="thermal-hint no-print">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>Chrome/Edge desktop + HTTPS/localhost. Printer harus COM Port.</span>
+            </div>
         </div>
     </div>
 
@@ -370,6 +390,79 @@
         // Init
         renderLvItems();
         updateLV();
+    </script>
+    <script src="../assets/js/thermal-serial.js"></script>
+    <script>
+        // ============================================================
+        // THERMAL DIRECT INTEGRATION — Lavanilla
+        // Terpisah dari print biasa. Tidak mengubah window.print().
+        // ============================================================
+
+        function _lvUpdateThermalUI(status, message) {
+            var box = document.getElementById('thermal-status-box');
+            var text = document.getElementById('thermal-status-text');
+            var btnC = document.getElementById('btn-thermal-connect');
+            var btnD = document.getElementById('btn-thermal-disconnect');
+            var btnP = document.getElementById('btn-thermal-print');
+            if (text) text.textContent = message || status;
+            if (box) {
+                box.className = 'thermal-status-box';
+                if (status === 'connected') box.classList.add('status-connected');
+                else if (status === 'error') box.classList.add('status-error');
+                else if (status === 'printing') box.classList.add('status-printing');
+            }
+            var on = (status === 'connected' || status === 'printing');
+            if (btnC) btnC.style.display = on ? 'none' : 'inline-flex';
+            if (btnD) btnD.style.display = on ? 'inline-flex' : 'none';
+            if (btnP) btnP.disabled = !on || status === 'printing';
+        }
+
+        if (window.ThermalSerial) {
+            window.ThermalSerial.onStatusChange(_lvUpdateThermalUI);
+            console.log("[LV] ThermalSerial loaded OK");
+        } else {
+            console.warn("[LV] ThermalSerial NOT loaded!");
+        }
+
+        async function lvConnectThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat. Cek console.'); return; }
+            await window.ThermalSerial.connect();
+        }
+
+        async function lvDisconnectThermal() {
+            if (!window.ThermalSerial) return;
+            await window.ThermalSerial.disconnect();
+        }
+
+        async function lvPrintThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat.'); return; }
+            if (!window.ThermalSerial.isConnected()) { _lvUpdateThermalUI('error', 'Printer belum terhubung.'); return; }
+
+            var subtotal = 0;
+            var items = lvItems.map(function(it) {
+                var price = parseInt(it.price) || 0;
+                subtotal += price;
+                return { desc: it.title + (it.sub ? ' ' + it.sub.replace(/\n/g, ' ') : ''), qty: 1, price: price, total: price };
+            });
+
+            var cashRaw = document.getElementById('inp-cash').value.replace(/\D/g,'');
+            var cash = parseInt(cashRaw) || 0;
+
+            await window.ThermalSerial.print({
+                storeName: 'LAVANILLA',
+                storeAddress: 'Photography & Printing',
+                storePhone: '+628115134340',
+                docNumber: document.getElementById('inp-receipt').value,
+                dateTime: document.getElementById('inp-datetime').value,
+                customerName: document.getElementById('inp-cust-name').value,
+                items: items,
+                subtotal: subtotal,
+                grandTotal: subtotal,
+                paymentMethod: 'CASH ' + formatIDR(cash),
+                paymentStatus: 'LUNAS',
+                notes: ['Terima Kasih']
+            });
+        }
     </script>
 </body>
 </html>

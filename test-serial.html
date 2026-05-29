@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Test RPP02 Web Serial</title>
+</head>
+<body>
+  <button onclick="connectPrinter()">Connect Printer</button>
+  <button onclick="printTest()">Print Test</button>
+  <p id="status">Status: belum connect</p>
+
+  <script>
+    let port = null;
+
+    function setStatus(text) {
+      document.getElementById("status").innerText = "Status: " + text;
+      console.log(text);
+    }
+
+    async function connectPrinter() {
+      try {
+        if (!("serial" in navigator)) {
+          setStatus("Browser tidak support Web Serial. Pakai Chrome/Edge.");
+          return;
+        }
+
+        port = await navigator.serial.requestPort();
+
+        await port.open({
+          baudRate: 9600,
+          dataBits: 8,
+          stopBits: 1,
+          parity: "none",
+          flowControl: "none",
+        });
+
+        setStatus("connected");
+      } catch (err) {
+        console.error(err);
+        setStatus("connect error: " + err.message);
+      }
+    }
+
+    async function printTest() {
+      if (!port) {
+        setStatus("belum connect");
+        return;
+      }
+
+      let writer;
+
+      try {
+        writer = port.writable.getWriter();
+
+        const encoder = new TextEncoder();
+
+        await writer.write(new Uint8Array([0x1b, 0x40]));
+        await writer.write(new Uint8Array([0x1b, 0x61, 0x01]));
+        await writer.write(encoder.encode("TEST PRINT RPP02\n"));
+        await writer.write(encoder.encode("WEB SERIAL COM4\n"));
+        await writer.write(encoder.encode("================\n"));
+        await writer.write(new Uint8Array([0x1b, 0x61, 0x00]));
+        await writer.write(encoder.encode("Jika ini keluar,\n"));
+        await writer.write(encoder.encode("berarti printer bisa.\n\n\n\n"));
+
+        setStatus("print test terkirim");
+      } catch (err) {
+        console.error(err);
+        setStatus("print error: " + err.message);
+      } finally {
+        if (writer) writer.releaseLock();
+      }
+    }
+  </script>
+</body>
+</html>

@@ -11,6 +11,7 @@
         /* Specific Styles for Duta Neon to perfectly match the image */
         .dn-container {
             width: 210mm;
+            max-width: 100%;
             min-height: 148mm;
             background: #fff;
             color: #000;
@@ -20,6 +21,8 @@
             position: relative;
             font-family: 'Arial', sans-serif;
             border-radius: 2px;
+            box-sizing: border-box;
+            overflow-wrap: break-word;
         }
 
         .dn-header-grid {
@@ -315,6 +318,22 @@
             </div>
 
             <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+
+            <hr class="panel-divider" />
+            <h3>THERMAL DIRECT</h3>
+            <div class="thermal-status-box no-print" id="thermal-status-box">
+                <div class="thermal-status-dot" id="thermal-status-dot"></div>
+                <span id="thermal-status-text">Belum terhubung</span>
+            </div>
+            <div class="thermal-btn-group no-print">
+                <button id="btn-thermal-connect" class="btn-thermal btn-thermal-connect" onclick="dnConnectThermal()">Connect Printer</button>
+                <button id="btn-thermal-disconnect" class="btn-thermal btn-thermal-disconnect" onclick="dnDisconnectThermal()" style="display:none;">Disconnect</button>
+            </div>
+            <button id="btn-thermal-print" class="btn-print btn-thermal-print-main no-print" onclick="dnPrintThermal()" disabled>⚡ Cetak Thermal Direct</button>
+            <div class="thermal-hint no-print">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>Chrome/Edge desktop + HTTPS/localhost. Printer harus COM Port.</span>
+            </div>
         </div>
     </div>
 
@@ -522,6 +541,80 @@
         // Init
         renderDnItems();
         updateDN();
+    </script>
+    <script src="../assets/js/thermal-serial.js"></script>
+    <script>
+        // ============================================================
+        // THERMAL DIRECT INTEGRATION — Duta Neon
+        // Terpisah dari print biasa. Tidak mengubah window.print().
+        // ============================================================
+
+        function _dnUpdateThermalUI(status, message) {
+            var box = document.getElementById('thermal-status-box');
+            var text = document.getElementById('thermal-status-text');
+            var btnC = document.getElementById('btn-thermal-connect');
+            var btnD = document.getElementById('btn-thermal-disconnect');
+            var btnP = document.getElementById('btn-thermal-print');
+            if (text) text.textContent = message || status;
+            if (box) {
+                box.className = 'thermal-status-box';
+                if (status === 'connected') box.classList.add('status-connected');
+                else if (status === 'error') box.classList.add('status-error');
+                else if (status === 'printing') box.classList.add('status-printing');
+            }
+            var on = (status === 'connected' || status === 'printing');
+            if (btnC) btnC.style.display = on ? 'none' : 'inline-flex';
+            if (btnD) btnD.style.display = on ? 'inline-flex' : 'none';
+            if (btnP) btnP.disabled = !on || status === 'printing';
+        }
+
+        if (window.ThermalSerial) {
+            window.ThermalSerial.onStatusChange(_dnUpdateThermalUI);
+            console.log("[DN] ThermalSerial loaded OK");
+        } else {
+            console.warn("[DN] ThermalSerial NOT loaded!");
+        }
+
+        async function dnConnectThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat. Cek console.'); return; }
+            await window.ThermalSerial.connect();
+        }
+
+        async function dnDisconnectThermal() {
+            if (!window.ThermalSerial) return;
+            await window.ThermalSerial.disconnect();
+        }
+
+        async function dnPrintThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat.'); return; }
+            if (!window.ThermalSerial.isConnected()) { _dnUpdateThermalUI('error', 'Printer belum terhubung.'); return; }
+
+            var items = dnItems.map(function(it) {
+                return {
+                    desc: it.jenis || 'Item',
+                    qty: it.qty || 1,
+                    price: parseInt(String(it.harga || '0').replace(/\D/g,'')) || 0,
+                    total: parseInt(String(it.jumlah || '0').replace(/\D/g,'')) || 0
+                };
+            });
+
+            var totalVal = parseInt(String(document.getElementById('inp-total').value || '0').replace(/\D/g,'')) || 0;
+            var dpVal = parseInt(String(document.getElementById('inp-dp').value || '0').replace(/\D/g,'')) || 0;
+
+            await window.ThermalSerial.print({
+                storeName: 'DUTA NEON',
+                storeAddress: 'Outdoor Promotion\nAdvertising',
+                dateTime: document.getElementById('inp-tanggal').value,
+                customerName: document.getElementById('inp-kepada').value,
+                items: items,
+                subtotal: totalVal,
+                grandTotal: totalVal,
+                dpAmount: dpVal,
+                paymentMethod: 'DP',
+                paymentStatus: dpVal >= totalVal ? 'LUNAS' : 'DP',
+                notes: ['Terima Kasih']
+            });
+        }
     </script>
 </body>
 </html>

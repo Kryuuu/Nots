@@ -1602,6 +1602,185 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // ==========================================================
+    // THERMAL SERIAL INTEGRATION (additive, does not touch print biasa)
+    // ==========================================================
+
+    // --- handleBrowserPrint: EXACTLY what it says ---
+    window.handleBrowserPrint = function() {
+      window.print();
+    };
+
+    // --- Print Mode Toggle ---
+    const printModeSelect = document.getElementById("print-mode-select");
+    const printModeBrowser = document.getElementById("print-mode-browser");
+    const printModeThermal = document.getElementById("print-mode-thermal");
+
+    if (printModeSelect) {
+      printModeSelect.addEventListener("change", function() {
+        const mode = this.value;
+        if (printModeBrowser) printModeBrowser.style.display = (mode === "browser") ? "block" : "none";
+        if (printModeThermal) printModeThermal.style.display = (mode === "thermal-direct") ? "block" : "none";
+
+        // Check Web Serial support when thermal mode is selected
+        if (mode === "thermal-direct" && window.ThermalSerial) {
+          if (!window.ThermalSerial.isSupported()) {
+            const thermalSection = document.getElementById("print-mode-thermal");
+            if (thermalSection && !document.getElementById("thermal-unsupported-msg")) {
+              const msg = document.createElement("div");
+              msg.id = "thermal-unsupported-msg";
+              msg.className = "thermal-unsupported-msg";
+              msg.innerHTML = '⚠️ Browser tidak mendukung Web Serial API. Gunakan <strong>Chrome/Edge desktop</strong> versi terbaru, atau pakai mode <strong>Print Biasa</strong>.';
+              thermalSection.insertBefore(msg, thermalSection.firstChild);
+
+              // Disable thermal controls
+              const btnConnect = document.getElementById("btn-thermal-connect");
+              const btnPrint = document.getElementById("btn-thermal-print");
+              if (btnConnect) btnConnect.disabled = true;
+              if (btnPrint) btnPrint.disabled = true;
+            }
+          }
+        }
+      });
+    }
+
+    // --- Thermal Status UI Update ---
+    function updateThermalStatusUI(status, message) {
+      const statusBox = document.getElementById("thermal-status-box");
+      const statusText = document.getElementById("thermal-status-text");
+      const btnConnect = document.getElementById("btn-thermal-connect");
+      const btnDisconnect = document.getElementById("btn-thermal-disconnect");
+      const btnPrint = document.getElementById("btn-thermal-print");
+
+      if (statusText) statusText.textContent = message || status;
+
+      // Reset status classes
+      if (statusBox) {
+        statusBox.className = "thermal-status-box";
+        if (status === "connected") statusBox.classList.add("status-connected");
+        else if (status === "error") statusBox.classList.add("status-error");
+        else if (status === "printing") statusBox.classList.add("status-printing");
+      }
+
+      // Toggle button visibility
+      const isConnected = (status === "connected" || status === "printing");
+      if (btnConnect) btnConnect.style.display = isConnected ? "none" : "inline-flex";
+      if (btnDisconnect) btnDisconnect.style.display = isConnected ? "inline-flex" : "none";
+      if (btnPrint) btnPrint.disabled = !isConnected || status === "printing";
+    }
+
+    // Register status callback with ThermalSerial module
+    if (window.ThermalSerial) {
+      window.ThermalSerial.onStatusChange(updateThermalStatusUI);
+      console.log("[Custom] ThermalSerial loaded OK");
+    } else {
+      console.warn("[Custom] ThermalSerial NOT loaded!");
+    }
+
+    // --- connectSerialPrinter ---
+    window.connectSerialPrinter = async function() {
+      if (!window.ThermalSerial) {
+        alert("Module Thermal Serial belum dimuat. Cek console.");
+        return;
+      }
+      await window.ThermalSerial.connect();
+    };
+
+    // --- disconnectSerialPrinter ---
+    window.disconnectSerialPrinter = async function() {
+      if (!window.ThermalSerial) return;
+      await window.ThermalSerial.disconnect();
+    };
+
+    // --- Collect current nota data for thermal printing ---
+    function collectReceiptData() {
+      const name = document.getElementById("custom-business-name")?.value || "";
+      const addr = document.getElementById("custom-business-address")?.value || "";
+      const phone = document.getElementById("custom-business-phone")?.value || "";
+      const docNum = document.getElementById("custom-doc-number")?.value || "";
+      const dtVal = document.getElementById("custom-date-time")?.value || "";
+      const kasirVal = document.getElementById("custom-kasir")?.value || "";
+      const custName = document.getElementById("custom-customer-name")?.value || "";
+      const payMethod = document.getElementById("custom-payment-method")?.value || "cash";
+      const payStatus = document.getElementById("custom-payment-status")?.value || "LUNAS";
+      const dpAmount = parseFloat(document.getElementById("custom-dp-amount")?.value) || 0;
+
+      // Format date
+      let formattedDate = "-";
+      if (dtVal) {
+        try { formattedDate = new Date(dtVal).toLocaleString("id-ID"); } catch(e) {}
+      }
+
+      // Calculate totals from current data
+      let subtotal = 0;
+      customItems.forEach(it => { subtotal += (it.qty || 0) * (it.price || 0); });
+
+      let totalCosts = 0;
+      const costsList = [];
+      customCosts.forEach(cost => {
+        if (cost.name) {
+          totalCosts += cost.amount || 0;
+          costsList.push({ name: cost.name, amount: cost.amount || 0 });
+        }
+      });
+
+      const grandTotal = subtotal + totalCosts;
+
+      // Payment method display name
+      let payMethodName = payMethod;
+      if (payMethod === "custom") {
+        payMethodName = document.getElementById("custom-payment-custom-name")?.value || "Custom";
+      }
+
+      return {
+        storeName: name,
+        storeAddress: addr,
+        storePhone: phone,
+        docNumber: docNum,
+        dateTime: formattedDate,
+        kasir: kasirVal,
+        customerName: custName,
+        items: customItems.map(it => ({
+          desc: it.desc || "",
+          qty: it.qty || 0,
+          price: it.price || 0
+        })),
+        subtotal: subtotal,
+        costs: costsList,
+        grandTotal: grandTotal,
+        paymentMethod: payMethodName,
+        paymentStatus: payStatus,
+        dpAmount: dpAmount,
+        notes: customNotes.filter(n => n && n.trim() !== "")
+      };
+    }
+
+    // --- printSerialReceipt ---
+    window.printSerialReceipt = async function() {
+      if (!window.ThermalSerial) {
+        alert("Module Thermal Serial belum dimuat. Cek console.");
+        return;
+      }
+
+      if (!window.ThermalSerial.isConnected()) {
+        updateThermalStatusUI("error", "Printer belum terhubung. Klik Connect dulu.");
+        return;
+      }
+
+      const receiptData = collectReceiptData();
+      const success = await window.ThermalSerial.print(receiptData);
+
+      if (!success) {
+        // Status already updated by ThermalSerial module
+        console.warn("Thermal print failed. User can retry or use Print Biasa.");
+      }
+    };
+
     console.log("Custom Nota Module Ready.");
+    if (window.ThermalSerial && window.ThermalSerial.isSupported()) {
+      console.log("Web Serial API: Available ✓");
+    } else {
+      console.log("Web Serial API: Not available (Thermal Direct disabled)");
+    }
   }
 });

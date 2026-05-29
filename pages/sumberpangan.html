@@ -10,6 +10,7 @@
     <style>
         .sp-container {
             width: 300px; /* Thermal 80mm approx */
+            max-width: 100%;
             background: #fff;
             color: #000;
             padding: 15px;
@@ -18,6 +19,9 @@
             margin: 0 auto;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 12px 40px rgba(0,0,0,0.25);
             border-radius: 2px;
+            box-sizing: border-box;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         .sp-header {
@@ -57,6 +61,8 @@
             font-family: 'Arial', sans-serif;
             font-size: 14px;
             margin-bottom: 2px;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
         .sp-barcode-num {
             font-size: 10px;
@@ -86,22 +92,33 @@
         }
         .sp-item-name {
             margin-bottom: 2px;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
         .sp-item-details {
             display: flex;
             justify-content: space-between;
             padding-left: 5px;
+            gap: 8px;
+        }
+        .sp-item-details > div:last-child {
+            flex-shrink: 0;
+            text-align: right;
         }
 
         .sp-summary-grid {
-            display: grid;
-            grid-template-columns: auto auto;
-            justify-content: end;
-            column-gap: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
             row-gap: 2px;
             margin-bottom: 8px;
         }
-        .sp-summary-grid > div:nth-child(odd) {
+        .sp-summary-grid .sp-summary-row {
+            display: flex;
+            gap: 8px;
+        }
+        .sp-summary-grid .sp-summary-row .sp-summary-val {
+            min-width: 70px;
             text-align: right;
         }
 
@@ -121,13 +138,17 @@
         }
 
         .sp-payment-grid {
-            display: grid;
-            grid-template-columns: auto auto;
-            justify-content: end;
-            column-gap: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
             row-gap: 2px;
         }
-        .sp-payment-grid > div:nth-child(odd) {
+        .sp-payment-grid .sp-pay-row {
+            display: flex;
+            gap: 8px;
+        }
+        .sp-payment-grid .sp-pay-row .sp-pay-val {
+            min-width: 70px;
             text-align: right;
         }
 
@@ -185,6 +206,22 @@
             </div>
 
             <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+
+            <hr class="panel-divider" />
+            <h3>THERMAL DIRECT</h3>
+            <div class="thermal-status-box no-print" id="thermal-status-box">
+                <div class="thermal-status-dot" id="thermal-status-dot"></div>
+                <span id="thermal-status-text">Belum terhubung</span>
+            </div>
+            <div class="thermal-btn-group no-print">
+                <button id="btn-thermal-connect" class="btn-thermal btn-thermal-connect" onclick="spConnectThermal()">Connect Printer</button>
+                <button id="btn-thermal-disconnect" class="btn-thermal btn-thermal-disconnect" onclick="spDisconnectThermal()" style="display:none;">Disconnect</button>
+            </div>
+            <button id="btn-thermal-print" class="btn-print btn-thermal-print-main no-print" onclick="spPrintThermal()" disabled>⚡ Cetak Thermal Direct</button>
+            <div class="thermal-hint no-print">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>Chrome/Edge desktop + HTTPS/localhost. Printer harus COM Port.</span>
+            </div>
         </div>
     </div>
 
@@ -218,14 +255,14 @@
             <div class="sp-divider"></div>
 
             <div class="sp-summary-grid">
-                <div>Jumlah Item :</div><div id="out-jml-item">3</div>
-                <div>Jumlah Kuantitas :</div><div id="out-jml-qty">3</div>
+                <div class="sp-summary-row"><div>Jumlah Item :</div><div class="sp-summary-val" id="out-jml-item">3</div></div>
+                <div class="sp-summary-row"><div>Jumlah Kuantitas :</div><div class="sp-summary-val" id="out-jml-qty">3</div></div>
             </div>
             
             <div class="sp-divider"></div>
             
             <div class="sp-summary-grid">
-                <div>Subtotal :</div><div id="out-subtotal">Rp83.000</div>
+                <div class="sp-summary-row"><div>Subtotal :</div><div class="sp-summary-val" id="out-subtotal">Rp83.000</div></div>
             </div>
 
             <div class="sp-divider-double"></div>
@@ -239,8 +276,8 @@
             <div class="sp-divider"></div>
 
             <div class="sp-payment-grid">
-                <div>Tunai :</div><div id="out-tunai">Rp90.000</div>
-                <div>Kembali :</div><div id="out-kembali">Rp7.000</div>
+                <div class="sp-pay-row"><div>Tunai :</div><div class="sp-pay-val" id="out-tunai">Rp90.000</div></div>
+                <div class="sp-pay-row"><div>Kembali :</div><div class="sp-pay-val" id="out-kembali">Rp7.000</div></div>
             </div>
             
             <div class="sp-divider"></div>
@@ -367,6 +404,79 @@
         renderSpItems();
         updateSP();
     </script>
+    <script src="../assets/js/thermal-serial.js"></script>
+    <script>
+        // ============================================================
+        // THERMAL DIRECT INTEGRATION — Sumber Pangan
+        // Terpisah dari print biasa. Tidak mengubah window.print().
+        // ============================================================
+
+        function _spUpdateThermalUI(status, message) {
+            var box = document.getElementById('thermal-status-box');
+            var text = document.getElementById('thermal-status-text');
+            var btnC = document.getElementById('btn-thermal-connect');
+            var btnD = document.getElementById('btn-thermal-disconnect');
+            var btnP = document.getElementById('btn-thermal-print');
+            if (text) text.textContent = message || status;
+            if (box) {
+                box.className = 'thermal-status-box';
+                if (status === 'connected') box.classList.add('status-connected');
+                else if (status === 'error') box.classList.add('status-error');
+                else if (status === 'printing') box.classList.add('status-printing');
+            }
+            var on = (status === 'connected' || status === 'printing');
+            if (btnC) btnC.style.display = on ? 'none' : 'inline-flex';
+            if (btnD) btnD.style.display = on ? 'inline-flex' : 'none';
+            if (btnP) btnP.disabled = !on || status === 'printing';
+        }
+
+        if (window.ThermalSerial) {
+            window.ThermalSerial.onStatusChange(_spUpdateThermalUI);
+            console.log("[SP] ThermalSerial loaded OK");
+        } else {
+            console.warn("[SP] ThermalSerial NOT loaded!");
+        }
+
+        async function spConnectThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat. Cek console.'); return; }
+            await window.ThermalSerial.connect();
+        }
+
+        async function spDisconnectThermal() {
+            if (!window.ThermalSerial) return;
+            await window.ThermalSerial.disconnect();
+        }
+
+        async function spPrintThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat.'); return; }
+            if (!window.ThermalSerial.isConnected()) { _spUpdateThermalUI('error', 'Printer belum terhubung.'); return; }
+
+            var subtotal = 0;
+            var items = spItems.map(function(it) {
+                var total = (it.qty || 0) * (it.harga || 0);
+                subtotal += total;
+                return { desc: it.nama, qty: it.qty, price: it.harga, total: total };
+            });
+
+            var tunaiRaw = document.getElementById('inp-tunai').value.replace(/\D/g,'');
+            var tunai = parseInt(tunaiRaw) || 0;
+
+            await window.ThermalSerial.print({
+                storeName: 'SUMBER PANGAN',
+                storeAddress: 'Frozen Food',
+                dateTime: document.getElementById('inp-transaksi').value,
+                kasir: document.getElementById('inp-karyawan').value,
+                customerName: document.getElementById('inp-pelanggan').value,
+                items: items,
+                subtotal: subtotal,
+                grandTotal: subtotal,
+                paymentMethod: 'TUNAI ' + formatRp(tunai),
+                paymentStatus: 'LUNAS',
+                notes: ['Terima Kasih']
+            });
+        }
+    </script>
 </body>
 </html>
+
 
