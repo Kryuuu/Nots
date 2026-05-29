@@ -261,26 +261,15 @@
             return "IDR " + num.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
 
-        function renderLvItems() {
-            const container = document.getElementById("lv-items-container");
+        // Update only the preview/receipt display (right side), without touching inputs
+        function updateLvDisplay() {
             const outItems = document.getElementById("out-items");
-            container.innerHTML = "";
             let html = "";
             let subtotal = 0;
 
             lvItems.forEach((item, i) => {
                 subtotal += parseInt(item.price) || 0;
 
-                // Control panel
-                container.innerHTML += `
-                    <div class="item-row">
-                        <input type="text" placeholder="Judul Item" value="${item.title}" oninput="updateLvItem(${i}, 'title', this.value)">
-                        <textarea placeholder="Detail (Subtext)" rows="3" oninput="updateLvItem(${i}, 'sub', this.value)" style="width:100%; padding:9px 12px; background:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; font-family:inherit; color:var(--panel-text); outline:none; font-size:12px; resize:vertical; margin-bottom:5px;">${item.sub}</textarea>
-                        <input type="number" placeholder="Harga" value="${item.price}" oninput="updateLvItem(${i}, 'price', this.value)">
-                        <button onclick="removeLvItem(${i})" class="btn-reset" style="padding:5px; margin-top:0;">Hapus</button>
-                    </div>
-                `;
-                // Receipt output
                 const subFormatted = item.sub.replace(/\n/g, '<br>');
                 html += `
                     <div class="lv-item">
@@ -307,16 +296,60 @@
             document.getElementById("out-change").innerText = formatIDR(Math.max(0, change));
         }
 
+        // Render input form controls (left side) — only called on add/remove/init
+        function renderLvInputs() {
+            const container = document.getElementById("lv-items-container");
+            container.innerHTML = "";
+
+            lvItems.forEach((item, i) => {
+                const row = document.createElement("div");
+                row.classList.add("item-row");
+
+                const titleInput = document.createElement("input");
+                titleInput.type = "text";
+                titleInput.placeholder = "Judul Item";
+                titleInput.value = item.title;
+                titleInput.addEventListener("input", (e) => { lvItems[i].title = e.target.value; updateLvDisplay(); });
+
+                const subTextarea = document.createElement("textarea");
+                subTextarea.placeholder = "Detail (Subtext)";
+                subTextarea.rows = 3;
+                subTextarea.value = item.sub;
+                subTextarea.setAttribute("style", "width:100%; padding:9px 12px; background:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; font-family:inherit; color:var(--panel-text); outline:none; font-size:12px; resize:vertical; margin-bottom:5px;");
+                subTextarea.addEventListener("input", (e) => { lvItems[i].sub = e.target.value; updateLvDisplay(); });
+
+                const priceInput = document.createElement("input");
+                priceInput.type = "number";
+                priceInput.placeholder = "Harga";
+                priceInput.value = item.price;
+                priceInput.addEventListener("input", (e) => { lvItems[i].price = parseInt(e.target.value) || 0; updateLvDisplay(); });
+
+                const removeBtn = document.createElement("button");
+                removeBtn.className = "btn-reset";
+                removeBtn.style.cssText = "padding:5px; margin-top:0;";
+                removeBtn.textContent = "Hapus";
+                removeBtn.addEventListener("click", () => removeLvItem(i));
+
+                row.appendChild(titleInput);
+                row.appendChild(subTextarea);
+                row.appendChild(priceInput);
+                row.appendChild(removeBtn);
+                container.appendChild(row);
+            });
+        }
+
+        // Full render: inputs + display (only on add/remove/init)
+        function renderLvItems() {
+            renderLvInputs();
+            updateLvDisplay();
+        }
+
         function addLvItem() {
             lvItems.push({ title: "", sub: "", price: 0 });
             renderLvItems();
         }
         function removeLvItem(index) {
             lvItems.splice(index, 1);
-            renderLvItems();
-        }
-        function updateLvItem(index, key, val) {
-            lvItems[index][key] = (key === 'price') ? (parseInt(val)||0) : val;
             renderLvItems();
         }
 
@@ -330,8 +363,8 @@
             document.getElementById("out-datetime-1").innerText = dt;
             document.getElementById("out-datetime-2").innerText = dt;
             
-            // Re-render items to update calculations based on cash input
-            renderLvItems();
+            // Update display calculations based on cash input
+            updateLvDisplay();
         }
 
         // Init

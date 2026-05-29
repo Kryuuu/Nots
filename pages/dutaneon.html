@@ -429,31 +429,15 @@
             { jenis: "'' LITARIQ COFFEE & TIARA", qty: "", harga: "", jumlah: "1.500.000" }
         ];
 
-        function renderDnItems() {
-            const container = document.getElementById("dn-items-container");
+        // Update only the preview table (right side) without touching inputs
+        function updateDnDisplay() {
             const tbody = document.getElementById("out-items");
-            container.innerHTML = "";
             let html = "";
-            
-            // Render at least 6 empty rows to match the paper style
             const totalRows = Math.max(6, dnItems.length);
 
             for (let i = 0; i < totalRows; i++) {
                 if (i < dnItems.length) {
                     const item = dnItems[i];
-                    // Control panel
-                    container.innerHTML += `
-                        <div class="item-row">
-                            <input type="text" placeholder="Jenis Pesanan" value="${item.jenis}" oninput="updateDnItem(${i}, 'jenis', this.value)">
-                            <div style="display:flex; gap:5px;">
-                                <input type="text" placeholder="Qty" value="${item.qty}" oninput="updateDnItem(${i}, 'qty', this.value)" style="flex:1;">
-                                <input type="text" placeholder="Harga" value="${item.harga}" oninput="updateDnItem(${i}, 'harga', this.value)" style="flex:2;">
-                                <input type="text" placeholder="Jumlah" value="${item.jumlah}" oninput="updateDnItem(${i}, 'jumlah', this.value)" style="flex:2;">
-                            </div>
-                            <button onclick="removeDnItem(${i})" class="btn-reset" style="padding:5px; margin-top:0;">Hapus</button>
-                        </div>
-                    `;
-                    // Table output
                     html += `
                         <tr>
                             <td class="dn-col-no">${i+1}</td>
@@ -465,7 +449,6 @@
                         </tr>
                     `;
                 } else {
-                    // Empty row
                     html += `
                         <tr>
                             <td class="dn-col-no" style="height:25px;"></td>
@@ -481,16 +464,49 @@
             tbody.innerHTML = html;
         }
 
+        // Render the input form controls (left side) — only called on add/remove
+        function renderDnInputs() {
+            const container = document.getElementById("dn-items-container");
+            container.innerHTML = "";
+
+            dnItems.forEach((item, i) => {
+                const row = document.createElement("div");
+                row.classList.add("item-row");
+                row.innerHTML = `
+                    <input type="text" placeholder="Jenis Pesanan" value="${item.jenis}" data-index="${i}" data-key="jenis">
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" placeholder="Qty" value="${item.qty}" data-index="${i}" data-key="qty" style="flex:1;">
+                        <input type="text" placeholder="Harga" value="${item.harga}" data-index="${i}" data-key="harga" style="flex:2;">
+                        <input type="text" placeholder="Jumlah" value="${item.jumlah}" data-index="${i}" data-key="jumlah" style="flex:2;">
+                    </div>
+                    <button onclick="removeDnItem(${i})" class="btn-reset" style="padding:5px; margin-top:0;">Hapus</button>
+                `;
+                container.appendChild(row);
+            });
+
+            // Attach input listeners using event delegation-like approach
+            container.querySelectorAll("input[data-index]").forEach(el => {
+                el.addEventListener("input", (e) => {
+                    const idx = parseInt(e.target.dataset.index);
+                    const key = e.target.dataset.key;
+                    dnItems[idx][key] = e.target.value;
+                    updateDnDisplay(); // Only update preview, NOT inputs
+                });
+            });
+        }
+
+        // Full render: inputs + display (only on add/remove/init)
+        function renderDnItems() {
+            renderDnInputs();
+            updateDnDisplay();
+        }
+
         function addDnItem() {
             dnItems.push({ jenis: "", qty: "", harga: "", jumlah: "" });
             renderDnItems();
         }
         function removeDnItem(index) {
             dnItems.splice(index, 1);
-            renderDnItems();
-        }
-        function updateDnItem(index, key, val) {
-            dnItems[index][key] = val;
             renderDnItems();
         }
 

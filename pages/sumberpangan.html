@@ -262,12 +262,10 @@
             return "Rp" + num.toLocaleString('id-ID');
         }
 
-        function renderSpItems() {
-            const container = document.getElementById("sp-items-container");
+        // Update only the preview/receipt display (right side), without touching inputs
+        function updateSpDisplay() {
             const outItems = document.getElementById("out-items");
-            container.innerHTML = "";
             let html = "";
-            
             let totalQty = 0;
             let subtotal = 0;
 
@@ -276,18 +274,6 @@
                 totalQty += parseInt(item.qty) || 0;
                 subtotal += totalHarga;
 
-                // Control panel
-                container.innerHTML += `
-                    <div class="item-row">
-                        <input type="text" placeholder="Nama Barang" value="${item.nama}" oninput="updateSpItem(${i}, 'nama', this.value)">
-                        <div style="display:flex; gap:5px;">
-                            <input type="number" placeholder="Qty" value="${item.qty}" oninput="updateSpItem(${i}, 'qty', this.value)" style="flex:1;">
-                            <input type="number" placeholder="Harga" value="${item.harga}" oninput="updateSpItem(${i}, 'harga', this.value)" style="flex:2;">
-                        </div>
-                        <button onclick="removeSpItem(${i})" class="btn-reset" style="padding:5px; margin-top:0;">Hapus</button>
-                    </div>
-                `;
-                // Receipt output
                 html += `
                     <div class="sp-item">
                         <div class="sp-item-name">${item.nama}</div>
@@ -315,16 +301,55 @@
             document.getElementById("out-kembali").innerText = formatRp(Math.max(0, kembali));
         }
 
+        // Render input form controls (left side) — only called on add/remove/init
+        function renderSpInputs() {
+            const container = document.getElementById("sp-items-container");
+            container.innerHTML = "";
+
+            spItems.forEach((item, i) => {
+                const row = document.createElement("div");
+                row.classList.add("item-row");
+                row.innerHTML = `
+                    <input type="text" placeholder="Nama Barang" value="${item.nama}" data-index="${i}" data-key="nama">
+                    <div style="display:flex; gap:5px;">
+                        <input type="number" placeholder="Qty" value="${item.qty}" data-index="${i}" data-key="qty" style="flex:1;">
+                        <input type="number" placeholder="Harga" value="${item.harga}" data-index="${i}" data-key="harga" style="flex:2;">
+                    </div>
+                    <button class="btn-reset" style="padding:5px; margin-top:0;" data-remove="${i}">Hapus</button>
+                `;
+                container.appendChild(row);
+            });
+
+            // Attach input listeners
+            container.querySelectorAll("input[data-index]").forEach(el => {
+                el.addEventListener("input", (e) => {
+                    const idx = parseInt(e.target.dataset.index);
+                    const key = e.target.dataset.key;
+                    spItems[idx][key] = (key === 'qty' || key === 'harga') ? (parseInt(e.target.value) || 0) : e.target.value;
+                    updateSpDisplay(); // Only update preview, NOT inputs
+                });
+            });
+
+            // Attach remove listeners
+            container.querySelectorAll("button[data-remove]").forEach(el => {
+                el.addEventListener("click", (e) => {
+                    removeSpItem(parseInt(e.target.dataset.remove));
+                });
+            });
+        }
+
+        // Full render: inputs + display (only on add/remove/init)
+        function renderSpItems() {
+            renderSpInputs();
+            updateSpDisplay();
+        }
+
         function addSpItem() {
             spItems.push({ nama: "", qty: 1, harga: 0 });
             renderSpItems();
         }
         function removeSpItem(index) {
             spItems.splice(index, 1);
-            renderSpItems();
-        }
-        function updateSpItem(index, key, val) {
-            spItems[index][key] = (key === 'qty' || key === 'harga') ? (parseInt(val)||0) : val;
             renderSpItems();
         }
 
@@ -334,8 +359,8 @@
             document.getElementById("out-karyawan").innerText = document.getElementById("inp-karyawan").value;
             document.getElementById("out-salesman").innerText = document.getElementById("inp-salesman").value;
             
-            // Re-render items to update calculations based on tunai input
-            renderSpItems();
+            // Update display calculations based on tunai input
+            updateSpDisplay();
         }
 
         // Init
