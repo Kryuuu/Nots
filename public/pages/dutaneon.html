@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Duta Neon — Nota Builder Pro</title>
+    <meta name="description" content="Template nota khusus Duta Neon Advertising" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* Specific Styles for Duta Neon to perfectly match the image */
+        .dn-container {
+            width: 210mm;
+            max-width: 100%;
+            min-height: 148mm;
+            background: #fff;
+            color: #000;
+            padding: 10mm;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 12px 40px rgba(0,0,0,0.25);
+            margin: 0 auto;
+            position: relative;
+            font-family: 'Arial', sans-serif;
+            border-radius: 2px;
+            box-sizing: border-box;
+            overflow-wrap: break-word;
+        }
+
+        .dn-header-grid {
+            display: grid;
+            grid-template-columns: 60% 40%;
+            margin-bottom: 5px;
+        }
+
+        /* The DUTA NEON CSS Logo */
+        .dn-logo-wrapper {
+            display: flex;
+            align-items: stretch;
+            height: 60px;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 5px;
+        }
+        .dn-logo-left {
+            background-color: #2763b0; /* Blue */
+            color: white;
+            flex: 1.1;
+            padding: 5px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .dn-logo-right {
+            background-color: #d63737; /* Red */
+            color: white;
+            flex: 0.9;
+            padding: 5px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .dn-logo-small-text {
+            font-size: 11px;
+            font-weight: 500;
+            text-align: right;
+            margin-bottom: -5px;
+        }
+        .dn-logo-left .dn-logo-small-text { text-align: right; margin-right: 15px;}
+        .dn-logo-right .dn-logo-small-text { text-align: left; margin-left: 5px; }
+        
+        .dn-logo-main-text {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: 2px;
+        }
+
+        /* Address info */
+        .dn-company-info {
+            font-size: 9px;
+            line-height: 1.3;
+        }
+        .dn-company-info table { border-collapse: collapse; }
+        .dn-company-info td { padding: 0 5px 0 0; vertical-align: top; font-weight: 600;}
+
+        /* Customer info right */
+        .dn-customer-info {
+            font-size: 12px;
+            padding-left: 20px;
+            font-weight: 600;
+        }
+        .dn-customer-row {
+            display: flex;
+            margin-bottom: 5px;
+            align-items: flex-end;
+        }
+        .dn-customer-label {
+            min-width: 70px;
+        }
+        .dn-customer-value {
+            flex: 1;
+            border-bottom: 1px dashed #000;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding-left: 10px;
+            padding-bottom: 2px;
+            min-height: 20px;
+            line-height: 1.2;
+        }
+        .dn-customer-value.handwriting {
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Table */
+        .dn-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 12px;
+            position: relative;
+            z-index: 2;
+        }
+        .dn-table th, .dn-table td {
+            border: 1px solid #333;
+            padding: 5px 8px;
+        }
+        .dn-table th {
+            background-color: #3f3f3f;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        
+        /* Specific column widths */
+        .dn-col-no { width: 5%; text-align: center; }
+        .dn-col-jenis { width: 45%; }
+        .dn-col-ukuran { width: 10%; text-align: center; padding: 0 !important; }
+        .dn-col-qty { width: 5%; text-align: center; }
+        .dn-col-harga { width: 15%; text-align: right; }
+        .dn-col-jumlah { width: 20%; text-align: right; }
+
+        .dn-ukuran-inner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            min-height: 22px;
+        }
+        .dn-ukuran-inner span {
+            margin: 0 3px;
+        }
+        
+        /* Table Headers specific */
+        .dn-th-ukuran {
+            padding: 0 !important;
+        }
+        .dn-th-ukuran-top { border-bottom: 1px solid #fff; padding: 3px; }
+        .dn-th-ukuran-bot { display: flex; justify-content: space-around; padding: 2px; }
+
+        /* Footer totals & Signatures */
+        .dn-footer-grid {
+            display: grid;
+            grid-template-columns: 25% 45% 30%;
+            margin-top: -1px; /* overlap border */
+            position: relative;
+            z-index: 2;
+        }
+        .dn-signature-box {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            padding-top: 5px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 80px;
+        }
+        
+        .dn-penerima-dots {
+            margin-top: 40px;
+            letter-spacing: 2px;
+            color: #000;
+            font-size: 14px;
+        }
+
+        /* The blue rubber stamp */
+        .dn-stamp {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px solid #6c8cbe;
+            color: #6c8cbe;
+            padding: 5px 10px;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+            z-index: 1;
+            background: rgba(255,255,255,0.5); /* slightly transparent */
+            width: 140px;
+        }
+        .dn-stamp-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: -5px;
+        }
+        .dn-stamp-logo {
+            font-size: 48px;
+            font-weight: bold;
+            line-height: 1;
+            opacity: 0.8;
+            margin-top: -5px;
+        }
+        .dn-stamp-sub {
+            font-size: 10px;
+            letter-spacing: 3px;
+            font-weight: bold;
+            margin-top: -8px;
+        }
+
+        .dn-signature-scribble {
+            position: absolute; 
+            bottom: -10px; 
+            left: 50%; 
+            transform: translateX(-50%) rotate(-15deg); 
+            font-family: 'Shadows Into Light', cursive, 'Brush Script MT', cursive; 
+            font-size: 40px; 
+            color: #000;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .dn-totals {
+            border: 1px solid #333;
+            border-top: none;
+        }
+        .dn-total-row {
+            display: flex;
+            border-bottom: 1px solid #333;
+        }
+        .dn-total-row:last-child { border-bottom: none; }
+        .dn-total-label {
+            background: #6a6a6a;
+            color: white;
+            width: 35%;
+            text-align: center;
+            font-weight: 600;
+            font-size: 11px;
+            padding: 4px;
+            border-right: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dn-total-value {
+            width: 65%;
+            text-align: right;
+            padding: 4px 8px;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        @media print {
+            body { background: #fff !important; }
+            .no-print { display: none !important; }
+            .dn-container { box-shadow: none; margin: 0; padding: 5mm; }
+            #nota-wrapper { padding: 0 !important; margin: 0 !important; }
+            .dn-logo-left { -webkit-print-color-adjust: exact; print-color-adjust: exact; background-color: #2763b0 !important; }
+            .dn-logo-right { -webkit-print-color-adjust: exact; print-color-adjust: exact; background-color: #d63737 !important; }
+            .dn-table th { -webkit-print-color-adjust: exact; print-color-adjust: exact; background-color: #3f3f3f !important; }
+            .dn-total-label { -webkit-print-color-adjust: exact; print-color-adjust: exact; background-color: #6a6a6a !important; }
+            .dn-stamp { -webkit-print-color-adjust: exact; print-color-adjust: exact; border-color: #6c8cbe !important; color: #6c8cbe !important; }
+        }
+    </style>
+</head>
+<body class="app-body">
+    
+    <div class="control-panel no-print">
+        <a href="rb_secret_8a9f.html" class="btn-back-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Kembali
+        </a>
+        <h1>Nota Duta Neon</h1>
+        <p class="panel-subtitle">Template persis gambar referensi</p>
+
+        <div class="template-inputs">
+            <div class="form-group">
+                <label>Tanggal</label>
+                <input type="text" id="inp-tanggal" value="03-09-2025" oninput="updateDN()" />
+            </div>
+            <div class="form-group">
+                <label>Kepada</label>
+                <input type="text" id="inp-kepada" value="RUMAH BUMN BANJARMASIN" oninput="updateDN()" />
+            </div>
+            <div class="form-group">
+                <label>Telp</label>
+                <input type="text" id="inp-telp" value="" oninput="updateDN()" />
+            </div>
+
+            <hr class="panel-divider" />
+            <h3>Item Pesanan</h3>
+            <div id="dn-items-container"></div>
+            <button onclick="addDnItem()" class="btn-add">+ Tambah Item</button>
+
+            <hr class="panel-divider" />
+            <div class="form-group">
+                <label>Total</label>
+                <input type="text" id="inp-total" value="4.100.000" oninput="updateDN()" />
+            </div>
+            <div class="form-group">
+                <label>DP</label>
+                <input type="text" id="inp-dp" value="1.750.000" oninput="updateDN()" />
+            </div>
+            <div class="form-group">
+                <label>SISA</label>
+                <input type="text" id="inp-sisa" value="2.350.000" oninput="updateDN()" />
+            </div>
+
+            <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+
+            <hr class="panel-divider" />
+            <h3>THERMAL DIRECT</h3>
+            <div class="thermal-status-box no-print" id="thermal-status-box">
+                <div class="thermal-status-dot" id="thermal-status-dot"></div>
+                <span id="thermal-status-text">Belum terhubung</span>
+            </div>
+            <div class="thermal-btn-group no-print">
+                <button id="btn-thermal-connect" class="btn-thermal btn-thermal-connect" onclick="dnConnectThermal()">Connect Printer</button>
+                <button id="btn-thermal-disconnect" class="btn-thermal btn-thermal-disconnect" onclick="dnDisconnectThermal()" style="display:none;">Disconnect</button>
+            </div>
+            <button id="btn-thermal-print" class="btn-print btn-thermal-print-main no-print" onclick="dnPrintThermal()" disabled>⚡ Cetak Thermal Direct</button>
+            <div class="thermal-hint no-print">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>Chrome/Edge desktop + HTTPS/localhost. Printer harus COM Port.</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="nota-wrapper">
+        <div class="dn-container">
+            
+            <div class="dn-header-grid">
+                <div class="dn-header-left">
+                    <div class="dn-logo-wrapper">
+                        <div class="dn-logo-left">
+                            <div class="dn-logo-small-text">Outdoor</div>
+                            <div class="dn-logo-main-text">DUTA</div>
+                        </div>
+                        <div class="dn-logo-right">
+                            <div class="dn-logo-small-text">Promotion</div>
+                            <div class="dn-logo-main-text">NEON</div>
+                        </div>
+                    </div>
+                    <div class="dn-company-info">
+                        <table>
+                            <tr>
+                                <td>Alamat</td>
+                                <td>: Jl. Kampung Melayu Darat RT. 18 No. 59 Kelurahan Seberang Mesjid - Banjarmasin 70231</td>
+                            </tr>
+                            <tr>
+                                <td>Telp</td>
+                                <td>: 0812 5107 0000 - 0821 4880 4848</td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td>: cv.dutaneon@yahoo.co.id / cv.dutaneondi@gmail.com</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="dn-header-right">
+                    <div class="dn-customer-info">
+                        <div class="dn-customer-row">
+                            <div class="dn-customer-label">Banjarmasin,</div>
+                            <div class="dn-customer-value handwriting" id="out-tanggal">03-09-2025</div>
+                        </div>
+                        <div class="dn-customer-row">
+                            <div class="dn-customer-label">Kepada :</div>
+                            <div class="dn-customer-value handwriting" id="out-kepada" style="height: 38px; word-wrap: break-word;">RUMAH BUMN<br>BANJARMASIN</div>
+                        </div>
+                        <div class="dn-customer-row">
+                            <div class="dn-customer-label">Telp :</div>
+                            <div class="dn-customer-value handwriting" id="out-telp"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="dn-table">
+                <thead>
+                    <tr>
+                        <th class="dn-col-no" rowspan="2">No.</th>
+                        <th class="dn-col-jenis" rowspan="2">JENIS PESANAN</th>
+                        <th class="dn-col-ukuran dn-th-ukuran" colspan="1">
+                            <div class="dn-th-ukuran-top">UKURAN</div>
+                            <div class="dn-th-ukuran-bot"><span>P</span><span>x</span><span>T</span></div>
+                        </th>
+                        <th class="dn-col-qty" rowspan="2">Qty</th>
+                        <th class="dn-col-harga" rowspan="2">HARGA SATUAN</th>
+                        <th class="dn-col-jumlah" rowspan="2">JUMLAH</th>
+                    </tr>
+                </thead>
+                <tbody id="out-items">
+                    <!-- Javascript will inject items here -->
+                </tbody>
+            </table>
+
+            <div class="dn-footer-grid">
+                <div class="dn-signature-box">
+                    <span>Penerima</span>
+                    <div class="dn-penerima-dots">.............</div>
+                </div>
+                <div class="dn-signature-box">
+                    <span style="position:relative; z-index:4;">Hormat Kami,</span>
+                    
+                    <!-- Blue Stamp -->
+                    <div class="dn-stamp">
+                        <div class="dn-stamp-title">CV. DUTA NEON</div>
+                        <div class="dn-stamp-logo">DN</div>
+                        <div class="dn-stamp-sub">ADVERTISING</div>
+                    </div>
+                    
+                    <!-- Dotted line for manual signature -->
+                    <div class="dn-penerima-dots" style="position:relative; z-index:4;">.............</div>
+                </div>
+                <div class="dn-totals">
+                    <div class="dn-total-row">
+                        <div class="dn-total-label">TOTAL</div>
+                        <div class="dn-total-value" id="out-total">4.100.000</div>
+                    </div>
+                    <div class="dn-total-row">
+                        <div class="dn-total-label">DP</div>
+                        <div class="dn-total-value" id="out-dp">1.750.000</div>
+                    </div>
+                    <div class="dn-total-row">
+                        <div class="dn-total-label">SISA</div>
+                        <div class="dn-total-value" id="out-sisa">2.350.000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dnItems = [
+            { jenis: "NEON BOX RUMAH BUMN", qty: "", harga: "", jumlah: "2.600.000" },
+            { jenis: "'' LITARIQ COFFEE & TIARA", qty: "", harga: "", jumlah: "1.500.000" }
+        ];
+
+        // Update only the preview table (right side) without touching inputs
+        function updateDnDisplay() {
+            const tbody = document.getElementById("out-items");
+            let html = "";
+            const totalRows = Math.max(6, dnItems.length);
+
+            for (let i = 0; i < totalRows; i++) {
+                if (i < dnItems.length) {
+                    const item = dnItems[i];
+                    html += `
+                        <tr>
+                            <td class="dn-col-no">${i+1}</td>
+                            <td class="dn-col-jenis handwriting">${item.jenis}</td>
+                            <td class="dn-col-ukuran"><div class="dn-ukuran-inner"><span></span><span>x</span><span></span></div></td>
+                            <td class="dn-col-qty handwriting">${item.qty}</td>
+                            <td class="dn-col-harga handwriting">${item.harga}</td>
+                            <td class="dn-col-jumlah handwriting">${item.jumlah}</td>
+                        </tr>
+                    `;
+                } else {
+                    html += `
+                        <tr>
+                            <td class="dn-col-no" style="height:25px;"></td>
+                            <td class="dn-col-jenis"></td>
+                            <td class="dn-col-ukuran"><div class="dn-ukuran-inner"><span></span><span>x</span><span></span></div></td>
+                            <td class="dn-col-qty"></td>
+                            <td class="dn-col-harga"></td>
+                            <td class="dn-col-jumlah"></td>
+                        </tr>
+                    `;
+                }
+            }
+            tbody.innerHTML = html;
+        }
+
+        // Render the input form controls (left side) — only called on add/remove
+        function renderDnInputs() {
+            const container = document.getElementById("dn-items-container");
+            container.innerHTML = "";
+
+            dnItems.forEach((item, i) => {
+                const row = document.createElement("div");
+                row.classList.add("item-row");
+                row.innerHTML = `
+                    <input type="text" placeholder="Jenis Pesanan" value="${item.jenis}" data-index="${i}" data-key="jenis">
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" placeholder="Qty" value="${item.qty}" data-index="${i}" data-key="qty" style="flex:1;">
+                        <input type="text" placeholder="Harga" value="${item.harga}" data-index="${i}" data-key="harga" style="flex:2;">
+                        <input type="text" placeholder="Jumlah" value="${item.jumlah}" data-index="${i}" data-key="jumlah" style="flex:2;">
+                    </div>
+                    <button onclick="removeDnItem(${i})" class="btn-reset" style="padding:5px; margin-top:0;">Hapus</button>
+                `;
+                container.appendChild(row);
+            });
+
+            // Attach input listeners using event delegation-like approach
+            container.querySelectorAll("input[data-index]").forEach(el => {
+                el.addEventListener("input", (e) => {
+                    const idx = parseInt(e.target.dataset.index);
+                    const key = e.target.dataset.key;
+                    dnItems[idx][key] = e.target.value;
+                    updateDnDisplay(); // Only update preview, NOT inputs
+                });
+            });
+        }
+
+        // Full render: inputs + display (only on add/remove/init)
+        function renderDnItems() {
+            renderDnInputs();
+            updateDnDisplay();
+        }
+
+        function addDnItem() {
+            dnItems.push({ jenis: "", qty: "", harga: "", jumlah: "" });
+            renderDnItems();
+        }
+        function removeDnItem(index) {
+            dnItems.splice(index, 1);
+            renderDnItems();
+        }
+
+        function updateDN() {
+            document.getElementById("out-tanggal").innerText = document.getElementById("inp-tanggal").value;
+            document.getElementById("out-kepada").innerHTML = document.getElementById("inp-kepada").value.replace(/\n/g, '<br>');
+            document.getElementById("out-telp").innerText = document.getElementById("inp-telp").value;
+            document.getElementById("out-total").innerText = document.getElementById("inp-total").value;
+            document.getElementById("out-dp").innerText = document.getElementById("inp-dp").value;
+            document.getElementById("out-sisa").innerText = document.getElementById("inp-sisa").value;
+        }
+
+        // Init
+        renderDnItems();
+        updateDN();
+    </script>
+    <script src="../assets/js/thermal-serial.js"></script>
+    <script>
+        // ============================================================
+        // THERMAL DIRECT INTEGRATION — Duta Neon
+        // Terpisah dari print biasa. Tidak mengubah window.print().
+        // ============================================================
+
+        function _dnUpdateThermalUI(status, message) {
+            var box = document.getElementById('thermal-status-box');
+            var text = document.getElementById('thermal-status-text');
+            var btnC = document.getElementById('btn-thermal-connect');
+            var btnD = document.getElementById('btn-thermal-disconnect');
+            var btnP = document.getElementById('btn-thermal-print');
+            if (text) text.textContent = message || status;
+            if (box) {
+                box.className = 'thermal-status-box';
+                if (status === 'connected') box.classList.add('status-connected');
+                else if (status === 'error') box.classList.add('status-error');
+                else if (status === 'printing') box.classList.add('status-printing');
+            }
+            var on = (status === 'connected' || status === 'printing');
+            if (btnC) btnC.style.display = on ? 'none' : 'inline-flex';
+            if (btnD) btnD.style.display = on ? 'inline-flex' : 'none';
+            if (btnP) btnP.disabled = !on || status === 'printing';
+        }
+
+        if (window.ThermalSerial) {
+            window.ThermalSerial.onStatusChange(_dnUpdateThermalUI);
+            console.log("[DN] ThermalSerial loaded OK");
+        } else {
+            console.warn("[DN] ThermalSerial NOT loaded!");
+        }
+
+        async function dnConnectThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat. Cek console.'); return; }
+            await window.ThermalSerial.connect();
+        }
+
+        async function dnDisconnectThermal() {
+            if (!window.ThermalSerial) return;
+            await window.ThermalSerial.disconnect();
+        }
+
+        async function dnPrintThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat.'); return; }
+            if (!window.ThermalSerial.isConnected()) { _dnUpdateThermalUI('error', 'Printer belum terhubung.'); return; }
+
+            var items = dnItems.map(function(it) {
+                return {
+                    desc: it.jenis || 'Item',
+                    qty: it.qty || 1,
+                    price: parseInt(String(it.harga || '0').replace(/\D/g,'')) || 0,
+                    total: parseInt(String(it.jumlah || '0').replace(/\D/g,'')) || 0
+                };
+            });
+
+            var totalVal = parseInt(String(document.getElementById('inp-total').value || '0').replace(/\D/g,'')) || 0;
+            var dpVal = parseInt(String(document.getElementById('inp-dp').value || '0').replace(/\D/g,'')) || 0;
+
+            await window.ThermalSerial.print({
+                storeName: 'DUTA NEON',
+                storeAddress: 'Outdoor Promotion\nAdvertising',
+                dateTime: document.getElementById('inp-tanggal').value,
+                customerName: document.getElementById('inp-kepada').value,
+                items: items,
+                subtotal: totalVal,
+                grandTotal: totalVal,
+                dpAmount: dpVal,
+                paymentMethod: 'DP',
+                paymentStatus: dpVal >= totalVal ? 'LUNAS' : 'DP',
+                notes: ['Terima Kasih']
+            });
+        }
+    </script>
+</body>
+</html>
+

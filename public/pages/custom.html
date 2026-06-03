@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Custom — Nota Builder Pro</title>
+    <meta name="description" content="Buat nota, invoice, struk, atau kwitansi custom sesuai kebutuhan Anda." />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body class="app-body">
+    <!-- Left Side: Control Panel -->
+    <div class="control-panel no-print">
+        <a href="rb_secret_8a9f.html" class="btn-back-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Kembali
+        </a>
+        <h1>Nota Custom</h1>
+        <p class="panel-subtitle">Buat nota sesuai kebutuhan Anda</p>
+
+        <div id="custom-inputs" class="template-inputs">
+            <!-- FORMAT & PRESET -->
+            <details open>
+                <summary>Format & Template</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Format Cetak</label>
+                        <select id="custom-print-format">
+                            <option value="a4">A4 (Standar)</option>
+                            <option value="thermal-80">Thermal 80mm</option>
+                            <option value="thermal-58">Thermal 58mm</option>
+                            <option value="custom-size">Custom (Ukuran Sendiri)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="grp-orientation">
+                        <label>Orientasi (A4)</label>
+                        <select id="custom-orientation">
+                            <option value="portrait">Portrait (Tegak)</option>
+                            <option value="landscape">Landscape (Mendatar)</option>
+                        </select>
+                    </div>
+                    <div id="grp-custom-size" style="display: none;">
+                        <div class="form-group">
+                            <label>Lebar (mm)</label>
+                            <input type="number" id="custom-paper-width" value="210" min="50" max="500" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tinggi (mm)</label>
+                            <input type="number" id="custom-paper-height" value="297" min="50" max="800" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Template Preset</label>
+                        <select id="custom-preset">
+                            <option value="custom">Custom (Kosong)</option>
+                            <option value="indomaret">Indomaret</option>
+                            <option value="alfamart">Alfamart</option>
+                            <option value="minimarket">Minimarket Umum</option>
+                            <option value="toko">Toko / Retail</option>
+                            <option value="cafe">Cafe / Restoran</option>
+                        </select>
+                    </div>
+                </div>
+            </details>
+
+            <!-- HEADER INFO -->
+            <details open>
+                <summary>Informasi Bisnis</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Nama Bisnis / Toko</label>
+                        <input type="text" id="custom-business-name" value="TOKO SAYA" />
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat Bisnis</label>
+                        <input type="text" id="custom-business-address" value="Jl. Contoh No. 123, Kota" />
+                    </div>
+                    <div class="form-group">
+                        <label>Telepon Bisnis</label>
+                        <input type="text" id="custom-business-phone" value="+62 812-3456-7890" />
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Logo Bisnis</label>
+                        <input type="file" id="custom-logo-upload" accept="image/*" />
+                    </div>
+                </div>
+            </details>
+
+            <!-- NOTA META -->
+            <details open>
+                <summary>Detail Nota</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>No. Dokumen / Slip</label>
+                        <input type="text" id="custom-doc-number" value="INV-001" />
+                    </div>
+                    <div class="form-group" id="grp-merchant" style="display: none;">
+                        <label>Merchant / Biller (Indomaret)</label>
+                        <input type="text" id="custom-merchant" value="Google Play Indonesia" />
+                    </div>
+                    <div class="form-group" id="grp-notagihan" style="display: none;">
+                        <label>No. Tagihan</label>
+                        <input type="text" id="custom-notagihan" value="8825800134190709" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Kasir</label>
+                        <input type="text" id="custom-kasir" value="ADI" />
+                    </div>
+                    <div class="form-group" id="grp-ponta" style="display: none;">
+                        <label>No. Ponta (Alfamart)</label>
+                        <input type="text" id="custom-ponta" value="" placeholder="0123456789" />
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal & Waktu</label>
+                        <input type="datetime-local" id="custom-date-time" />
+                    </div>
+                </div>
+            </details>
+
+            <!-- CUSTOMER INFO -->
+            <details>
+                <summary>Info Pelanggan</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Nama Pelanggan</label>
+                        <input type="text" id="custom-customer-name" value="" placeholder="Nama pelanggan..." />
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat Pelanggan</label>
+                        <input type="text" id="custom-customer-address" value="" placeholder="Alamat pelanggan..." />
+                    </div>
+                    <div class="form-group">
+                        <label>Telepon Pelanggan</label>
+                        <input type="text" id="custom-customer-phone" value="" placeholder="No. telepon..." />
+                    </div>
+                </div>
+            </details>
+
+            <!-- ITEMS -->
+            <details open>
+                <summary>Daftar Item</summary>
+                <div class="section-content">
+                    <div id="custom-items-container"></div>
+                    <button onclick="addCustomItem()" class="btn-add">+ Tambah Item</button>
+                </div>
+            </details>
+
+            <!-- COST DETAILS -->
+            <details>
+                <summary>Rincian Biaya Tambahan</summary>
+                <div class="section-content">
+                    <div id="custom-costs-container"></div>
+                    <button onclick="addCustomCost()" class="btn-add">+ Tambah Biaya</button>
+                </div>
+            </details>
+
+            <!-- PAYMENT -->
+            <details>
+                <summary>Pembayaran</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Metode Pembayaran</label>
+                        <select id="custom-payment-method">
+                            <option value="cash">Cash / Tunai</option>
+                            <option value="transfer">Transfer Bank</option>
+                            <option value="ewallet">E-Wallet (GoPay, OVO, Dana, dll)</option>
+                            <option value="qris">QRIS</option>
+                            <option value="cod">COD (Cash on Delivery)</option>
+                            <option value="credit">Kartu Kredit</option>
+                            <option value="custom">Lainnya (Custom)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="custom-payment-custom-group" style="display: none;">
+                        <label>Nama Metode Custom</label>
+                        <input type="text" id="custom-payment-custom-name" value="" placeholder="Contoh: Cicilan 3 bulan" />
+                    </div>
+                    <div class="form-group" id="custom-bank-group" style="display: none;">
+                        <label>Nama Bank / E-Wallet</label>
+                        <input type="text" id="custom-bank-name" value="" placeholder="BCA / BRI / GoPay..." />
+                    </div>
+                    <div class="form-group" id="custom-account-group" style="display: none;">
+                        <label>No. Rekening / ID</label>
+                        <input type="text" id="custom-account-number" value="" placeholder="1234567890" />
+                    </div>
+                    <div class="form-group" id="custom-account-holder-group" style="display: none;">
+                        <label>Atas Nama</label>
+                        <input type="text" id="custom-account-holder" value="" placeholder="Nama pemilik rekening" />
+                    </div>
+                    <div class="form-group">
+                        <label>Status Pembayaran</label>
+                        <select id="custom-payment-status">
+                            <option value="LUNAS">LUNAS</option>
+                            <option value="BELUM LUNAS">BELUM LUNAS</option>
+                            <option value="DP">DP (Uang Muka)</option>
+                            <option value="CICILAN">CICILAN</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="custom-dp-group" style="display: none;">
+                        <label>Jumlah DP / Sudah Dibayar</label>
+                        <input type="number" id="custom-dp-amount" value="0" />
+                    </div>
+                </div>
+            </details>
+
+            <!-- NOTES -->
+            <details>
+                <summary>Catatan</summary>
+                <div class="section-content">
+                    <div id="custom-notes-container"></div>
+                    <button onclick="addCustomNote()" class="btn-add">+ Tambah Catatan</button>
+                </div>
+            </details>
+
+            <!-- EDITABLE LABELS -->
+            <details>
+                <summary>Label Custom</summary>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label>Tipe Dokumen (di nota A4)</label>
+                        <input type="text" id="custom-label-doctype" value="NOTA" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "No."</label>
+                        <input type="text" id="custom-label-no" value="No." />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Tanggal"</label>
+                        <input type="text" id="custom-label-tanggal" value="Tanggal" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Kepada"</label>
+                        <input type="text" id="custom-label-kepada" value="Kepada" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Alamat"</label>
+                        <input type="text" id="custom-label-alamat" value="Alamat" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Telp"</label>
+                        <input type="text" id="custom-label-telp" value="Telp" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Kolom "Deskripsi"</label>
+                        <input type="text" id="custom-label-deskripsi" value="Deskripsi" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Kolom "Qty"</label>
+                        <input type="text" id="custom-label-qty" value="Qty" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Kolom "Harga"</label>
+                        <input type="text" id="custom-label-harga" value="Harga" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Kolom "Total"</label>
+                        <input type="text" id="custom-label-total-col" value="Total" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Subtotal"</label>
+                        <input type="text" id="custom-label-subtotal" value="Subtotal" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Total"</label>
+                        <input type="text" id="custom-label-total" value="Total" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Pembayaran"</label>
+                        <input type="text" id="custom-label-pembayaran" value="Pembayaran" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Tanda Tangan Kiri</label>
+                        <input type="text" id="custom-label-sig-left" value="Hormat Kami," />
+                    </div>
+                    <div class="form-group">
+                        <label>Label Tanda Tangan Kanan</label>
+                        <input type="text" id="custom-label-sig-right" value="Diterima," />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "No" (thermal)</label>
+                        <input type="text" id="custom-label-th-no" value="No" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Tgl" (thermal)</label>
+                        <input type="text" id="custom-label-th-tgl" value="Tgl" />
+                    </div>
+                    <div class="form-group">
+                        <label>Label "Kasir" (thermal)</label>
+                        <input type="text" id="custom-label-th-kasir" value="Kasir" />
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="panel-actions">
+            <div class="save-indicator" id="save-indicator">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                <span>Belum ada perubahan</span>
+            </div>
+
+            <!-- ===== PRINT MODE SELECTOR ===== -->
+            <div class="thermal-mode-selector no-print">
+                <div class="form-group" style="margin-bottom:8px;">
+                    <label>MODE CETAK</label>
+                    <select id="print-mode-select">
+                        <option value="browser">🖨️ Print Biasa (Browser)</option>
+                        <option value="thermal-direct">⚡ Thermal Direct (Serial)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- MODE 1: Browser Print (default, unchanged behavior) -->
+            <div id="print-mode-browser">
+                <button onclick="handleBrowserPrint()" class="btn-print" id="btn-browser-print">Cetak Nota</button>
+            </div>
+
+            <!-- MODE 2: Thermal Direct via Web Serial -->
+            <div id="print-mode-thermal" style="display:none;">
+                <!-- Status indicator -->
+                <div class="thermal-status-box" id="thermal-status-box">
+                    <div class="thermal-status-dot" id="thermal-status-dot"></div>
+                    <span id="thermal-status-text">Belum terhubung</span>
+                </div>
+
+                <!-- Connect / Disconnect buttons -->
+                <div class="thermal-btn-group">
+                    <button id="btn-thermal-connect" class="btn-thermal btn-thermal-connect" onclick="connectSerialPrinter()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path></svg>
+                        Connect Printer
+                    </button>
+                    <button id="btn-thermal-disconnect" class="btn-thermal btn-thermal-disconnect" onclick="disconnectSerialPrinter()" style="display:none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Disconnect
+                    </button>
+                </div>
+
+                <!-- Thermal print button -->
+                <button id="btn-thermal-print" class="btn-print btn-thermal-print-main" onclick="printSerialReceipt()" disabled>
+                    ⚡ Cetak Thermal Direct
+                </button>
+
+                <!-- Fallback hint -->
+                <div class="thermal-hint" id="thermal-hint">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span>Butuh Chrome/Edge desktop + HTTPS/localhost. Printer harus muncul sebagai COM Port.</span>
+                </div>
+            </div>
+
+            <button onclick="resetCustomData()" class="btn-reset">Reset Data</button>
+        </div>
+    </div>
+
+    <!-- Right Side: Nota Preview -->
+    <div id="nota-wrapper">
+        <!-- ===== A4 VIEW ===== -->
+        <div id="nota-custom" class="nota-container custom-nota">
+            <div class="custom-header">
+                <div id="a4-logo-container" style="display: none; margin-bottom: 10px;">
+                    <img id="a4-logo-img" src="" alt="Business Logo" style="max-height: 60px; max-width: 200px; object-fit: contain;">
+                </div>
+                <div class="custom-business-info">
+                    <h1 id="disp-custom-business-name">TOKO SAYA</h1>
+                    <p id="disp-custom-business-address">Jl. Contoh No. 123, Kota</p>
+                    <p id="disp-custom-business-phone">+62 812-3456-7890</p>
+                </div>
+                <div class="custom-doc-info">
+                    <div class="custom-doc-type" id="disp-custom-doc-type">NOTA</div>
+                    <table class="meta-table">
+                        <tr><td id="disp-custom-label-no">No.</td><td>:</td><td id="disp-custom-doc-number">INV-001</td></tr>
+                        <tr><td id="disp-custom-label-tanggal">Tanggal</td><td>:</td><td id="disp-custom-date">-</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="custom-customer-section" id="custom-customer-section">
+                <table class="meta-table">
+                    <tr><td width="60" id="disp-custom-label-kepada">Kepada</td><td width="10">:</td><td id="disp-custom-customer-name" style="font-weight:600;">-</td></tr>
+                    <tr id="row-custom-customer-address"><td id="disp-custom-label-alamat">Alamat</td><td>:</td><td id="disp-custom-customer-address">-</td></tr>
+                    <tr id="row-custom-customer-phone"><td id="disp-custom-label-telp">Telp</td><td>:</td><td id="disp-custom-customer-phone">-</td></tr>
+                </table>
+            </div>
+            <div class="items-table-container">
+                <table class="items-table">
+                    <thead><tr><th style="width:5%;">#</th><th style="width:40%;" id="disp-custom-label-deskripsi">Deskripsi</th><th style="width:15%;" id="disp-custom-label-qty">Qty</th><th style="width:20%;text-align:right;" id="disp-custom-label-harga">Harga</th><th style="width:20%;text-align:right;" id="disp-custom-label-total-col">Total</th></tr></thead>
+                    <tbody id="disp-custom-items-body"></tbody>
+                </table>
+            </div>
+            <div class="custom-totals-section">
+                <div class="custom-totals-left">
+                    <div class="custom-payment-info" id="disp-custom-payment-info"><p><strong><span id="disp-custom-label-pembayaran">Pembayaran</span>:</strong> <span id="disp-custom-payment-method">Cash / Tunai</span></p></div>
+                    <div class="custom-bank-info" id="disp-custom-bank-info" style="display:none;"><p id="disp-custom-bank-detail"></p></div>
+                </div>
+                <div class="custom-totals-right">
+                    <table class="totals-table">
+                        <tr><td><span id="disp-custom-label-subtotal">Subtotal</span> :</td><td class="text-right" id="disp-custom-subtotal">0</td></tr>
+                        <tbody id="disp-custom-costs-body"></tbody>
+                        <tr class="final-total-row"><td><span id="disp-custom-label-total">Total</span> :</td><td class="text-right" id="disp-custom-total">0</td></tr>
+                        <tr id="row-custom-dp" style="display:none;"><td>DP / Dibayar :</td><td class="text-right" id="disp-custom-dp">0</td></tr>
+                        <tr id="row-custom-sisa" style="display:none;"><td>Sisa :</td><td class="text-right" id="disp-custom-sisa">0</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="custom-status-badge" id="disp-custom-status-badge">LUNAS</div>
+            <div class="custom-notes-section" id="disp-custom-notes-section"><hr /></div>
+            <div class="footer-totals" style="margin-top:20px;"><div class="signature-section" style="width:100%;display:flex;justify-content:space-between;"><div class="sig-box"><p id="disp-custom-sig-left">Hormat Kami,</p><br/><br/><br/><p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p></div><div class="sig-box"><p id="disp-custom-sig-right">Diterima,</p><br/><br/><br/><p>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</p></div></div></div>
+        </div>
+
+        <!-- ===== THERMAL RECEIPT VIEW ===== -->
+        <div id="nota-thermal" class="thermal-receipt" style="display: none;">
+            <div class="thermal-header">
+                <div id="th-logo-container" style="display: none; margin-bottom: 5px;">
+                    <img id="th-logo-img" src="" alt="Logo" style="max-height: 40px; filter: grayscale(100%) contrast(200%);">
+                </div>
+                <div class="thermal-store-name" id="th-store-name">TOKO SAYA</div>
+                <div class="thermal-store-addr" id="th-store-addr">Jl. Contoh No. 123, Kota</div>
+                <div class="thermal-store-phone" id="th-store-phone">+62 812-3456-7890</div>
+            </div>
+            <div class="thermal-divider">================================</div>
+            <div class="thermal-meta" id="th-meta-custom">
+                <!-- Data meta brand-specific akan masuk lewat JS -->
+            </div>
+            <div class="thermal-divider">--------------------------------</div>
+            <div class="thermal-items" id="th-items">
+                <!-- JS will populate -->
+            </div>
+            <div class="thermal-divider">--------------------------------</div>
+            <div class="thermal-totals" id="th-totals">
+                <!-- JS will populate -->
+            </div>
+            <div class="thermal-divider">================================</div>
+            <div class="thermal-payment">
+                <div id="th-payment-method">Pembayaran: TUNAI</div>
+                <div id="th-payment-detail"></div>
+            </div>
+            <div class="thermal-status" id="th-status" style="margin-top: 5px; text-align: center; font-weight: bold;">LUNAS</div>
+            <div id="th-barcode-area" style="text-align: center; margin-top: 10px; display: none;">
+                <div style="font-family: 'Libre Barcode 39', cursive; font-size: 30px;">*8825800134190709*</div>
+                <div style="font-size: 8px;">8825800134190709</div>
+            </div>
+            <div class="thermal-divider">--------------------------------</div>
+            <div class="thermal-footer" id="th-footer">
+                <p>Terima Kasih</p>
+                <p>Barang yg sudah dibeli</p>
+                <p>tidak dapat ditukar/dikembalikan</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/thermal-serial.js"></script>
+    <script src="../assets/js/script.js"></script>
+</body>
+</html>
+

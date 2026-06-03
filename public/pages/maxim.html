@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Maxim — Nota Builder</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        .maxim-container {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            color: #333;
+            padding: 50px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 12px 40px rgba(0,0,0,0.25);
+            margin: 0 auto;
+            position: relative;
+            font-family: 'Times New Roman', Times, serif;
+            border-radius: 0px;
+            box-sizing: border-box;
+            overflow-wrap: break-word;
+        }
+
+        .mx-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .mx-header-logo {
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .mx-header-city {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            font-family: 'Times New Roman', Times, serif;
+            letter-spacing: 0.5px;
+        }
+
+        .mx-profile-section {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .mx-profile-icon-wrapper {
+            /* Kept for layout compatibility, but we move the tail back to the icon */
+            margin-right: 20px;
+        }
+
+        .mx-profile-icon {
+            width: 70px;
+            height: 70px;
+            background-color: #EAEAEA;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .mx-profile-icon::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 18px solid #EAEAEA;
+            transform: rotate(-45deg);
+            right: -5px;
+            bottom: -2px;
+        }
+
+        .mx-profile-icon svg {
+            width: 45px;
+            height: 45px;
+            fill: #B0B0B0;
+        }
+
+        .mx-profile-text {
+            font-size: 15px;
+            color: #999;
+            margin-bottom: 4px;
+            margin-top: 10px;
+        }
+
+        .mx-profile-phone {
+            font-size: 22px;
+            color: #444;
+        }
+
+        .mx-order-time {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .mx-driver-info {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 35px;
+        }
+
+        .mx-route {
+            position: relative;
+            margin-bottom: 40px;
+            padding-left: 40px;
+        }
+
+        .mx-route-line {
+            position: absolute;
+            left: 5px;
+            top: 15px;
+            bottom: 20px;
+            width: 1px;
+            background-color: #CCC;
+            z-index: 1;
+        }
+
+        .mx-point {
+            position: relative;
+            margin-bottom: 30px;
+            z-index: 2;
+        }
+        .mx-point:last-child {
+            margin-bottom: 0;
+        }
+
+        .mx-point-icon-blue {
+            position: absolute;
+            left: -39px;
+            top: 2px;
+            width: 8px;
+            height: 8px;
+            background-color: #FFF;
+            border: 2px solid #5a809e;
+            transform: rotate(45deg);
+            z-index: 2;
+        }
+
+        .mx-point-icon-red {
+            position: absolute;
+            left: -39px;
+            top: 3px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #FFF;
+            border: 2px solid #e32b2b;
+            z-index: 2;
+        }
+
+        .mx-point-title {
+            font-weight: bold;
+            font-size: 15px;
+            color: #444;
+        }
+
+        .mx-point-subtitle {
+            font-size: 14px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .mx-divider {
+            height: 1px;
+            background-color: #CCC;
+            margin: 25px 0;
+        }
+
+        .mx-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mx-info-item {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .mx-icon-car-wrapper {
+            margin-right: 5px;
+            margin-left: -5px;
+            display: flex;
+            align-items: center;
+        }
+        .mx-icon-car-wrapper img {
+            width: 52px;
+            height: auto;
+            display: block;
+        }
+
+        .mx-icon-clock-wrapper {
+            margin-right: 5px;
+            margin-left: -2px;
+            display: flex;
+            align-items: center;
+        }
+        .mx-icon-clock-wrapper img {
+            width: 35px;
+            height: auto;
+            display: block;
+        }
+
+        .mx-info-text-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mx-info-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 2px;
+        }
+
+        .mx-info-val {
+            font-size: 14px;
+            color: #5a809e;
+        }
+
+        .mx-stats {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+        .mx-stats span {
+            color: #5a809e;
+        }
+
+        .mx-tambahan {
+            font-size: 14px;
+            color: #999;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        .mx-tambahan-val {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        .mx-tambahan-val span {
+            color: #5a809e;
+        }
+
+        .mx-total {
+            font-size: 38px;
+            color: #5a809e;
+            margin-bottom: 15px;
+        }
+
+        .mx-payment-method {
+            font-size: 14px;
+            color: #999;
+        }
+
+        @media print {
+            body { background: #fff !important; }
+            .no-print { display: none !important; }
+            .maxim-container { box-shadow: none; margin: 0; padding: 20px; }
+            #nota-wrapper { padding: 0 !important; margin: 0 !important; }
+        }
+    </style>
+</head>
+<body class="app-body">
+    
+    <div class="control-panel no-print" style="width: 350px; overflow-y: auto;">
+        <a href="rb_secret_8a9f.html" class="btn-back-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Kembali
+        </a>
+        <h1>Nota Maxim Builder</h1>
+        <p class="panel-subtitle">Sesuaikan data untuk nota Maxim</p>
+
+        <div class="template-inputs">
+            <div class="form-group">
+                <label>Kota</label>
+                <input type="text" id="inp-kota" value="Banjarmasin" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Nomor HP Pemesan</label>
+                <input type="text" id="inp-nohp" value="6287770797205" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Waktu Order</label>
+                <input type="text" id="inp-waktu" value="25.05.2026, 08:51 - 09:42" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Driver & Kendaraan</label>
+                <textarea id="inp-driver" rows="2" oninput="updateMaxim()">Noordiyanto dengan Suzuki Carry, putih, nopol KT8095BG</textarea>
+            </div>
+            
+            <hr class="panel-divider" />
+            <h3>Lokasi</h3>
+            <div class="form-group">
+                <label>Titik Jemput</label>
+                <input type="text" id="inp-jemput" value="CV Sketsa Nirindo Aditama" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Detail Jemput</label>
+                <input type="text" id="inp-jemput-detail" value="Lokasi marker (Surgi Mufti)" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Titik Tujuan</label>
+                <input type="text" id="inp-tujuan" value="Jalan Gatot Subroto V 66 (Kebun Bunga)" oninput="updateMaxim()" />
+            </div>
+
+            <hr class="panel-divider" />
+            <h3>Detail Perjalanan</h3>
+            <div class="form-group">
+                <label>Tipe Kendaraan (Tarif)</label>
+                <input type="text" id="inp-tarif" value="Cargo + 1 helper" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Tipe Order</label>
+                <input type="text" id="inp-tipe" value="sekarang" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Jarak Tempuh</label>
+                <input type="text" id="inp-jarak" value="5.00 km" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Waktu di Perjalanan</label>
+                <input type="text" id="inp-waktu-jalan" value="30 minutes" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Keterangan Tambahan</label>
+                <input type="text" id="inp-tambahan-nama" value="Platform fee" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Biaya Tambahan</label>
+                <input type="text" id="inp-tambahan-harga" value="Rp6000" oninput="updateMaxim()" />
+            </div>
+
+            <hr class="panel-divider" />
+            <div class="form-group">
+                <label>Total Biaya</label>
+                <input type="text" id="inp-total" value="Rp146000" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
+                <label>Metode Pembayaran</label>
+                <input type="text" id="inp-metode" value="tunai" oninput="updateMaxim()" />
+            </div>
+
+            <button onclick="window.print()" class="btn-print" style="margin-top: 20px;">Cetak PDF</button>
+        </div>
+    </div>
+
+    <div id="nota-wrapper" style="flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px; background: #f0f2f5;">
+        <div class="maxim-container">
+
+            <div class="mx-header">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigHaTT20Pn6BKyAmRmVbZb6WBUvCS3WwZcy0u_jyb9XShsUleuT8qKG7hRhg66HUPbNUdfa1-l8Gye_XMT7i9LI-uLjgj19IBan7qp1f2a__4B8GdPBU2TvMnwAsxKRQVZuxFNxRaf1YrAL59b5oxGxmVYMGaGRPOPnCu9V8UbNWCcl5X_u2fttnwDwQ/s16000/logo-maxim.png" alt="Maxim Logo" class="mx-header-logo" />
+                <div class="mx-header-city" id="out-kota">Banjarmasin</div>
+            </div>
+
+            <div class="mx-profile-section">
+                <div class="mx-profile-icon-wrapper">
+                    <div class="mx-profile-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="mx-profile-text">Order dari nomor:</div>
+                    <div class="mx-profile-phone" id="out-nohp">6287770797205</div>
+                </div>
+            </div>
+
+            <div class="mx-order-time">Order dari <span id="out-waktu">25.05.2026, 08:51 - 09:42</span></div>
+            
+            <div class="mx-driver-info" id="out-driver">
+                Noordiyanto dengan Suzuki Carry, putih, nopol KT8095BG
+            </div>
+
+            <div class="mx-route">
+                <div class="mx-route-line"></div>
+                
+                <div class="mx-point">
+                    <div class="mx-point-icon-blue"></div>
+                    <div class="mx-point-title" id="out-jemput">CV Sketsa Nirindo Aditama</div>
+                    <div class="mx-point-subtitle" id="out-jemput-detail">Lokasi marker (Surgi Mufti)</div>
+                </div>
+
+                <div class="mx-point">
+                    <div class="mx-point-icon-red"></div>
+                    <div class="mx-point-title" id="out-tujuan">Jalan Gatot Subroto V 66 (Kebun Bunga)</div>
+                </div>
+            </div>
+
+            <div class="mx-divider"></div>
+
+            <div class="mx-info-grid">
+                <div class="mx-info-item">
+                    <div class="mx-icon-car-wrapper">
+                        <img src="../assets/img/maxim-car.png" alt="Car">
+                    </div>
+                    <div class="mx-info-text-group">
+                        <div class="mx-info-label">Tarif:</div>
+                        <div class="mx-info-val" id="out-tarif">Cargo + 1 helper</div>
+                    </div>
+                </div>
+                
+                <div class="mx-info-item">
+                    <div class="mx-icon-clock-wrapper">
+                        <img src="../assets/img/maxim-clock.png" alt="Clock">
+                    </div>
+                    <div class="mx-info-text-group">
+                        <div class="mx-info-label">Tipe order:</div>
+                        <div class="mx-info-val" id="out-tipe">sekarang</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mx-stats">Jarak tempuh: <span id="out-jarak">5.00 km</span></div>
+            <div class="mx-stats">Waktu di perjalanan: <span id="out-waktu-jalan">30 minutes</span></div>
+
+            <div class="mx-tambahan">Tambahan:</div>
+            <div class="mx-tambahan-val" id="out-tambahan"><strong>Platform fee</strong> <span>Rp6000</span></div>
+
+            <div class="mx-total" id="out-total">Rp146000</div>
+            <div class="mx-payment-method" id="out-metode">tunai</div>
+
+        </div>
+    </div>
+
+    <script>
+        function updateMaxim() {
+            document.getElementById("out-kota").innerText = document.getElementById("inp-kota").value;
+            document.getElementById("out-nohp").innerText = document.getElementById("inp-nohp").value;
+            document.getElementById("out-waktu").innerText = document.getElementById("inp-waktu").value;
+            document.getElementById("out-driver").innerText = document.getElementById("inp-driver").value;
+            
+            document.getElementById("out-jemput").innerText = document.getElementById("inp-jemput").value;
+            document.getElementById("out-jemput-detail").innerText = document.getElementById("inp-jemput-detail").value;
+            
+            const detailElem = document.getElementById("out-jemput-detail");
+            if(document.getElementById("inp-jemput-detail").value.trim() === "") {
+                detailElem.style.display = "none";
+            } else {
+                detailElem.style.display = "block";
+            }
+
+            document.getElementById("out-tujuan").innerText = document.getElementById("inp-tujuan").value;
+            
+            document.getElementById("out-tarif").innerText = document.getElementById("inp-tarif").value;
+            document.getElementById("out-tipe").innerText = document.getElementById("inp-tipe").value;
+            
+            document.getElementById("out-jarak").innerText = document.getElementById("inp-jarak").value;
+            document.getElementById("out-waktu-jalan").innerText = document.getElementById("inp-waktu-jalan").value;
+            
+            const tambahanNama = document.getElementById("inp-tambahan-nama").value.trim();
+            const tambahanHarga = document.getElementById("inp-tambahan-harga").value.trim();
+            const tambahanValElem = document.getElementById("out-tambahan");
+            
+            if(tambahanNama === "" && tambahanHarga === "") {
+                tambahanValElem.style.display = "none";
+                document.querySelector(".mx-tambahan").style.display = "none";
+            } else {
+                tambahanValElem.style.display = "block";
+                document.querySelector(".mx-tambahan").style.display = "block";
+                
+                // Add spacing only if both exist
+                let spacing = (tambahanNama && tambahanHarga) ? " " : "";
+                
+                tambahanValElem.innerHTML = `<strong>${tambahanNama}</strong>${spacing}<span>${tambahanHarga}</span>`;
+            }
+
+            document.getElementById("out-total").innerText = document.getElementById("inp-total").value;
+            document.getElementById("out-metode").innerText = document.getElementById("inp-metode").value;
+        }
+
+        // Init
+        updateMaxim();
+    </script>
+</body>
+</html>

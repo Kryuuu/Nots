@@ -27,8 +27,19 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 40px;
-            font-family: 'Arial', sans-serif;
-            display: none; /* hidden if you don't need it or let's keep it but user crop didn't show it */
+        }
+
+        .mx-header-logo {
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .mx-header-city {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            font-family: 'Times New Roman', Times, serif;
+            letter-spacing: 0.5px;
         }
 
         .mx-profile-section {
@@ -272,6 +283,10 @@
 
         <div class="template-inputs">
             <div class="form-group">
+                <label>Kota</label>
+                <input type="text" id="inp-kota" value="Banjarmasin" oninput="updateMaxim()" />
+            </div>
+            <div class="form-group">
                 <label>Nomor HP Pemesan</label>
                 <input type="text" id="inp-nohp" value="6287770797205" oninput="updateMaxim()" />
             </div>
@@ -342,6 +357,11 @@
 
     <div id="nota-wrapper" style="flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px; background: #f0f2f5;">
         <div class="maxim-container">
+
+            <div class="mx-header">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigHaTT20Pn6BKyAmRmVbZb6WBUvCS3WwZcy0u_jyb9XShsUleuT8qKG7hRhg66HUPbNUdfa1-l8Gye_XMT7i9LI-uLjgj19IBan7qp1f2a__4B8GdPBU2TvMnwAsxKRQVZuxFNxRaf1YrAL59b5oxGxmVYMGaGRPOPnCu9V8UbNWCcl5X_u2fttnwDwQ/s16000/logo-maxim.png" alt="Maxim Logo" class="mx-header-logo" />
+                <div class="mx-header-city" id="out-kota">Banjarmasin</div>
+            </div>
 
             <div class="mx-profile-section">
                 <div class="mx-profile-icon-wrapper">
@@ -416,6 +436,7 @@
 
     <script>
         function updateMaxim() {
+            document.getElementById("out-kota").innerText = document.getElementById("inp-kota").value;
             document.getElementById("out-nohp").innerText = document.getElementById("inp-nohp").value;
             document.getElementById("out-waktu").innerText = document.getElementById("inp-waktu").value;
             document.getElementById("out-driver").innerText = document.getElementById("inp-driver").value;

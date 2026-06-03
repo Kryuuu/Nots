@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Sumber Pangan — Nota Builder Pro</title>
+    <meta name="description" content="Template struk thermal Sumber Pangan Frozen Food" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        .sp-container {
+            width: 300px; /* Thermal 80mm approx */
+            max-width: 100%;
+            background: #fff;
+            color: #000;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 12px 40px rgba(0,0,0,0.25);
+            border-radius: 2px;
+            box-sizing: border-box;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .sp-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .sp-logo-placeholder {
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .sp-logo-img {
+            font-size: 50px; /* Penguin emoji as placeholder */
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+        
+        .sp-logo-text {
+            font-family: 'Arial Black', sans-serif;
+            font-weight: 900;
+            font-size: 16px;
+            line-height: 1;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+        
+        .sp-logo-sub {
+            font-family: 'Arial', sans-serif;
+            font-size: 8px;
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
+        .sp-store-name {
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            margin-bottom: 2px;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        .sp-barcode-num {
+            font-size: 10px;
+        }
+
+        .sp-divider {
+            border-top: 1px dashed #000;
+            margin: 8px 0;
+        }
+        
+        .sp-divider-double {
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            height: 2px;
+            margin: 8px 0;
+        }
+
+        .sp-meta {
+            display: grid;
+            grid-template-columns: 75px 10px auto;
+            row-gap: 2px;
+            margin-bottom: 8px;
+        }
+
+        .sp-item {
+            margin-bottom: 6px;
+        }
+        .sp-item-name {
+            margin-bottom: 2px;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        .sp-item-details {
+            display: flex;
+            justify-content: space-between;
+            padding-left: 5px;
+            gap: 8px;
+        }
+        .sp-item-details > div:last-child {
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .sp-summary-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            row-gap: 2px;
+            margin-bottom: 8px;
+        }
+        .sp-summary-grid .sp-summary-row {
+            display: flex;
+            gap: 8px;
+        }
+        .sp-summary-grid .sp-summary-row .sp-summary-val {
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .sp-total-box {
+            display: flex;
+            justify-content: flex-end;
+            align-items: baseline;
+            gap: 10px;
+            font-size: 14px;
+            margin: 10px 0 2px;
+        }
+        
+        .sp-tax-note {
+            text-align: right;
+            font-size: 9px;
+            margin-bottom: 10px;
+        }
+
+        .sp-payment-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            row-gap: 2px;
+        }
+        .sp-payment-grid .sp-pay-row {
+            display: flex;
+            gap: 8px;
+        }
+        .sp-payment-grid .sp-pay-row .sp-pay-val {
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .sp-footer {
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 30px; /* Space at bottom like a real receipt */
+        }
+
+        @media print {
+            body { background: #fff !important; }
+            .no-print { display: none !important; }
+            .sp-container { box-shadow: none; margin: 0; padding: 0; }
+            #nota-wrapper { padding: 0 !important; margin: 0 !important; }
+        }
+    </style>
+</head>
+<body class="app-body">
+    
+    <div class="control-panel no-print">
+        <a href="rb_secret_8a9f.html" class="btn-back-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Kembali
+        </a>
+        <h1>Sumber Pangan</h1>
+        <p class="panel-subtitle">Template struk thermal persis referensi</p>
+
+        <div class="template-inputs">
+            <div class="form-group">
+                <label>Pelanggan</label>
+                <input type="text" id="inp-pelanggan" value="-" oninput="updateSP()" />
+            </div>
+            <div class="form-group">
+                <label>Transaksi (Tgl/Jam)</label>
+                <input type="text" id="inp-transaksi" value="03 Sep 2025, 12.33" oninput="updateSP()" />
+            </div>
+            <div class="form-group">
+                <label>Karyawan</label>
+                <input type="text" id="inp-karyawan" value="KASIR 2" oninput="updateSP()" />
+            </div>
+            <div class="form-group">
+                <label>Salesman</label>
+                <input type="text" id="inp-salesman" value="KASIR 2" oninput="updateSP()" />
+            </div>
+
+            <hr class="panel-divider" />
+            <h3>Item Pesanan</h3>
+            <div id="sp-items-container"></div>
+            <button onclick="addSpItem()" class="btn-add">+ Tambah Item</button>
+
+            <hr class="panel-divider" />
+            <div class="form-group">
+                <label>Tunai</label>
+                <input type="text" id="inp-tunai" value="90.000" oninput="updateSP()" />
+            </div>
+
+            <button onclick="window.print()" class="btn-print">Cetak Nota</button>
+
+            <hr class="panel-divider" />
+            <h3>THERMAL DIRECT</h3>
+            <div class="thermal-status-box no-print" id="thermal-status-box">
+                <div class="thermal-status-dot" id="thermal-status-dot"></div>
+                <span id="thermal-status-text">Belum terhubung</span>
+            </div>
+            <div class="thermal-btn-group no-print">
+                <button id="btn-thermal-connect" class="btn-thermal btn-thermal-connect" onclick="spConnectThermal()">Connect Printer</button>
+                <button id="btn-thermal-disconnect" class="btn-thermal btn-thermal-disconnect" onclick="spDisconnectThermal()" style="display:none;">Disconnect</button>
+            </div>
+            <button id="btn-thermal-print" class="btn-print btn-thermal-print-main no-print" onclick="spPrintThermal()" disabled>⚡ Cetak Thermal Direct</button>
+            <div class="thermal-hint no-print">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>Chrome/Edge desktop + HTTPS/localhost. Printer harus COM Port.</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="nota-wrapper">
+        <div class="sp-container">
+            <div class="sp-header">
+                <div class="sp-logo-placeholder">
+                    <div class="sp-logo-img">🐧</div>
+                    <div class="sp-logo-text">SUMBER<br>PANGAN</div>
+                    <div class="sp-logo-sub">FROZEN FOOD</div>
+                </div>
+                <div class="sp-store-name">Sumber Pangan Frozen Food</div>
+                <div class="sp-barcode-num">0000450008252025</div>
+            </div>
+
+            <div class="sp-divider"></div>
+            
+            <div class="sp-meta">
+                <div>Pelanggan</div><div>:</div><div id="out-pelanggan">-</div>
+                <div>Transaksi</div><div>:</div><div id="out-transaksi">03 Sep 2025, 12.33</div>
+                <div>Karyawan</div><div>:</div><div id="out-karyawan">KASIR 2</div>
+                <div>Salesman</div><div>:</div><div id="out-salesman">KASIR 2</div>
+            </div>
+
+            <div class="sp-divider"></div>
+
+            <div id="out-items">
+                <!-- JS Items -->
+            </div>
+
+            <div class="sp-divider"></div>
+
+            <div class="sp-summary-grid">
+                <div class="sp-summary-row"><div>Jumlah Item :</div><div class="sp-summary-val" id="out-jml-item">3</div></div>
+                <div class="sp-summary-row"><div>Jumlah Kuantitas :</div><div class="sp-summary-val" id="out-jml-qty">3</div></div>
+            </div>
+            
+            <div class="sp-divider"></div>
+            
+            <div class="sp-summary-grid">
+                <div class="sp-summary-row"><div>Subtotal :</div><div class="sp-summary-val" id="out-subtotal">Rp83.000</div></div>
+            </div>
+
+            <div class="sp-divider-double"></div>
+
+            <div class="sp-total-box">
+                <div>Total :</div>
+                <div style="font-weight: bold; font-family: 'Arial', sans-serif; letter-spacing: -1px;" id="out-total">Rp83.000</div>
+            </div>
+            <div class="sp-tax-note">*Termasuk Pajak</div>
+            
+            <div class="sp-divider"></div>
+
+            <div class="sp-payment-grid">
+                <div class="sp-pay-row"><div>Tunai :</div><div class="sp-pay-val" id="out-tunai">Rp90.000</div></div>
+                <div class="sp-pay-row"><div>Kembali :</div><div class="sp-pay-val" id="out-kembali">Rp7.000</div></div>
+            </div>
+            
+            <div class="sp-divider"></div>
+
+            <div class="sp-footer">
+                Terima Kasih
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let spItems = [
+            { nama: "Sultan Sosis Bakar Mini 500gr", qty: 1, harga: 35000 },
+            { nama: "Hemato Nugget Ayam Hati 500gr", qty: 1, harga: 22000 },
+            { nama: "Jofrans Nugget Crispy Bubble 500gr", qty: 1, harga: 26000 }
+        ];
+
+        function formatRp(num) {
+            return "Rp" + num.toLocaleString('id-ID');
+        }
+
+        // Update only the preview/receipt display (right side), without touching inputs
+        function updateSpDisplay() {
+            const outItems = document.getElementById("out-items");
+            let html = "";
+            let totalQty = 0;
+            let subtotal = 0;
+
+            spItems.forEach((item, i) => {
+                const totalHarga = item.qty * item.harga;
+                totalQty += parseInt(item.qty) || 0;
+                subtotal += totalHarga;
+
+                html += `
+                    <div class="sp-item">
+                        <div class="sp-item-name">${item.nama}</div>
+                        <div class="sp-item-details">
+                            <div>${item.qty} PCS x ${formatRp(item.harga)}</div>
+                            <div>${formatRp(totalHarga)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            outItems.innerHTML = html;
+
+            document.getElementById("out-jml-item").innerText = spItems.length;
+            document.getElementById("out-jml-qty").innerText = totalQty;
+            
+            document.getElementById("out-subtotal").innerText = formatRp(subtotal);
+            document.getElementById("out-total").innerText = formatRp(subtotal);
+
+            // Calculate Kembali
+            const tunaiRaw = document.getElementById("inp-tunai").value.replace(/\D/g,'');
+            const tunai = parseInt(tunaiRaw) || 0;
+            const kembali = tunai - subtotal;
+
+            document.getElementById("out-tunai").innerText = formatRp(tunai);
+            document.getElementById("out-kembali").innerText = formatRp(Math.max(0, kembali));
+        }
+
+        // Render input form controls (left side) — only called on add/remove/init
+        function renderSpInputs() {
+            const container = document.getElementById("sp-items-container");
+            container.innerHTML = "";
+
+            spItems.forEach((item, i) => {
+                const row = document.createElement("div");
+                row.classList.add("item-row");
+                row.innerHTML = `
+                    <input type="text" placeholder="Nama Barang" value="${item.nama}" data-index="${i}" data-key="nama">
+                    <div style="display:flex; gap:5px;">
+                        <input type="number" placeholder="Qty" value="${item.qty}" data-index="${i}" data-key="qty" style="flex:1;">
+                        <input type="number" placeholder="Harga" value="${item.harga}" data-index="${i}" data-key="harga" style="flex:2;">
+                    </div>
+                    <button class="btn-reset" style="padding:5px; margin-top:0;" data-remove="${i}">Hapus</button>
+                `;
+                container.appendChild(row);
+            });
+
+            // Attach input listeners
+            container.querySelectorAll("input[data-index]").forEach(el => {
+                el.addEventListener("input", (e) => {
+                    const idx = parseInt(e.target.dataset.index);
+                    const key = e.target.dataset.key;
+                    spItems[idx][key] = (key === 'qty' || key === 'harga') ? (parseInt(e.target.value) || 0) : e.target.value;
+                    updateSpDisplay(); // Only update preview, NOT inputs
+                });
+            });
+
+            // Attach remove listeners
+            container.querySelectorAll("button[data-remove]").forEach(el => {
+                el.addEventListener("click", (e) => {
+                    removeSpItem(parseInt(e.target.dataset.remove));
+                });
+            });
+        }
+
+        // Full render: inputs + display (only on add/remove/init)
+        function renderSpItems() {
+            renderSpInputs();
+            updateSpDisplay();
+        }
+
+        function addSpItem() {
+            spItems.push({ nama: "", qty: 1, harga: 0 });
+            renderSpItems();
+        }
+        function removeSpItem(index) {
+            spItems.splice(index, 1);
+            renderSpItems();
+        }
+
+        function updateSP() {
+            document.getElementById("out-pelanggan").innerText = document.getElementById("inp-pelanggan").value;
+            document.getElementById("out-transaksi").innerText = document.getElementById("inp-transaksi").value;
+            document.getElementById("out-karyawan").innerText = document.getElementById("inp-karyawan").value;
+            document.getElementById("out-salesman").innerText = document.getElementById("inp-salesman").value;
+            
+            // Update display calculations based on tunai input
+            updateSpDisplay();
+        }
+
+        // Init
+        renderSpItems();
+        updateSP();
+    </script>
+    <script src="../assets/js/thermal-serial.js"></script>
+    <script>
+        // ============================================================
+        // THERMAL DIRECT INTEGRATION — Sumber Pangan
+        // Terpisah dari print biasa. Tidak mengubah window.print().
+        // ============================================================
+
+        function _spUpdateThermalUI(status, message) {
+            var box = document.getElementById('thermal-status-box');
+            var text = document.getElementById('thermal-status-text');
+            var btnC = document.getElementById('btn-thermal-connect');
+            var btnD = document.getElementById('btn-thermal-disconnect');
+            var btnP = document.getElementById('btn-thermal-print');
+            if (text) text.textContent = message || status;
+            if (box) {
+                box.className = 'thermal-status-box';
+                if (status === 'connected') box.classList.add('status-connected');
+                else if (status === 'error') box.classList.add('status-error');
+                else if (status === 'printing') box.classList.add('status-printing');
+            }
+            var on = (status === 'connected' || status === 'printing');
+            if (btnC) btnC.style.display = on ? 'none' : 'inline-flex';
+            if (btnD) btnD.style.display = on ? 'inline-flex' : 'none';
+            if (btnP) btnP.disabled = !on || status === 'printing';
+        }
+
+        if (window.ThermalSerial) {
+            window.ThermalSerial.onStatusChange(_spUpdateThermalUI);
+            console.log("[SP] ThermalSerial loaded OK");
+        } else {
+            console.warn("[SP] ThermalSerial NOT loaded!");
+        }
+
+        async function spConnectThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat. Cek console.'); return; }
+            await window.ThermalSerial.connect();
+        }
+
+        async function spDisconnectThermal() {
+            if (!window.ThermalSerial) return;
+            await window.ThermalSerial.disconnect();
+        }
+
+        async function spPrintThermal() {
+            if (!window.ThermalSerial) { alert('Module thermal belum dimuat.'); return; }
+            if (!window.ThermalSerial.isConnected()) { _spUpdateThermalUI('error', 'Printer belum terhubung.'); return; }
+
+            var subtotal = 0;
+            var items = spItems.map(function(it) {
+                var total = (it.qty || 0) * (it.harga || 0);
+                subtotal += total;
+                return { desc: it.nama, qty: it.qty, price: it.harga, total: total };
+            });
+
+            var tunaiRaw = document.getElementById('inp-tunai').value.replace(/\D/g,'');
+            var tunai = parseInt(tunaiRaw) || 0;
+
+            await window.ThermalSerial.print({
+                storeName: 'SUMBER PANGAN',
+                storeAddress: 'Frozen Food',
+                dateTime: document.getElementById('inp-transaksi').value,
+                kasir: document.getElementById('inp-karyawan').value,
+                customerName: document.getElementById('inp-pelanggan').value,
+                items: items,
+                subtotal: subtotal,
+                grandTotal: subtotal,
+                paymentMethod: 'TUNAI ' + formatRp(tunai),
+                paymentStatus: 'LUNAS',
+                notes: ['Terima Kasih']
+            });
+        }
+    </script>
+</body>
+</html>
+
+
